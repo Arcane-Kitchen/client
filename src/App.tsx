@@ -1,7 +1,7 @@
 import "./App.css";
 import wizard from "./assets/wizard.jpg";
 
-// this is a test
+// this is a test 2
 
 function App() {
   return (
