@@ -7,6 +7,7 @@ interface AuthContextType {
     isLoading: boolean;
     signUp: (email:string, password:string) => Promise<SupabaseResponse>;
     signIn: (email:string, password:string) => Promise<SupabaseResponse>;
+    signOut: () => Promise<SupabaseResponse>;
     
 }
 
@@ -74,10 +75,21 @@ export const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children 
         return { success: true, data }
     }
 
+    // Signing out
+    const signOut = async (): Promise<SupabaseResponse> => {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            console.error('There was an error signing out: ', error);
+            return { success: false, error }
+        }
+
+        return { success: true }
+    }
+
 
     return (
         // Provide the authentication context to the component tree
-        <AuthContext.Provider value={{ session, isLoading, signUp, signIn }}> 
+        <AuthContext.Provider value={{ session, isLoading, signUp, signIn, signOut }}> 
             {children}
         </AuthContext.Provider>
     )
