@@ -1,14 +1,16 @@
-import wizard from "./assets/wizard.jpg";
+// import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './Home';
+import SignUp from './Register';
 
 function App() {
   return (
-    <>
-      <h1 className="text-3x1 font-bold underline">
-        Welcome to Arcane Kitchen!
-      </h1>
-      <img className="w-1/2" src={wizard} alt="wizard" />
-      <h1>More Coming Soon!</h1>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
+    </Router>
   );
 }
 
