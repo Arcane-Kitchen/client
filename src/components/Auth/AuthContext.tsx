@@ -4,8 +4,10 @@ import { supabase } from '../../supabaseClient';
 
 interface AuthContextType {
     session: Session | null;
-    signUp: (email:string, password:string) => Promise<SupabaseResponse>;
     isLoading: boolean;
+    signUp: (email:string, password:string) => Promise<SupabaseResponse>;
+    signIn: (email:string, password:string) => Promise<SupabaseResponse>;
+    
 }
 
 interface SupabaseResponse {
@@ -59,10 +61,23 @@ export const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children 
         return { success: true, data };
     }
 
+    // Signing in with email and password
+    const signIn = async (email:string, password:string): Promise<SupabaseResponse> => {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        })
+        if (error) {
+            console.error('There was an error signing in: ', error);
+            return { success: false, error }
+        }
+        return { success: true, data }
+    }
+
 
     return (
         // Provide the authentication context to the component tree
-        <AuthContext.Provider value={{ session, signUp, isLoading }}> 
+        <AuthContext.Provider value={{ session, isLoading, signUp, signIn }}> 
             {children}
         </AuthContext.Provider>
     )
