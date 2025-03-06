@@ -1,10 +1,17 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { Session } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../../supabaseClient';
 
 interface AuthContextType {
     session: Session | null;
+    signUp: (email:string, password:string) => Promise<SupabaseResponse>;
     isLoading: boolean;
+}
+
+interface SupabaseResponse {
+    success: boolean;
+    data?: { user: User | null; session: Session | null };
+    error?: Error;
 }
 
 // Create the AuthContext with an initial undefined value
@@ -37,10 +44,25 @@ export const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children 
         return () => subscription.unsubscribe()  
     }, [])
 
+    // Signing up with email and password
+    const signUp = async (email:string, password:string): Promise<SupabaseResponse> => {
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+        })
+            
+        if (error) {
+            console.error('There was an error signing up: ', error);
+            return { success: false, error };
+        }
+
+        return { success: true, data };
+    }
+
 
     return (
         // Provide the authentication context to the component tree
-        <AuthContext.Provider value={{ session, isLoading }}> 
+        <AuthContext.Provider value={{ session, signUp, isLoading }}> 
             {children}
         </AuthContext.Provider>
     )
