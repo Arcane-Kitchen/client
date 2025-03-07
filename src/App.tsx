@@ -6,6 +6,7 @@ import SignUp from './components/Auth/SignUp';
 
 function App() {
 
+
   return (
     <Router>
       <Routes>
