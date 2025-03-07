@@ -4,6 +4,7 @@ import Home from './components/Home';
 import SignUp from './components/Auth/SignUp';
 
 function App() {
+
   return (
     <Router>
       <Routes>

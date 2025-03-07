@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { createNewUser } from '../../api/userApi';
+import { createNewUser } from "../../api/userApi";
 import signUpBox from '../../assets/sign-up-box.svg';
 import background from '../../assets/background.png';
 
@@ -49,8 +49,8 @@ const SignUp: React.FC = () => {
     try {
       const result = await signUp(signUpForm.email, signUpForm.password); // Call signUp from AuthContext
 
-      if (result.success && result.data && result.data.user) {
-        await createNewUser(result.data.user.id, signUpForm.username)
+      if (result.success && result.data && result.data.user && result.data.session) {
+        await createNewUser(result.data.user.id, signUpForm.username, result.data.session.access_token)
       } else {
         console.error('Sign-up failed:', result)
       }
@@ -151,7 +151,7 @@ const SignUp: React.FC = () => {
           <div className="flex items-center justify-between">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
+              type="submit"
             >
               Sign Up
             </button>
