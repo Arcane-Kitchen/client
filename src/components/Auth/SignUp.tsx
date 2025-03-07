@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+import { createNewUser } from '../../api/userApi';
 import signUpBox from '../../assets/sign-up-box.svg';
 import background from '../../assets/background.png';
 
@@ -36,9 +39,27 @@ const SignUp: React.FC = () => {
     setSignUpForm(updatedSignUpForm);
   };
 
-  useEffect(() => {
-    console.log(signUpForm)
-  }, [signUpForm])
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
+
+  // Handles form submission
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    
+    try {
+      const result = await signUp(signUpForm.email, signUpForm.password); // Call signUp from AuthContext
+
+      if (result.success && result.data && result.data.user) {
+        await createNewUser(result.data.user.id, signUpForm.username)
+      } else {
+        console.error('Sign-up failed:', result)
+      }
+    } catch (error) {
+        console.error('An error occured: ', error)
+    } finally {
+      navigate('/'); 
+    }
+  }
 
   return (
     <div
@@ -62,7 +83,7 @@ const SignUp: React.FC = () => {
       >
         {/* Sign Up Form */}
         <h2 className="text-2xl font-bold mb-4 text-center text-white">Sign Up</h2>
-        <form className="px-6 w-2/5">
+        <form className="px-6 w-2/5" onSubmit={handleSubmit}>
           {/* Username Input */}
           <div className="mb-4">
             <label className="block text-white text-sm font-bold mb-2" htmlFor="email">
