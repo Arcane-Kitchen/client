@@ -19,12 +19,6 @@ const RecipesPage: React.FC = () => {
       .catch((error) => console.error(error))
   }, [])
 
-  useEffect(() => {
-    if (recipes.length > 0) {
-      console.log(recipes);
-    }
-  },[recipes])
-
   return (
     <div className="bg-[url('./assets/background.png')] bg-cover min-h-screen flex flex-col items-center justify-center pt-16">
       <Navbar />
