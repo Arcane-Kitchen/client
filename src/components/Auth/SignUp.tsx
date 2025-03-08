@@ -1,12 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 import { createNewUser } from "../../api/userApi";
-import signUpBox from '../../assets/sign-up-box.svg';
-import background from '../../assets/background.png';
+import signUpBox from "../../assets/sign-up-box.svg";
+import background from "../../assets/background.png";
 
 const SignUp: React.FC = () => {
-
   const [signUpForm, setSignUpForm] = useState({
     username: "",
     email: "",
@@ -16,7 +15,7 @@ const SignUp: React.FC = () => {
   const [error, setError] = useState("");
 
   // Handles changes in the form input fields
-  const handleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
 
     // Validate password length
@@ -27,8 +26,8 @@ const SignUp: React.FC = () => {
     }
 
     // Validate password confirmation
-    if (id === "confirmPassword" && value!= signUpForm.password) {
-        setError("Passwords don't match.");
+    if (id === "confirmPassword" && value != signUpForm.password) {
+      setError("Passwords don't match.");
     } else {
       setError("");
     }
@@ -45,48 +44,62 @@ const SignUp: React.FC = () => {
   // Handles form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+
     try {
       const result = await signUp(signUpForm.email, signUpForm.password); // Call signUp from AuthContext
 
-      if (result.success && result.data && result.data.user && result.data.session) {
-        await createNewUser(result.data.user.id, signUpForm.username, result.data.session.access_token)
+      if (
+        result.success &&
+        result.data &&
+        result.data.user &&
+        result.data.session
+      ) {
+        await createNewUser(
+          result.data.user.id,
+          signUpForm.username,
+          result.data.session.access_token
+        );
       } else {
-        console.error('Sign-up failed:', result)
+        console.error("Sign-up failed:", result);
       }
     } catch (error) {
-        console.error('An error occured: ', error)
+      console.error("An error occured: ", error);
     } finally {
-      navigate('/'); 
+      navigate("/");
     }
-  }
+  };
 
   return (
     <div
       className="flex items-center justify-center min-h-screen"
       style={{
         backgroundImage: `url(${background})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       <div
         className="p-8 flex flex-col items-center justify-center"
         style={{
           backgroundImage: `url(${signUpBox})`,
-          backgroundSize: 'contain',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-          width: '1200px',
-          height: '900px',
+          backgroundSize: "contain",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          width: "1200px",
+          height: "900px",
         }}
       >
         {/* Sign Up Form */}
-        <h2 className="text-2xl font-bold mb-4 text-center text-white">Sign Up</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center text-white">
+          Sign Up
+        </h2>
         <form className="px-6 w-2/5" onSubmit={handleSubmit}>
           {/* Username Input */}
           <div className="mb-4">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="email">
+            <label
+              className="block text-white text-sm font-bold mb-2"
+              htmlFor="email"
+            >
               Username
             </label>
             <input
@@ -101,7 +114,10 @@ const SignUp: React.FC = () => {
           </div>
           {/* Email Input */}
           <div className="mb-4">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="email">
+            <label
+              className="block text-white text-sm font-bold mb-2"
+              htmlFor="email"
+            >
               Email
             </label>
             <input
@@ -116,7 +132,10 @@ const SignUp: React.FC = () => {
           </div>
           {/* Password Input */}
           <div className="mb-2">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="password">
+            <label
+              className="block text-white text-sm font-bold mb-2"
+              htmlFor="password"
+            >
               Password
             </label>
             <input
@@ -129,11 +148,14 @@ const SignUp: React.FC = () => {
               minLength={6}
               onChange={handleChange}
             />
-            {error && <p className="text-red-500 text-xs">{error}</p>}  
+            {error && <p className="text-red-500 text-xs">{error}</p>}
           </div>
           {/* Confirm Passowrd Input */}
           <div className="mb-6">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="confirmPassword">
+            <label
+              className="block text-white text-sm font-bold mb-2"
+              htmlFor="confirmPassword"
+            >
               Confirm Password
             </label>
             <input
@@ -146,7 +168,15 @@ const SignUp: React.FC = () => {
               minLength={6}
               onChange={handleChange}
             />
-            {error && <p className="text-red-500 text-xs">{error}</p>}  
+            {error && <p className="text-red-500 text-xs">{error}</p>}
+            <p
+              className="text-white cursor-pointer hover:text-blue-500"
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              Have an account? Login!
+            </p>
           </div>
           <div className="flex items-center justify-between">
             <button

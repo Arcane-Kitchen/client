@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from './components/Auth/AuthContext';
-import signUpBox from './assets/sign-up-box.svg';
-import background from './assets/background.png';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./components/Auth/AuthContext";
+import signUpBox from "./assets/sign-up-box.svg";
+import background from "./assets/background.png";
 
 const Login: React.FC = () => {
-
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -20,41 +19,46 @@ const Login: React.FC = () => {
     try {
       const result = await signIn(email, password); // Call signIn from AuthContext
       if (result.success) {
-        navigate('/');
-    } else {
-        setError('Incorrect email or password')
-    }
+        navigate("/");
+      } else {
+        setError("Incorrect email or password");
+      }
     } catch (error) {
       console.error("An error occured during sign-in: ", error);
       setError("An unexpected error occured.");
     }
-  }
+  };
 
   return (
     <div
       className="flex items-center justify-center min-h-screen"
       style={{
         backgroundImage: `url(${background})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       <div
         className="p-8 flex flex-col items-center justify-center"
         style={{
           backgroundImage: `url(${signUpBox})`,
-          backgroundSize: 'contain',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-          width: '800px',
-          height: '500px',
+          backgroundSize: "contain",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          width: "800px",
+          height: "500px",
         }}
       >
-        <h2 className="text-2xl font-bold mb-4 text-center text-white mt-8">Login</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center text-white mt-8">
+          Login
+        </h2>
         <form className="px-6 w-4/5" onSubmit={handleSubmit}>
           {/* Email Input */}
           <div className="mb-4">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="email">
+            <label
+              className="block text-white text-sm font-bold mb-2"
+              htmlFor="email"
+            >
               Email
             </label>
             <input
@@ -69,7 +73,10 @@ const Login: React.FC = () => {
           </div>
           {/* Password Input */}
           <div className="mb-6">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="password">
+            <label
+              className="block text-white text-sm font-bold mb-2"
+              htmlFor="password"
+            >
               Password
             </label>
             <input
@@ -81,7 +88,15 @@ const Login: React.FC = () => {
               required={true}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {error && <p className="text-red-500 text-xs">{error}</p>}  
+            {error && <p className="text-red-500 text-xs">{error}</p>}
+            <p
+              className="text-white cursor-pointer hover:text-blue-500"
+              onClick={() => {
+                navigate("/signup");
+              }}
+            >
+              Don't have an account? Sign up today!
+            </p>
           </div>
           {/* Submit Button */}
           <div className="flex items-center justify-between">
