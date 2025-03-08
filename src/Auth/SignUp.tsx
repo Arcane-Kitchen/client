@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import { createNewUser } from "../../api/userApi";
-import signUpBox from "../../assets/sign-up-box.svg";
-import background from "../../assets/background.png";
+import { createNewUser } from "../api/userApi";
+import signUpBox from "../assets/sign-up-box.svg";
+import background from "../assets/background.png";
 
 const SignUp: React.FC = () => {
   const [signUpForm, setSignUpForm] = useState({

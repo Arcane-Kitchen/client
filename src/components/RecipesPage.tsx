@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "./Auth/AuthContext";
+import { useAuth } from "../Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import paper from "../assets/old-style-paper.png";
