@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./components/Auth/AuthContext";
-import signUpBox from "./assets/sign-up-box.svg";
-import background from "./assets/background.png";
+import { useAuth } from "./AuthContext";
+import signUpBox from "../assets/sign-up-box.svg";
+import background from "../assets/background.png";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
