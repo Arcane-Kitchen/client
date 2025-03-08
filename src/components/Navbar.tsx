@@ -53,6 +53,9 @@ const Navbar: React.FC = () => {
           <Link to="/recipes" className="px-4">
             Recipe List
           </Link>
+          <Link to="/calendar" className="px-4">
+            Calendar
+          </Link>
         </div>
       )}
     </nav>
