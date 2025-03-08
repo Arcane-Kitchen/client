@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import paper from "../assets/old-style-paper.png";
 
-const Recipes: React.FC = () => {
+const RecipesPage: React.FC = () => {
   const { signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -36,4 +36,4 @@ const Recipes: React.FC = () => {
   );
 };
 
-export default Recipes;
+export default RecipesPage;
