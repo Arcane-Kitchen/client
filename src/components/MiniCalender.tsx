@@ -1,8 +1,8 @@
-import { recipe } from './RecipesPage'
+import { Recipe } from './RecipesPage'
 import DaySlot from './DaySlot'
 
 interface MiniCalenderProps {
-    droppedRecipes: recipe[];
+    droppedRecipes: Recipe[];
 }
 
 const MiniCalender:React.FC<MiniCalenderProps> = ({ droppedRecipes }) => {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "./Navbar";
 import { fetchAllRecipes } from "../api/recipeApi";
 import MiniCalender from "./MiniCalender";
 import RecipeCard from "./RecipeCard";
@@ -23,7 +22,7 @@ export interface Recipe {
 
 const RecipesPage: React.FC = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [droppedRecipes, setDroppedRecipes] = useState<recipe[]>(new Array(7).fill(null));
+  const [droppedRecipes, setDroppedRecipes] = useState<Recipe[]>(new Array(7).fill(null));
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
