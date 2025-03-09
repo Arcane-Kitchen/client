@@ -8,7 +8,7 @@ interface DaySlotProps {
     recipes: recipe[];
 }
 
-const DaySlot:React.FC<DaySlotProps> = ({ id, day, recipes}) => {
+const DaySlot:React.FC<DaySlotProps> = ({ id, day, recipes }) => {
     const {setNodeRef} = useDroppable({
         id,
     });
