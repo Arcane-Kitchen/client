@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import { createNewUser } from "../api/userApi";
 import signUpBox from "../assets/sign-up-box.svg";
 import background from "../assets/background.png";
 
@@ -46,26 +45,10 @@ const SignUp: React.FC = () => {
     event.preventDefault();
 
     try {
-      const result = await signUp(signUpForm.email, signUpForm.password); // Call signUp from AuthContext
-
-      if (
-        result.success &&
-        result.data &&
-        result.data.user &&
-        result.data.session
-      ) {
-        await createNewUser(
-          result.data.user.id,
-          signUpForm.username,
-          result.data.session.access_token
-        );
-      } else {
-        console.error("Sign-up failed:", result);
-      }
+      const result = await signUp(signUpForm.username, signUpForm.email, signUpForm.password); // Call signUp from AuthContext
+      result.success ? navigate("/") : console.error("Sign-up failed:", result);
     } catch (error) {
       console.error("An error occured: ", error);
-    } finally {
-      navigate("/");
     }
   };
 
