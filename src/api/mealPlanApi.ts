@@ -26,24 +26,22 @@ export const addRecipeToMealPlan = async(id: string, token:string, recipe:Recipe
         chosenMealType: recipe.meal_type[0]
     }
 
-    console.log(body);
+    try {
+        const response = await fetch(`${baseUrl}/users/${id}/meal-plan`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "X-Supabase-Auth": token,
+            },
+            body: JSON.stringify(body)
+        })
 
-    // try {
-    //     const response = await fetch(`${baseUrl}/users/${id}/meal-plan`, {
-    //         method: "POST",
-    //         credentials: "include",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Authorization": `Bearer ${token}`,
-    //             "X-Supabase-Auth": token,
-    //         },
-    //         body: JSON.stringify(body)
-    //     })
-
-    //     const data = await response.json();
-    //     return data;
-    // } catch (error) {
-    //     console.error("Error adding recipe to meal plan: ", error);
-    //     throw error;
-    // }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error adding recipe to meal plan: ", error);
+        throw error;
+    }
 }

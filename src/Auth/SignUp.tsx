@@ -47,7 +47,7 @@ const SignUp: React.FC = () => {
 
     try {
       const result = await signUp(signUpForm.email, signUpForm.password); // Call signUp from AuthContext
-
+      console.log(result)
       if (
         result.success &&
         result.data &&
