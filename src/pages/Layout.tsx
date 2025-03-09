@@ -4,9 +4,9 @@ import Navbar from '../components/Navbar';
 const Layout = () => {
   
     return (
-        <div className="min-h-screen bg-[url('./assets/background.png')] bg-cover">
+        <div className="bg-[url('./assets/background.png')] bg-cover bg-center min-h-screen flex flex-col">
             <Navbar />
-            <div className="pt-16">
+            <div className="pt-16 h-auto flex-1">
                 <Outlet />
             </div>
         </div>
