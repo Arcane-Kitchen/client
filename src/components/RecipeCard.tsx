@@ -1,8 +1,8 @@
-import { recipe } from "./RecipesPage";
+import { Recipe } from "./RecipesPage";
 import { useDraggable } from "@dnd-kit/core";
 
 interface RecipeCardProps {
-    recipe: recipe;
+    recipe: Recipe;
 }
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
