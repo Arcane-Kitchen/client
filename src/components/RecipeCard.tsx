@@ -25,11 +25,14 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
       {...listeners}
       {...attributes}
       style={style}
-      className="w-3/4 h-full bg-[url('./assets/paper-box.png')] bg-cover bg-center px-15 py-5 flex hover:cursor-grab"
+      className="w-3/4 h-full bg-[url('./assets/paper-box.png')] bg-cover bg-center px-15 py-5 flex hover:cursor-grab border-black border-solid border-1"
     >
       <div className="flex flex-col gap-3 items-center p-1">
         <h1 className="font-bold underline">{recipe.name}</h1>
         <p>{recipe.description}</p>
+        <p>
+          <span className="font-bold">Type:</span> {recipe.meal_type}
+        </p>
         <p>
           <span className="font-bold">Difficulty:</span> {recipe.difficulty}
         </p>
@@ -50,7 +53,10 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
         </ul>
       </div>
       <div>
-        <img src={recipe.image} />
+        <img
+          className="border-black border-solid border-1"
+          src={recipe.image}
+        />
       </div>
     </div>
   );
