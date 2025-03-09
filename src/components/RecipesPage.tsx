@@ -4,6 +4,7 @@ import MiniCalender from "./MiniCalender";
 import RecipeCard from "./RecipeCard";
 import { DndContext, DragEndEvent, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
 import RecipeModal from "./RecipeModal";
+import { addRecipeToMealPlan } from "../api/mealPlanApi"
 
 export interface Ingredient {
   quantity: number;
@@ -43,7 +44,7 @@ const RecipesPage: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleDragEnd = (e:DragEndEvent) => {
+  const handleDragEnd = async (e:DragEndEvent) => {
     if (e.over && e.active) {
 
       const recipe = e.active.data?.current?.recipe;
@@ -53,6 +54,8 @@ const RecipesPage: React.FC = () => {
         const updatedDroppedRecipes = [...droppedRecipes];
         updatedDroppedRecipes[overId] = recipe;
         setDroppedRecipes(updatedDroppedRecipes);
+
+        await addRecipeToMealPlan;
       }
     }
   }

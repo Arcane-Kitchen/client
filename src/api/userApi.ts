@@ -21,3 +21,22 @@ export const createNewUser = async (id:string, username:string, token:string) =>
         throw error;
     }
 }
+
+// Fetches the profile of a user by their Supabase Id
+export const getUserProfile = async (id:string) => {
+    try {
+        const response = await fetch(`${baseUrl}/users/${id}`)
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error("User profile not found");
+            }
+            throw new Error("An error occurred while fetching user profile");
+        }
+        
+        return response.json();
+    } catch (error) {
+        console.error("Error fetching user profile: ", error);
+        throw error;
+    }
+}
