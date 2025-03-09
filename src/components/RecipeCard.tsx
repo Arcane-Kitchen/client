@@ -23,7 +23,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
             {...listeners}
             {...attributes}
             style={style}
-            className="w-full h-full bg-[url('./assets/old-style-paper.png')] bg-cover bg-center px-15 py-5 flex"
+            className="w-full h-full bg-[url('./assets/old-style-paper.png')] bg-cover bg-center px-15 py-5 flex hover:cursor-grab"
         >
             <div className="flex flex-col gap-3">
                 <h1>{recipe.name}</h1>

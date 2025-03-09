@@ -5,17 +5,20 @@ import SignUp from "./Auth/SignUp";
 import RecipesPage from "./components/RecipesPage";
 import CalendarPage from "./components/CalendarPage";
 import ProfilePage from "./components/ProfilePage";
+import Layout from "./pages/Layout";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/recipes" element={<RecipesPage />} />
         <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path='/' element={<Layout />}>
+          <Route index element={<Home />} /> {/* Default route */}
+          <Route path="recipes" element={<RecipesPage />} />
+        </Route>
       </Routes>
     </Router>
   );

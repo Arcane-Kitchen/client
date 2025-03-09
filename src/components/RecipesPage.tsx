@@ -39,20 +39,33 @@ const RecipesPage: React.FC = () => {
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div className="bg-[url('./assets/background.png')] bg-cover min-h-screen flex flex-col items-center justify-center pt-16">
-        <Navbar />
-        <h1 className="text-3xl font-bold underline text-white mb-8 mt-3">
-          Available Recipes
-        </h1>
-        <div className="grid grid-cols-1 w-3/4 gap-10 mb-10">
-          {recipes && recipes.length > 0 &&
-            recipes.map((recipe, index) => (
-              <RecipeCard key={index} recipe={recipe}/>
-            ))
-          }
+
+        {/* Recipe Cards Section */}
+        <div className="flex flex-col items-center justify-center" style={{ height: "80vh" }}>
+          <h1 className="text-3xl font-bold underline text-white mb-8 mt-3">
+            Available Recipes
+          </h1>
+
+          <div className="grid grid-cols-1 gap-10 overflow-auto justify-items-center">
+            {recipes && recipes.length > 0 &&
+              recipes.map((recipe, index) => (
+                <div className="flex items-center w-3/4">
+                  <RecipeCard key={index} recipe={recipe}/>
+                  <button className="bg-[url('./assets/button-box.svg')] bg-cover bg-center h-20 w-40 hover:cursor-pointer">
+                    <h1 className="text-white">Add</h1>
+                  </button>
+                </div>
+              ))
+            }
+          </div>
+
         </div>
-        <MiniCalender droppedRecipes={droppedRecipes}/>
-      </div>
+
+        {/* Mini Calendar Section */}
+        <div className="fixed bottom-0 left-0 w-full">
+          <MiniCalender droppedRecipes={droppedRecipes}/>
+        </div>
+
     </DndContext>
   );
 };
