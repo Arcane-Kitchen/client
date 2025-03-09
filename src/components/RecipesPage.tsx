@@ -5,6 +5,7 @@ import RecipeCard from "./RecipeCard";
 import { DndContext, DragEndEvent, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
 import RecipeModal from "./RecipeModal";
 import { addRecipeToMealPlan } from "../api/mealPlanApi"
+import { useAuth } from "../Auth/AuthContext";
 
 export interface Ingredient {
   quantity: number;
@@ -44,6 +45,8 @@ const RecipesPage: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const { user, session } = useAuth();
+
   const handleDragEnd = async (e:DragEndEvent) => {
     if (e.over && e.active) {
 
@@ -55,7 +58,9 @@ const RecipesPage: React.FC = () => {
         updatedDroppedRecipes[overId] = recipe;
         setDroppedRecipes(updatedDroppedRecipes);
 
-        await addRecipeToMealPlan;
+        if (session && user) {
+          await addRecipeToMealPlan(user.id, session.access_token, recipe, overId);
+        }
       }
     }
   }
