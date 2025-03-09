@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import { fetchAllRecipes } from "../api/recipeApi";
+import MiniCalender from "./MiniCalender";
+import RecipeCard from "./RecipeCard";
 
 export interface recipe {
   id: string,
@@ -28,21 +30,10 @@ const RecipesPage: React.FC = () => {
       <div className="grid grid-cols-1 w-3/4 gap-10 mb-10">
         {recipes && recipes.length > 0 &&
           recipes.map((recipe, index) => (
-            <div
-              key={index} 
-              className="w-full h-full bg-[url('./assets/old-style-paper.png')] bg-cover bg-center px-15 py-5 flex"
-            >
-              <div className="flex flex-col gap-3">
-                <h1>{recipe.name}</h1>
-                <p>{recipe.description}</p>
-              </div>
-              <div>
-                <img src={recipe.image} />
-              </div>
-            </div>
+            <RecipeCard key={index} recipe={recipe}/>
           ))
         }
-
+        <MiniCalender recipes={recipes}/>
       </div>
     </div>
   );
