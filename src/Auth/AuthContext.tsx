@@ -23,6 +23,10 @@ interface SupabaseResponse {
 interface UserProfile {
     id: string,
     username: string,
+    pet_daily_calorie_happiness: number,
+    pet_daily_carb_happiness: number,
+    pet_daily_fat_happiness: number,
+    pet_daily_protein_happiness: number,
 }
 
 // Create the AuthContext with an initial undefined value
