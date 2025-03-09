@@ -17,6 +17,7 @@ export interface Recipe {
   description: string;
   image: string;
   instructions: string;
+  meal_type: string[];
   ingredients: { [key: string]: Ingredient };
 }
 
@@ -41,10 +42,6 @@ const RecipesPage: React.FC = () => {
     setSelectedRecipe(null);
     setIsModalOpen(false);
   };
-
-  useEffect(() => {
-    console.log(selectedRecipe)
-  }, [selectedRecipe])
 
   const handleDragEnd = (e:DragEndEvent) => {
     if (e.over && e.active) {
@@ -87,7 +84,7 @@ const RecipesPage: React.FC = () => {
                   className="flex items-center w-3/4"
                  >
                   <RecipeCard recipe={recipe}/>
-                  <button className="bg-[url('./assets/button-box.svg')] bg-cover bg-center h-20 w-40 hover:cursor-pointer">
+                  <button className="bg-[url('./assets/button-box.svg')] bg-cover bg-center h-25 w-45 hover:cursor-pointer">
                     <h1 className="text-white">Add</h1>
                   </button>
                 </div>
