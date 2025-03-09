@@ -3,19 +3,26 @@ import {useDroppable} from "@dnd-kit/core";
 import { recipe } from "./RecipesPage";
 
 interface DaySlotProps {
-    id: number,
+    id: string,
     day: string;
-    recipes: recipe[];
+    recipe: recipe | null;
 }
 
-const DaySlot:React.FC<DaySlotProps> = ({ id, day, recipes }) => {
+const DaySlot:React.FC<DaySlotProps> = ({ id, day, recipe }) => {
     const {setNodeRef} = useDroppable({
         id,
     });
 
     return (
-        <div ref={setNodeRef} className="bg-orange-100 text-center size-full">
-            <h1>{day}</h1>
+        <div 
+            ref={setNodeRef}
+            className="bg-orange-100 text-center size-full"
+        >
+            {recipe? (
+                <img src={recipe.image} />
+            ) : (
+                <h1>{day}</h1>
+            )}
         </div>
     )
 }
