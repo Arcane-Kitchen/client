@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./Navbar";
 import dragon from "../assets/cute-dragon.png";
+import Achievements from "./Achievements";
 
 const ProfilePage: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const ProfilePage: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold">Username</h1>
           <h1 className="text-3xl font-bold">Level 1</h1>
+          <Achievements />
         </div>
         <div className="flex flex-col">
           <img className="size-40" src={dragon} alt="cute dragon" />
