@@ -1,13 +1,14 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "../supabaseClient";
-import { getUserProfile } from "../api/userApi"
+import { getUserProfile, createNewUser } from "../api/userApi"
+import { useLocation } from 'react-router-dom';
 
 interface AuthContextType {
     session: Session | null;
     user: UserProfile | null;
     isLoading: boolean;
-    signUp: (email:string, password:string) => Promise<SupabaseResponse>;
+    signUp: (username: string, email:string, password:string) => Promise<SupabaseResponse>;
     signIn: (email:string, password:string) => Promise<SupabaseResponse>;
     signOut: () => Promise<SupabaseResponse>;
     
@@ -32,8 +33,10 @@ export const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children 
     const [session, setSession] = useState<Session|null>(null);
     const [user, setUser] = useState<UserProfile|null>(null)
     const [isLoading, setIsLoading] =useState<boolean>(true);
+    const location = useLocation();
 
     useEffect(() => {
+
         // Function to load the session and user profile
         const loadSession = async () => {
             
@@ -42,9 +45,9 @@ export const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children 
             setSession(session);
 
             // Fetch user profile
-            if (session && session.user) {
+            if (location.pathname !== '/signup' && session && session.user) {
                 const userProfile = await getUserProfile(session.user.id, session.access_token);
-                if (userProfile) setUser(userProfile);
+                setUser(userProfile);
             }
 
             setIsLoading(false);
@@ -55,21 +58,22 @@ export const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children 
         // Listen for authentication state changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
             setSession(session);
-            
-            // Fetch user profile if not available
-            if (session && session.user && !user) {
+
+            if (location.pathname !== '/signup' && session && session.user) {
                 const userProfile = await getUserProfile(session.user.id, session.access_token);
                 setUser(userProfile);
+            } else {
+                setUser(null);
             }
 
             setIsLoading(false);
         })
     
         return () => subscription.unsubscribe()  
-    }, [])
+    }, [location.pathname])
 
     // Signing up with email and password
-    const signUp = async (email:string, password:string): Promise<SupabaseResponse> => {
+    const signUp = async (username: string, email:string, password:string): Promise<SupabaseResponse> => {
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
@@ -77,6 +81,16 @@ export const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children 
             
         if (error) {
             console.error("There was an error signing up: ", error);
+            return { success: false, error };
+        }
+
+        try {
+            if (data?.user && data?.session) {
+                // Create the user profile
+                await createNewUser(data.user.id, username, data.session.access_token);
+            }
+        } catch (error: any) {
+            console.error("There was an error creating the user profile: ", error);
             return { success: false, error };
         }
 
@@ -106,7 +120,6 @@ export const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children 
 
         return { success: true }
     }
-
 
     return (
         // Provide the authentication context to the component tree

@@ -2,7 +2,6 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL
 
 // Make a POST request to create a new user profile
 export const createNewUser = async (id:string, username:string, token:string) => {
-    console.log("creating new user")
     try {
         const response = await fetch(`${baseUrl}/users/`, {
             method: "POST",
