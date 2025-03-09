@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchAllRecipes } from "../api/recipeApi";
 import MiniCalender from "./MiniCalender";
 import RecipeCard from "./RecipeCard";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
 import RecipeModal from "./RecipeModal";
 
 export interface Ingredient {
@@ -42,6 +42,10 @@ const RecipesPage: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  useEffect(() => {
+    console.log(selectedRecipe)
+  }, [selectedRecipe])
+
   const handleDragEnd = (e:DragEndEvent) => {
     if (e.over && e.active) {
 
@@ -56,8 +60,17 @@ const RecipesPage: React.FC = () => {
     }
   }
 
+  const mouseSensor = useSensor(MouseSensor, {
+    // Require the mouse to move by 10 pixels before activating
+    activationConstraint: {
+      distance: 10,
+    },
+  });
+
+  const sensors = useSensors(mouseSensor)
+
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
 
         {/* Recipe Cards Section */}
         <div className="flex flex-col items-center justify-center" style={{ height: "80vh" }}>
