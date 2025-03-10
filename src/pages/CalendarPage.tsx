@@ -110,7 +110,6 @@ const CalendarPage: React.FC = () => {
       try {
         const mealToUpdate = updatedMealPlan.find((meal) => meal.id === mealId);
         if (mealToUpdate) {
-          console.log(mealToUpdate)
           await updateMealPlan(user.id, mealId, session.access_token, { has_been_eaten : mealToUpdate.hasBeenEaten })
         }
         setMealPlan(updatedMealPlan);
