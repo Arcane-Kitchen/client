@@ -1,21 +1,58 @@
-import React, { useState } from "react";
+import React, { CSSProperties, useState } from "react";
 import Navbar from "./Navbar";
-import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import wizard from "../assets/wizard.jpg";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
-type ValuePiece = Date | null;
+const localizer = momentLocalizer(moment);
 
-type Value = ValuePiece | [ValuePiece, ValuePiece];
+interface TimeSlotWrapperProps {
+  value: Date;
+  children: React.ReactNode;
+}
+
+const TimeSlotWrapper: React.FC<TimeSlotWrapperProps> = ({ value, children }) => {
+  const hour = value.getHours();
+  let label = '';
+
+  // Map the hour to a meal label
+  if (hour === 0) {
+    label = "Breakfast";
+  } else if (hour === 8) {
+    label = "Lunch";
+  } else if (hour === 16) {
+    label = "Dinner";
+  }
+
+   const style: CSSProperties = {
+    padding: '5px',
+    textAlign: 'center',
+  };
+
+  return <div style={style}>{label || children}</div>;
+};
 
 const CalendarPage: React.FC = () => {
-  const [value, onChange] = useState<Value>(new Date());
+  const [mealPlan, setMealPlan] = useState([]);
 
   return (
     <div className="bg-[url('./assets/background.png')] bg-cover min-h-screen flex flex-col items-center pt-16">
       <Navbar />
       <div className="bg-[url('./assets/paper-box.png')] w-full h-full flex items-center flex-col">
-        <Calendar className={"mt-15 mb-3"} onChange={onChange} value={value} />
+          <Calendar
+            localizer={localizer}
+            events={mealPlan}
+            views={["week"]}
+            defaultView="week"
+            step={480}
+            timeslots={1}
+            style={{ height: 500 }}
+            components={{
+              timeSlotWrapper: TimeSlotWrapper as React.ComponentType<any>,
+            }}
+          />
         <div className="flex justify-around w-full mb-6">
           <div>
             <h2 className="font-bold underline">Breakfast</h2>
