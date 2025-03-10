@@ -1,6 +1,6 @@
 import React from "react"
 import {useDroppable} from "@dnd-kit/core";
-import { Recipe } from "./RecipesPage";
+import { Recipe } from "../pages/RecipesPage";
 
 interface DaySlotProps {
     id: string,
@@ -14,9 +14,9 @@ const DaySlot:React.FC<DaySlotProps> = ({ id, day, recipe }) => {
     });
 
     return (
-        <div ref={setNodeRef} className="bg-orange-100 text-center size-full">
+        <div ref={setNodeRef} className="bg-orange-100 flex items-center justify-center h-full overflow-hidden">
             {recipe? (
-                <img src={recipe.image} />
+                <img src={recipe.image} className="w-full h-full object-cover" />
             ) : (
                 <h1>{day}</h1>
             )}

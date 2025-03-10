@@ -1,4 +1,4 @@
-import { Recipe } from "./RecipesPage";
+import { Recipe } from "../pages/RecipesPage";
 import { useDraggable } from "@dnd-kit/core";
 
 interface RecipeCardProps {
