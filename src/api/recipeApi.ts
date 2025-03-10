@@ -17,3 +17,21 @@ export const fetchAllRecipes = async () => {
         throw error;
     }
 }
+
+// Fetch a specific recipe
+export const fetchARecipeById = async (id: string) => {
+    try {
+        const response = await fetch(`${baseUrl}/recipes/${id}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error("Recipe not found");
+            }
+            throw new Error("An error occurred while fetching recipe");
+        }
+        return response.json();
+    } catch (error) {
+        console.error("Error fetching recipe: ", error);
+        throw error;
+    }
+}
