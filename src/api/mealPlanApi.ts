@@ -45,3 +45,29 @@ export const addRecipeToMealPlan = async(id: string, token:string, recipe:Recipe
         throw error;
     }
 }
+
+// Fetches all of a user's meal plan
+export const fetchFullUserMealPlan = async (id: string, token:string) => {
+    try {
+        const response = await fetch(`${baseUrl}/users/${id}/full-meal-plan`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "X-Supabase-Auth": token,
+            },
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error("User meal plan not found");
+            }
+            throw new Error("An error occurred while fetching user meal plan");
+        }
+        return response.json();
+    } catch (error) {
+        console.error("Error fetching user meal plan: ", error);
+        throw error;
+    }
+}

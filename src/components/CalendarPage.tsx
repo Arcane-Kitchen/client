@@ -1,10 +1,12 @@
-import React, { CSSProperties, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import "react-calendar/dist/Calendar.css";
 import wizard from "../assets/wizard.jpg";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { fetchFullUserMealPlan } from "../api/mealPlanApi";
+import { useAuth } from "../Auth/AuthContext";
 
 const localizer = momentLocalizer(moment);
 
@@ -36,6 +38,19 @@ const TimeSlotWrapper: React.FC<TimeSlotWrapperProps> = ({ value, children }) =>
 
 const CalendarPage: React.FC = () => {
   const [mealPlan, setMealPlan] = useState([]);
+  const { user, session } = useAuth();
+
+  useEffect(() => {
+    if (user && session) {
+      fetchFullUserMealPlan(user.id, session.access_token)
+        .then((data) => setMealPlan(data))
+        .catch((error) => console.error(error));
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log(mealPlan)
+  }, [mealPlan])
 
   return (
     <div className="bg-[url('./assets/background.png')] bg-cover min-h-screen flex flex-col items-center pt-16">
