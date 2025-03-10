@@ -5,6 +5,7 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { fetchFullUserMealPlan } from "../api/mealPlanApi";
 import { useAuth } from "../Auth/AuthContext";
+import { fetchARecipeById } from "../api/recipeApi"
 
 const localizer = momentLocalizer(moment);
 
@@ -15,6 +16,14 @@ interface Meal {
   servings: number;
   exp: number;
   has_been_eaten: boolean;
+}
+
+interface MealPlan {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  imageUrl: string,
 }
 
 interface TimeSlotWrapperProps {
@@ -44,16 +53,18 @@ const TimeSlotWrapper: React.FC<TimeSlotWrapperProps> = ({ value, children }) =>
 };
 
 const CalendarPage: React.FC = () => {
-  const [mealPlan, setMealPlan] = useState([]);
-  const { user, session } = useAuth();
+  const [mealPlan, setMealPlan] = useState<MealPlan[]>([]);
+  const { user, session, isLoading, setIsLoading } = useAuth();
 
   useEffect(() => {
     if (user && session) {
-      fetchFullUserMealPlan(user.id, session.access_token)
-        .then((data) => {
-          return data.map((meal: Meal) => {
+      setIsLoading(true);
+      const fetchUserMealData = async () => {
+        try {
+          const mealPlan = await fetchFullUserMealPlan(user.id, session.access_token);
+          const mappedMealPlan = await Promise.all(mealPlan.map(async (meal: Meal) => {
             let start = new Date(meal.day_to_eat);
-
+  
             if (meal.chosen_meal_type === "breakfast") {
               start.setHours(0, 0, 0);
             } else if (meal.chosen_meal_type === "lunch") {
@@ -61,32 +72,41 @@ const CalendarPage: React.FC = () => {
             } else {
               start.setHours(16, 0, 0);
             }
-
+  
             let end = new Date(start);
             end.setHours(start.getHours() + 7);
-
+  
+            let recipe = await fetchARecipeById(meal.recipe_id)
+  
             return {
               id: meal.recipe_id,
-              title: meal.recipe_id,
+              title: recipe.name,
               start,
               end,
-
+              imageUrl: recipe.image,
             }
-          })
-        })
-        .then((data) => setMealPlan(data))
-        .catch((error) => console.error(error));
+          }))
+          setMealPlan(mappedMealPlan);
+        } catch (error:any) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+      fetchUserMealData();
     }
-  }, [])
+  }, [session])
 
-  useEffect(() => {
-    console.log(mealPlan)
-  }, [mealPlan])
+  const CustomEvent:React.FC<{ mealPlan: MealPlan}> = ({ mealPlan }) => {
+    return <img src={mealPlan.imageUrl} alt={mealPlan.title} style={{ width: '100%', height: 'auto' }} />
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
       <div className="bg-[url('./assets/paper-box.png')] bg-cover bg-center w-5/6 h-[70vh] p-10 flex items-center">
-          <Calendar
+        {isLoading ? 
+          <></>
+          : <Calendar
             className="flex-1"
             localizer={localizer}
             events={mealPlan}
@@ -97,8 +117,10 @@ const CalendarPage: React.FC = () => {
             style={{ height: 500 }}
             components={{
               timeSlotWrapper: TimeSlotWrapper as React.ComponentType<any>,
+              event: ({ event }) => <CustomEvent mealPlan={event} />,
             }}
           />
+        }
       </div>
     </div>
   );
