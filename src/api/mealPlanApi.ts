@@ -1,4 +1,5 @@
 import { Recipe } from "../components/RecipesPage";
+import { MealPlan } from "../pages/CalendarPage";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL
 
@@ -68,6 +69,31 @@ export const fetchFullUserMealPlan = async (id: string, token:string) => {
         return response.json();
     } catch (error) {
         console.error("Error fetching user meal plan: ", error);
+        throw error;
+    }
+}
+
+// Updates a user's meal plan
+export const updateMealPlan = async (id: string, mealPlanId: string, token: string, updatedMealPlan: Partial<MealPlan>) => {
+    try {
+        const response = await fetch(`${baseUrl}/users/${id}/meal-plan/${mealPlanId}`, {
+            method: "PATCH",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "X-Supabase-Auth": token,
+            },
+            body: JSON.stringify({ "hasBeenEaten" : updatedMealPlan.has_been_eaten })
+        })
+    
+        if (!response.ok) {
+            throw new Error("An error occurred while updating user meal plan");
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error("Error updating user meal plan: ", error);
         throw error;
     }
 }
