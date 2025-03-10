@@ -1,7 +1,5 @@
 import React, { CSSProperties, useEffect, useState } from "react";
-import Navbar from "./Navbar";
 import "react-calendar/dist/Calendar.css";
-import wizard from "../assets/wizard.jpg";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -9,6 +7,15 @@ import { fetchFullUserMealPlan } from "../api/mealPlanApi";
 import { useAuth } from "../Auth/AuthContext";
 
 const localizer = momentLocalizer(moment);
+
+interface Meal {
+  recipe_id: string;
+  day_to_eat: string;
+  chosen_meal_type: string;
+  servings: number;
+  exp: number;
+  has_been_eaten: boolean;
+}
 
 interface TimeSlotWrapperProps {
   value: Date;
@@ -43,6 +50,30 @@ const CalendarPage: React.FC = () => {
   useEffect(() => {
     if (user && session) {
       fetchFullUserMealPlan(user.id, session.access_token)
+        .then((data) => {
+          return data.map((meal: Meal) => {
+            let start = new Date(meal.day_to_eat);
+
+            if (meal.chosen_meal_type === "breakfast") {
+              start.setHours(0, 0, 0);
+            } else if (meal.chosen_meal_type === "lunch") {
+              start.setHours(8, 0, 0);
+            } else {
+              start.setHours(16, 0, 0);
+            }
+
+            let end = new Date(start);
+            end.setHours(start.getHours() + 7);
+
+            return {
+              id: meal.recipe_id,
+              title: meal.recipe_id,
+              start,
+              end,
+
+            }
+          })
+        })
         .then((data) => setMealPlan(data))
         .catch((error) => console.error(error));
     }
@@ -53,10 +84,10 @@ const CalendarPage: React.FC = () => {
   }, [mealPlan])
 
   return (
-    <div className="bg-[url('./assets/background.png')] bg-cover min-h-screen flex flex-col items-center pt-16">
-      <Navbar />
-      <div className="bg-[url('./assets/paper-box.png')] w-full h-full flex items-center flex-col">
+    <div className="min-h-screen flex flex-col items-center justify-center pb-16">
+      <div className="bg-[url('./assets/paper-box.png')] bg-cover bg-center w-5/6 h-[70vh] p-10 flex items-center">
           <Calendar
+            className="flex-1"
             localizer={localizer}
             events={mealPlan}
             views={["week"]}
@@ -68,21 +99,6 @@ const CalendarPage: React.FC = () => {
               timeSlotWrapper: TimeSlotWrapper as React.ComponentType<any>,
             }}
           />
-        <div className="flex justify-around w-full mb-6">
-          <div>
-            <h2 className="font-bold underline">Breakfast</h2>
-            <img className="size-20" src={wizard} alt="" />
-          </div>
-
-          <div>
-            <h2 className="font-bold underline">Lunch</h2>
-            <img className="size-20" src={wizard} alt="" />
-          </div>
-          <div>
-            <h2 className="font-bold underline">Dinner</h2>
-            <img className="size-20" src={wizard} alt="" />
-          </div>
-        </div>
       </div>
     </div>
   );
