@@ -1,4 +1,4 @@
-import { Recipe } from "../components/RecipesPage";
+import { Recipe } from "../pages/RecipesPage";
 import { MealPlan } from "../pages/CalendarPage";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllRecipes } from "../api/recipeApi";
-import MiniCalender from "./MiniCalender";
-import RecipeCard from "./RecipeCard";
+import MiniCalender from "../components/MiniCalender";
+import RecipeCard from "../components/RecipeCard";
 import { DndContext, DragEndEvent, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
-import RecipeModal from "./RecipeModal";
+import RecipeModal from "../components/RecipeModal";
 import { addRecipeToMealPlan } from "../api/mealPlanApi"
 import { useAuth } from "../Auth/AuthContext";
 
@@ -107,10 +107,10 @@ const RecipesPage: React.FC = () => {
               <div
                 key={index}
                 onClick={() => openModal(recipe)}
-                className="flex items-center w-3/4"
+                className="flex items-center w-3/4 gap-5"
               >
                 <RecipeCard recipe={recipe} />
-                <button className="bg-[url('./assets/button-box.svg')] bg-cover bg-center h-20 w-40 hover:cursor-pointer">
+                <button className="bg-[url('./assets/button-box.svg')] bg-cover bg-center h-30 w-45 hover:cursor-pointer">
                   <h1 className="text-white">Add</h1>
                 </button>
               </div>
