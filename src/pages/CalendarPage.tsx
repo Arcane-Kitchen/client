@@ -6,6 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { fetchFullUserMealPlan } from "../api/mealPlanApi";
 import { useAuth } from "../Auth/AuthContext";
 import { fetchARecipeById } from "../api/recipeApi"
+import { PacmanLoader } from "react-spinners";
 
 const localizer = momentLocalizer(moment);
 
@@ -33,7 +34,7 @@ interface TimeSlotWrapperProps {
 
 const TimeSlotWrapper: React.FC<TimeSlotWrapperProps> = ({ value, children }) => {
   const hour = value.getHours();
-  let label = '';
+  let label = "";
 
   // Map the hour to a meal label
   if (hour === 0) {
@@ -45,8 +46,8 @@ const TimeSlotWrapper: React.FC<TimeSlotWrapperProps> = ({ value, children }) =>
   }
 
    const style: CSSProperties = {
-    padding: '5px',
-    textAlign: 'center',
+    padding: "5px",
+    textAlign: "center",
   };
 
   return <div style={style}>{label || children}</div>;
@@ -98,14 +99,14 @@ const CalendarPage: React.FC = () => {
   }, [session])
 
   const CustomEvent:React.FC<{ mealPlan: MealPlan}> = ({ mealPlan }) => {
-    return <img src={mealPlan.imageUrl} alt={mealPlan.title} style={{ width: '100%', height: 'auto' }} />
+    return <img src={mealPlan.imageUrl} alt={mealPlan.title} style={{ width: "100%", height: "auto" }} />
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('./assets/paper-box.png')] bg-cover bg-center w-5/6 h-[70vh] p-10 flex items-center">
+      <div className="bg-[url('./assets/paper-box.png')] bg-cover bg-center w-5/6 h-[70vh] p-10 flex items-center justify-center">
         {isLoading ? 
-          <></>
+          <PacmanLoader />
           : <Calendar
             className="flex-1"
             localizer={localizer}
