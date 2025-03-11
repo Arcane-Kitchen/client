@@ -1,33 +1,14 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { CSSProperties } from "react";
 import "react-calendar/dist/Calendar.css";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { fetchFullUserMealPlan, updateMealPlan } from "../api/mealPlanApi";
+import { updateMealPlanById } from "../api/mealPlanApi";
 import { useAuth } from "../Auth/AuthContext";
-import { fetchARecipeById } from "../api/recipeApi"
 import { PacmanLoader } from "react-spinners";
+import { MealPlan } from "../App";
 
 const localizer = momentLocalizer(moment);
-
-export interface MealPlan {
-  id: string,
-  recipe_id: string;
-  day_to_eat: string;
-  chosen_meal_type: string;
-  servings: number;
-  exp: number;
-  has_been_eaten: boolean;
-}
-
-interface Meal {
-  id: string;
-  title: string;
-  start: Date;
-  end: Date;
-  imageUrl: string,
-  hasBeenEaten: boolean;
-}
 
 interface TimeSlotWrapperProps {
   value: Date;
@@ -55,51 +36,14 @@ const TimeSlotWrapper: React.FC<TimeSlotWrapperProps> = ({ value, children }) =>
   return <div style={style}>{label || children}</div>;
 };
 
-const CalendarPage: React.FC = () => {
-  const [mealPlan, setMealPlan] = useState<Meal[]>([]);
-  const { user, session, isLoading, setIsLoading } = useAuth();
+interface CalendarPageProps {
+  mealPlan: MealPlan[],
+  setMealPlan: React.Dispatch<React.SetStateAction<MealPlan[]>>
+}
 
-  useEffect(() => {
-    if (user && session) {
-      setIsLoading(true);
-      const fetchUserMealData = async () => {
-        try {
-          const mealPlan = await fetchFullUserMealPlan(user.id, session.access_token);
-          const mappedMealPlan = await Promise.all(mealPlan.map(async (meal: MealPlan) => {
-            let start = new Date(meal.day_to_eat);
-  
-            if (meal.chosen_meal_type === "breakfast") {
-              start.setHours(0, 0, 0);
-            } else if (meal.chosen_meal_type === "lunch") {
-              start.setHours(8, 0, 0);
-            } else {
-              start.setHours(16, 0, 0);
-            }
-  
-            let end = new Date(start);
-            end.setHours(start.getHours() + 7);
-  
-            let recipe = await fetchARecipeById(meal.recipe_id)
-  
-            return {
-              id: meal.id,
-              title: meal.recipe_id,
-              start,
-              end,
-              imageUrl: recipe.image,
-              hasBeenEaten: meal.has_been_eaten,
-            }
-          }))
-          setMealPlan(mappedMealPlan);
-        } catch (error:any) {
-          console.error(error);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-      fetchUserMealData();
-    }
-  }, [session])
+const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan }) => {
+
+  const { user, session, isLoading } = useAuth();
 
   const handleCheckboxChange = async (mealId: string) => {
     const updatedMealPlan = mealPlan.map((meal) => {
@@ -110,7 +54,7 @@ const CalendarPage: React.FC = () => {
       try {
         const mealToUpdate = updatedMealPlan.find((meal) => meal.id === mealId);
         if (mealToUpdate) {
-          await updateMealPlan(user.id, mealId, session.access_token, { has_been_eaten : mealToUpdate.hasBeenEaten })
+          await updateMealPlanById(user.id, mealId, session.access_token, { has_been_eaten : mealToUpdate.hasBeenEaten })
         }
         setMealPlan(updatedMealPlan);
       } catch (error: any) {
@@ -119,7 +63,7 @@ const CalendarPage: React.FC = () => {
     }
   };
 
-  const CustomEvent:React.FC<{ mealPlan: Meal}> = ({ mealPlan }) => {
+  const CustomEvent:React.FC<{ mealPlan: MealPlan }> = ({ mealPlan }) => {
     return (
     <div 
       className={`relative w-full h-full bg-cover bg-center`}

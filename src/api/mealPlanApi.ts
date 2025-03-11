@@ -1,30 +1,15 @@
-import { Recipe } from "../components/RecipesPage";
-import { MealPlan } from "../pages/CalendarPage";
+import { Recipe } from "../pages/RecipesPage";
+import { Meal } from "../App";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL
 
-// Helper function to calculate the date for a given day of the week
-function getDateForDayOfWeek(dayOfWeek:number) {
-    const dayToEat = new Date(); 
-    const currentDay = dayToEat.getDay();
-
-    // Calculate the difference between the current day and the target day
-    const diff = dayOfWeek - currentDay;
-    
-    // Get the target date by adding/subtracting the difference in days
-    dayToEat.setDate(dayToEat.getDate() + diff);
-    return dayToEat;
-}
-
 // Add a recipe to the user's meal plan
-export const addRecipeToMealPlan = async(id: string, token:string, recipe:Recipe, day: number) => {
-
-    const dayToEat = getDateForDayOfWeek(day).toLocaleDateString();
+export const addRecipeToMealPlan = async(id: string, token:string, recipe:Recipe, date: string, mealType: string) => {
 
     const body = {
         recipeId: recipe.id,
-        dayToEat,
-        chosenMealType: recipe.meal_type[0]
+        dayToEat: date,
+        chosenMealType: mealType,
     }
 
     try {
@@ -47,10 +32,10 @@ export const addRecipeToMealPlan = async(id: string, token:string, recipe:Recipe
     }
 }
 
-// Fetches all of a user's meal plan
-export const fetchFullUserMealPlan = async (id: string, token:string) => {
+// Fetch user's weekly meal plan
+export const fetchUserWeeklyMealPlan = async (id: string, token:string, startDate: string, endDate: string) => {
     try {
-        const response = await fetch(`${baseUrl}/users/${id}/full-meal-plan`, {
+        const response = await fetch(`${baseUrl}/users/${id}/meal-plan?start-date=${startDate}&end-date=${endDate}`, {
             method: "GET",
             credentials: "include",
             headers: {
@@ -73,8 +58,35 @@ export const fetchFullUserMealPlan = async (id: string, token:string) => {
     }
 }
 
-// Updates a user's meal plan
-export const updateMealPlan = async (id: string, mealPlanId: string, token: string, updatedMealPlan: Partial<MealPlan>) => {
+
+// Fetches all of a user's meal plan
+export const fetchFullUserMealPlan = async (id: string, token:string) => {
+    try {
+        const response = await fetch(`${baseUrl}/users/${id}/meal-plan`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "X-Supabase-Auth": token,
+            },
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error("User meal plan not found");
+            }
+            throw new Error("An error occurred while fetching user meal plan");
+        }
+        return response.json();
+    } catch (error) {
+        console.error("Error fetching user meal plan: ", error);
+        throw error;
+    }
+}
+
+// Updates a user's meal plan by meal plan Id
+export const updateMealPlanById = async (id: string, mealPlanId: string, token: string, updatedMealPlan: Partial<Meal>) => {
     try {
         const response = await fetch(`${baseUrl}/users/${id}/meal-plan/${mealPlanId}`, {
             method: "PATCH",
@@ -85,6 +97,31 @@ export const updateMealPlan = async (id: string, mealPlanId: string, token: stri
                 "X-Supabase-Auth": token,
             },
             body: JSON.stringify({ "hasBeenEaten" : updatedMealPlan.has_been_eaten })
+        })
+    
+        if (!response.ok) {
+            throw new Error("An error occurred while updating user meal plan");
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error("Error updating user meal plan: ", error);
+        throw error;
+    }
+}
+
+// Updates a user's meal plan by date and meal type
+export const updateMealPlanByDateAndMealType = async (id: string, token: string, recipe:Recipe, date: string, mealType: string) => {
+    try {
+        const response = await fetch(`${baseUrl}/users/${id}/meal-plan?date=${date}&meal-type=${mealType}`, {
+            method: "PATCH", 
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "X-Supabase-Auth": token,
+            },
+            body: JSON.stringify({ "recipeId" : recipe.id })
         })
     
         if (!response.ok) {

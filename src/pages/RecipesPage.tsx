@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllRecipes } from "../api/recipeApi";
-import MiniCalender from "./MiniCalender";
-import RecipeCard from "./RecipeCard";
+import MiniCalender from "../components/MiniCalender";
+import RecipeCard from "../components/RecipeCard";
 import { DndContext, DragEndEvent, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
-import RecipeModal from "./RecipeModal";
-import { addRecipeToMealPlan } from "../api/mealPlanApi"
+import RecipeModal from "../components/RecipeModal";
+import { addRecipeToMealPlan, updateMealPlanByDateAndMealType } from "../api/mealPlanApi"
 import { useAuth } from "../Auth/AuthContext";
+import { MealPlan } from "../App";
+import moment from "moment";
 
 export interface Ingredient {
   quantity: number;
@@ -37,19 +39,66 @@ export interface Recipe {
   ingredients: { [key: string]: Ingredient };
 }
 
-const RecipesPage: React.FC = () => {
+interface RecipesPageProps {
+  mealPlan: MealPlan[],
+  setMealPlan: React.Dispatch<React.SetStateAction<MealPlan[]>>
+}
+
+const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [breakfastMealPlan, setBreakfastMealPlan] = useState<MealPlan[]>([])
+  const [lunchMealPlan, setLunchMealPlan] = useState<MealPlan[]>([])
+  const [dinnerMealPlan, setDinnerMealPlan] = useState<MealPlan[]>([])
   const [droppedRecipes, setDroppedRecipes] = useState<Recipe[]>(
     new Array(7).fill(null)
   );
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [mealType, setMealType] = useState<string>("breakfast");
+  const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
     fetchAllRecipes()
       .then((data) => setRecipes(data))
       .catch((error) => console.error(error));
   }, []);
+
+  useEffect(() => {
+    // Get the start and end of the current week
+    const weekStartDate = moment().startOf("week").startOf("day").format("YYYY-MM-DD");
+    const weekEndDate = moment().endOf("week").startOf("day").format("YYYY-MM-DD");
+
+    // Filter meals based on the week
+    const currentWeekMealPlan = mealPlan.filter(meal => {
+      const date = moment(meal.start).format("YYYY-MM-DD");
+      return date >= weekStartDate && date <= weekEndDate;
+    });
+
+    // Initialize the arrays
+    const breakfast = new Array(7).fill(null);
+    const lunch = new Array(7).fill(null);
+    const dinner = new Array(7).fill(null);
+
+    // Loop through the meals and place them in the right index based on the day of the week
+    currentWeekMealPlan.forEach((meal) => {
+      const mealDate = moment(meal.start);
+      const dayOfWeek = mealDate.day();
+
+      // Assign the meal to the appropriate array
+      if (meal.start.getHours() === 0) {
+        breakfast[dayOfWeek] = meal;
+      } else if (meal.start.getHours() === 8) {
+        lunch[dayOfWeek] = meal;
+      } else if (meal.start.getHours() === 16) {
+        dinner[dayOfWeek] = meal;
+      }
+    });
+
+    // Set the state for each meal type
+    setBreakfastMealPlan(breakfast);
+    setLunchMealPlan(lunch);
+    setDinnerMealPlan(dinner);
+  }, [mealPlan])
 
   const openModal = (recipe: Recipe) => {
     setSelectedRecipe(recipe);
@@ -59,6 +108,13 @@ const RecipesPage: React.FC = () => {
   const closeModal = () => {
     setSelectedRecipe(null);
     setIsModalOpen(false);
+  };
+
+  const showMessage = (msg: string) => {
+    setMessage(msg);
+    setTimeout(() => {
+      setMessage("");
+    }, 3000)
   };
 
   const { user, session } = useAuth();
@@ -71,10 +127,36 @@ const RecipesPage: React.FC = () => {
       if (overId && recipe) {
         const updatedDroppedRecipes = [...droppedRecipes];
         updatedDroppedRecipes[overId] = recipe;
-        setDroppedRecipes(updatedDroppedRecipes);
 
         if (session && user) {
-          await addRecipeToMealPlan(user.id, session.access_token, recipe, overId);
+          const checkRecipeInSlot = () => {
+            switch (mealType) {
+              case "lunch":
+                  return lunchMealPlan[overId];
+              case "dinner":
+                  return dinnerMealPlan[overId];
+              default:
+                  return breakfastMealPlan[overId]; 
+            }
+          }
+
+          const currentDate = moment();
+          const date = currentDate.startOf("week").add(overId, "days").format("YYYY-MM-DD");
+
+          if (checkRecipeInSlot()) {
+            const updatedMeal = await updateMealPlanByDateAndMealType(user.id, session.access_token, recipe, date, mealType);
+            if (updatedMeal) {
+              showMessage("Meal plan updated successfully");
+              setDroppedRecipes(updatedDroppedRecipes);
+            }
+            return;
+          }
+
+          const newMeal = await addRecipeToMealPlan(user.id, session.access_token, recipe, date, mealType);
+          if (newMeal) {
+            showMessage("Recipe added to meal plan successfully");
+            setDroppedRecipes(updatedDroppedRecipes);
+          }
         }
       }
     }
@@ -94,7 +176,7 @@ const RecipesPage: React.FC = () => {
       {/* Recipe Cards Section */}
       <div
         className="flex flex-col items-center justify-center"
-        style={{ height: "80vh" }}
+        style={{ height: "82vh" }}
       >
         <h1 className="text-3xl font-bold underline text-white mb-8 mt-3">
           Available Recipes
@@ -107,10 +189,10 @@ const RecipesPage: React.FC = () => {
               <div
                 key={index}
                 onClick={() => openModal(recipe)}
-                className="flex items-center w-3/4"
+                className="flex items-center w-3/4 gap-5"
               >
                 <RecipeCard recipe={recipe} />
-                <button className="bg-[url('./assets/button-box.svg')] bg-cover bg-center h-20 w-40 hover:cursor-pointer">
+                <button className="bg-[url('./assets/button-box.svg')] bg-cover bg-center h-30 w-45 hover:cursor-pointer">
                   <h1 className="text-white">Add</h1>
                 </button>
               </div>
@@ -120,7 +202,15 @@ const RecipesPage: React.FC = () => {
 
       {/* Mini Calendar Section */}
       <div className="fixed bottom-0 left-0 w-full">
-        <MiniCalender droppedRecipes={droppedRecipes} />
+        <MiniCalender 
+          droppedRecipes={droppedRecipes}
+          mealType={mealType}
+          setMealType={setMealType} 
+          breakfastMealPlan={breakfastMealPlan} 
+          lunchMealPlan={lunchMealPlan}
+          dinnerMealPlan={dinnerMealPlan}
+          message={message}
+        />
       </div>
 
       <RecipeModal isOpen={isModalOpen} onClose={closeModal}>
