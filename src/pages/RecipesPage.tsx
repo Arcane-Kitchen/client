@@ -120,45 +120,60 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
   const { user, session } = useAuth();
 
   const handleDragEnd = async (e:DragEndEvent) => {
-    if (e.over && e.active) {
-      const recipe = e.active.data?.current?.recipe;
-      const overId = parseInt(e.over.id.toString(), 10);
 
-      if (overId && recipe) {
-        const updatedDroppedRecipes = [...droppedRecipes];
-        updatedDroppedRecipes[overId] = recipe;
+    if (!e.over || !e.active) return;
 
-        if (session && user) {
-          const checkRecipeInSlot = () => {
-            switch (mealType) {
-              case "lunch":
-                  return lunchMealPlan[overId];
-              case "dinner":
-                  return dinnerMealPlan[overId];
-              default:
-                  return breakfastMealPlan[overId]; 
-            }
-          }
+    const recipe = e.active.data?.current?.recipe;
+    const overId = parseInt(e.over.id.toString(), 10);
 
-          const currentDate = moment();
-          const date = currentDate.startOf("week").add(overId, "days").format("YYYY-MM-DD");
+    if (!overId || !recipe) return;
 
-          if (checkRecipeInSlot()) {
-            const updatedMeal = await updateMealPlanByDateAndMealType(user.id, session.access_token, recipe, date, mealType);
-            if (updatedMeal) {
-              showMessage("Meal plan updated successfully");
-              setDroppedRecipes(updatedDroppedRecipes);
-            }
-            return;
-          }
+    const updatedDroppedRecipes = [...droppedRecipes];
+    updatedDroppedRecipes[overId] = recipe;
 
-          const newMeal = await addRecipeToMealPlan(user.id, session.access_token, recipe, date, mealType);
-          if (newMeal) {
-            showMessage("Recipe added to meal plan successfully");
-            setDroppedRecipes(updatedDroppedRecipes);
-          }
+    if (session && user) {
+
+      // Check if there's a recipe in the day slot for the selected meal type
+      const checkRecipeInSlot = () => {
+        switch (mealType) {
+          case "lunch":
+              return lunchMealPlan[overId] || droppedRecipes[overId];
+          case "dinner":
+              return dinnerMealPlan[overId] || droppedRecipes[overId];
+          default:
+              return breakfastMealPlan[overId] || droppedRecipes[overId];
         }
       }
+
+      const currentDate = moment();
+      const date = currentDate.startOf("week").add(overId, "days").format("YYYY-MM-DD");
+
+      // Prevent adding recipes to past days
+      if (overId < moment().day()) {
+        showMessage("Cannot add meal plan to past days");
+        return;
+      }
+
+      // Update meal plan if recipe already exists in slot
+      if (checkRecipeInSlot()) {
+        const updatedMeal = await updateMealPlanByDateAndMealType(user.id, session.access_token, recipe, date, mealType);
+        if (updatedMeal) {
+          showMessage("Meal plan updated successfully");
+          setDroppedRecipes(updatedDroppedRecipes);
+        }
+        return;
+      }
+
+      // Add new recipe if no recipe is already in the slot
+      if (!droppedRecipes[overId]) {
+        const newMeal = await addRecipeToMealPlan(user.id, session.access_token, recipe, date, mealType);
+        if (newMeal) {
+          showMessage("Recipe added to meal plan successfully");
+          setDroppedRecipes(updatedDroppedRecipes);
+        }
+      }
+      
+    
     }
   };
 
