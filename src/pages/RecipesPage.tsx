@@ -55,6 +55,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [mealType, setMealType] = useState<string>("breakfast");
+  const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
     fetchAllRecipes()
@@ -109,6 +110,13 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
     setIsModalOpen(false);
   };
 
+  const showMessage = (msg: string) => {
+    setMessage(msg);
+    setTimeout(() => {
+      setMessage("");
+    }, 3000)
+  };
+
   const { user, session } = useAuth();
 
   const handleDragEnd = async (e:DragEndEvent) => {
@@ -119,7 +127,6 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
       if (overId && recipe) {
         const updatedDroppedRecipes = [...droppedRecipes];
         updatedDroppedRecipes[overId] = recipe;
-        setDroppedRecipes(updatedDroppedRecipes);
 
         if (session && user) {
           const checkRecipeInSlot = () => {
@@ -137,11 +144,19 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
           const date = currentDate.startOf("week").add(overId, "days").format("YYYY-MM-DD");
 
           if (checkRecipeInSlot()) {
-            updateMealPlanByDateAndMealType(user.id, session.access_token, recipe, date, mealType)
+            const updatedMeal = await updateMealPlanByDateAndMealType(user.id, session.access_token, recipe, date, mealType);
+            if (updatedMeal) {
+              showMessage("Meal plan updated successfully");
+              setDroppedRecipes(updatedDroppedRecipes);
+            }
             return;
           }
 
-          await addRecipeToMealPlan(user.id, session.access_token, recipe, date, mealType);
+          const newMeal = await addRecipeToMealPlan(user.id, session.access_token, recipe, date, mealType);
+          if (newMeal) {
+            showMessage("Recipe added to meal plan successfully");
+            setDroppedRecipes(updatedDroppedRecipes);
+          }
         }
       }
     }
@@ -194,6 +209,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
           breakfastMealPlan={breakfastMealPlan} 
           lunchMealPlan={lunchMealPlan}
           dinnerMealPlan={dinnerMealPlan}
+          message={message}
         />
       </div>
 

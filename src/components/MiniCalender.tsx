@@ -10,9 +10,10 @@ interface MiniCalenderProps {
     breakfastMealPlan: MealPlan[];
     lunchMealPlan: MealPlan[];
     dinnerMealPlan: MealPlan[];
+    message: string;
 }
 
-const MiniCalender:React.FC<MiniCalenderProps> = ({ droppedRecipes, mealType, setMealType, breakfastMealPlan, lunchMealPlan, dinnerMealPlan }) => {
+const MiniCalender:React.FC<MiniCalenderProps> = ({ droppedRecipes, mealType, setMealType, breakfastMealPlan, lunchMealPlan, dinnerMealPlan, message }) => {
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const daysOfTheWeek = ["S", "M", "T", "W", "TH", "F", "S"];
@@ -22,7 +23,7 @@ const MiniCalender:React.FC<MiniCalenderProps> = ({ droppedRecipes, mealType, se
     }
 
     return (
-        <div className={`bg-[url('./assets/sign-up-box.svg')] bg-cover bg-top w-full px-20 flex flex-col gap-2 items-center ${isOpen ? 'aspect-4/1 py-5' : 'aspect-15/1'}`}>
+        <div className={`bg-[url('./assets/sign-up-box.svg')] bg-cover bg-top w-full px-20 flex flex-col gap-2 items-center relative ${isOpen ? 'aspect-4/1 py-5' : 'aspect-15/1'}`}>
             <button 
                 className={`h-1/5 w-1/8 cursor-pointer text-blue-950 ${!isOpen && 'flex-1'}`}
                 onClick={toggleCalendar}
@@ -54,6 +55,9 @@ const MiniCalender:React.FC<MiniCalenderProps> = ({ droppedRecipes, mealType, se
                         ))}
                     </div>
                 </div>
+            }
+            {message && 
+                <div className="absolute top-2/3 left-1/2 -translate-x-1/2 -translate-y-2/3 z-10 rounded-sm px-5 py-2 bg-black opacity-70 "><p className="text-center text-white">{message}</p> </div>
             }
         </div>
     )
