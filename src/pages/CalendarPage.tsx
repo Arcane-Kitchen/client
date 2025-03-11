@@ -7,6 +7,7 @@ import { updateMealPlanById } from "../api/mealPlanApi";
 import { useAuth } from "../Auth/AuthContext";
 import { PacmanLoader } from "react-spinners";
 import { MealPlan } from "../App";
+import "../theme.scss";
 
 const localizer = momentLocalizer(moment);
 
@@ -80,6 +81,15 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan }) =>
     )
   };
 
+  const eventPropGetter = () => {
+    return {
+      style: {
+        backgroundColor: "transparent",
+        border: "none",
+      },
+    };
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
       <div className="bg-[url('./assets/paper-box.png')] bg-cover bg-center w-5/6 h-[70vh] p-10 flex items-center justify-center">
@@ -98,6 +108,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan }) =>
               timeSlotWrapper: TimeSlotWrapper as React.ComponentType<any>,
               event: ({ event }) => <CustomEvent mealPlan={event} />,
             }}
+            eventPropGetter={eventPropGetter}
           />
         }
       </div>
