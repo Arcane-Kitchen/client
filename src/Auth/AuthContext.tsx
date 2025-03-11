@@ -8,6 +8,7 @@ interface AuthContextType {
     session: Session | null;
     user: UserProfile | null;
     isLoading: boolean;
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
     signUp: (username: string, email:string, password:string) => Promise<SupabaseResponse>;
     signIn: (email:string, password:string) => Promise<SupabaseResponse>;
     signOut: () => Promise<SupabaseResponse>;
@@ -127,7 +128,7 @@ export const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children 
 
     return (
         // Provide the authentication context to the component tree
-        <AuthContext.Provider value={{ session, user, isLoading, signUp, signIn, signOut }}> 
+        <AuthContext.Provider value={{ session, user, isLoading, setIsLoading, signUp, signIn, signOut }}> 
             {children}
         </AuthContext.Provider>
     )
