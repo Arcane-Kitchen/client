@@ -85,13 +85,9 @@ function App() {
       <Route path='/' element={<Layout />}>
         <Route index element={<Home />} /> {/* Default route */}
         <Route path="profile" element={<ProfilePage />} />
-<<<<<<< HEAD
-        <Route path="calendar" element={<CalendarPage />} />
         <Route path="/new-recipe" element={<NewRecipePage />} />
-=======
         <Route path="recipes" element={<RecipesPage mealPlan={mealPlan} setMealPlan={setMealPlan} />} />
         <Route path="calendar" element={<CalendarPage mealPlan={mealPlan} setMealPlan={setMealPlan} />} />
->>>>>>> 13c4c6c (feat: display previously saved meals in the mini calendar)
       </Route>
       <Route path="*" element={<Home />} />
     </Routes>
