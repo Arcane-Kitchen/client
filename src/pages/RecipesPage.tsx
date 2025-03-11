@@ -4,7 +4,7 @@ import MiniCalender from "../components/MiniCalender";
 import RecipeCard from "../components/RecipeCard";
 import { DndContext, DragEndEvent, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
 import RecipeModal from "../components/RecipeModal";
-import { addRecipeToMealPlan } from "../api/mealPlanApi"
+import { addRecipeToMealPlan, updateMealPlanByDateAndMealType } from "../api/mealPlanApi"
 import { useAuth } from "../Auth/AuthContext";
 import { MealPlan } from "../App";
 import moment from "moment";
@@ -122,7 +122,26 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
         setDroppedRecipes(updatedDroppedRecipes);
 
         if (session && user) {
-          await addRecipeToMealPlan(user.id, session.access_token, recipe, overId);
+          const checkRecipeInSlot = () => {
+            switch (mealType) {
+              case "lunch":
+                  return lunchMealPlan[overId];
+              case "dinner":
+                  return dinnerMealPlan[overId];
+              default:
+                  return breakfastMealPlan[overId]; 
+            }
+          }
+
+          const currentDate = moment();
+          const date = currentDate.startOf("week").add(overId, "days").format("YYYY-MM-DD");
+
+          if (checkRecipeInSlot()) {
+            updateMealPlanByDateAndMealType(user.id, session.access_token, recipe, date, mealType)
+            return;
+          }
+
+          await addRecipeToMealPlan(user.id, session.access_token, recipe, date, mealType);
         }
       }
     }

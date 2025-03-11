@@ -3,7 +3,7 @@ import "react-calendar/dist/Calendar.css";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { updateMealPlan } from "../api/mealPlanApi";
+import { updateMealPlanById } from "../api/mealPlanApi";
 import { useAuth } from "../Auth/AuthContext";
 import { PacmanLoader } from "react-spinners";
 import { MealPlan } from "../App";
@@ -47,14 +47,14 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan }) =>
 
   const handleCheckboxChange = async (mealId: string) => {
     const updatedMealPlan = mealPlan.map((meal) => {
-      return meal.id === mealId ? { ...meal, has_been_eaten: !meal.hasBeenEaten } : meal
+      return meal.id === mealId ? { ...meal, hasBeenEaten: !meal.hasBeenEaten } : meal
     })
     
     if (user && session) {
       try {
         const mealToUpdate = updatedMealPlan.find((meal) => meal.id === mealId);
         if (mealToUpdate) {
-          await updateMealPlan(user.id, mealId, session.access_token, { hasBeenEaten : mealToUpdate.hasBeenEaten })
+          await updateMealPlanById(user.id, mealId, session.access_token, { has_been_eaten : mealToUpdate.hasBeenEaten })
         }
         setMealPlan(updatedMealPlan);
       } catch (error: any) {
