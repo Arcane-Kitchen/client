@@ -6,6 +6,7 @@ import RecipesPage from "./components/RecipesPage";
 import CalendarPage from "./pages/CalendarPage";
 import ProfilePage from "./pages/ProfilePage";
 import Layout from "./pages/Layout";
+import NewRecipePage from './components/NewRecipePage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="recipes" element={<RecipesPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="calendar" element={<CalendarPage />} />
+        <Route path="/new-recipe" element={<NewRecipePage />} />
       </Route>
       <Route path="*" element={<Home />} />
     </Routes>
