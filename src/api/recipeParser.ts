@@ -94,7 +94,7 @@ export const generateImageWithAI = async (recipeName: string): Promise<Blob> => 
   return imageBlob;
 };
 
-export const addRecipeFromRawText = async (rawText: string): Promise<void> => {
+export const addRecipeFromRawText = async (rawText: string): Promise<{ success: boolean; message: string; recipe?: Recipe }> => {
   try {
     const recipe = await parseRecipeWithAI(rawText);
 
@@ -107,7 +107,7 @@ export const addRecipeFromRawText = async (rawText: string): Promise<void> => {
     recipe.image = imageUrl;
 
     await addRecipeToDatabase(recipe);
-    console.log('Recipe added successfully!');
+    return { success: true, message: 'Recipe added successfully!', recipe };
   } catch (error) {
     console.error('Error adding recipe:', error);
     throw error;
