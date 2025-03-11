@@ -1,5 +1,5 @@
 import { Recipe } from "../pages/RecipesPage";
-import { MealPlan } from "../pages/CalendarPage";
+import { MealPlan } from "../App";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL
 
@@ -47,10 +47,37 @@ export const addRecipeToMealPlan = async(id: string, token:string, recipe:Recipe
     }
 }
 
+// Fetch user's weekly meal plan
+export const fetchUserWeeklyMealPlan = async (id: string, token:string, startDate: string, endDate: string) => {
+    try {
+        const response = await fetch(`${baseUrl}/users/${id}/meal-plan?start-date=${startDate}&end-date=${endDate}`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "X-Supabase-Auth": token,
+            },
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error("User meal plan not found");
+            }
+            throw new Error("An error occurred while fetching user meal plan");
+        }
+        return response.json();
+    } catch (error) {
+        console.error("Error fetching user meal plan: ", error);
+        throw error;
+    }
+}
+
+
 // Fetches all of a user's meal plan
 export const fetchFullUserMealPlan = async (id: string, token:string) => {
     try {
-        const response = await fetch(`${baseUrl}/users/${id}/full-meal-plan`, {
+        const response = await fetch(`${baseUrl}/users/${id}/meal-plan`, {
             method: "GET",
             credentials: "include",
             headers: {

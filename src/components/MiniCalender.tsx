@@ -1,18 +1,23 @@
 import { useState } from "react"
 import { Recipe } from "../pages/RecipesPage"
 import DaySlot from "./DaySlot"
+import { MealPlan } from "../App"
 
 interface MiniCalenderProps {
     droppedRecipes: Recipe[];
+    mealType: string;
+    setMealType: React.Dispatch<React.SetStateAction<string>>;
+    breakfastMealPlan: MealPlan[];
+    lunchMealPlan: MealPlan[];
+    dinnerMealPlan: MealPlan[];
 }
 
-const MiniCalender:React.FC<MiniCalenderProps> = ({ droppedRecipes }) => {
+const MiniCalender:React.FC<MiniCalenderProps> = ({ droppedRecipes, mealType, setMealType, breakfastMealPlan, lunchMealPlan, dinnerMealPlan }) => {
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const daysOfTheWeek = ["S", "M", "T", "W", "TH", "F", "S"];
 
     const toggleCalendar = () => {
-        console.log("clicked")
         setIsOpen(!isOpen);
     }
 
@@ -27,7 +32,7 @@ const MiniCalender:React.FC<MiniCalenderProps> = ({ droppedRecipes }) => {
                 <div className="flex-1 w-full flex flex-col items-center gap-2">
                     <label className="text-orange-100">
                         Meal Type:
-                        <select name="selectedFruit">
+                        <select name="selectedMealType" onChange={(e) => setMealType(e.target.value)}>
                             <option value="breakfast">Breakfast</option>
                             <option value="lunch">Lunch</option>
                             <option value="dinner">Dinner</option>
@@ -36,7 +41,16 @@ const MiniCalender:React.FC<MiniCalenderProps> = ({ droppedRecipes }) => {
 
                     <div className="grid grid-cols-7 gap-2 h-2/3 w-full flex-1">
                         {daysOfTheWeek.map((day, index) => (
-                            <DaySlot key={index} id={index.toString()} day={day} recipe={droppedRecipes[index] || null}/>
+                            <DaySlot 
+                                key={index} 
+                                id={index.toString()} 
+                                day={day} 
+                                recipe={droppedRecipes[index] || null}
+                                meal={mealType === "breakfast" ? breakfastMealPlan[index] 
+                                    : mealType === "lunch" ? lunchMealPlan[index] 
+                                    : dinnerMealPlan[index]
+                                }
+                            />
                         ))}
                     </div>
                 </div>
