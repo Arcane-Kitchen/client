@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
+
+$primary-color: #ebd6aa; 
+$secondary-color: #19243e;
+$font-family: "EB Garamond", serif;
+
+.rbc-calendar {
+    font-family: $font-family;
+}
+
+.rbc-event-label {
+    display: none;
+}
+
+.rbc-day-slot .rbc-timeslot-group div {
+    display: none;
+}
+
+.rbc-event-content {
+    height: 100%;
+    width: 100%;
+}
+
+.rbc-allday-cell {
+    display: none;
+}
+
+.rbc-header {
+    padding: 5px;
+}
+
+.rbc-time-header, .rbc-header.rbc-today {
+    background-color: $secondary-color;
+    color: $primary-color;
+    
+}
+
+.rbc-day-slot.rbc-time-column.rbc-now.rbc-today {
+    background-color: transparent;
+}
+
+.rbc-events-container {
+    width: 100%;
+}
+
+.rbc-timeslot-group {
+    justify-content: center;
+}
