@@ -28,6 +28,19 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
     return sum;
   };
 
+  const calcLevel = () => {
+    const level = Math.floor(userTotalExp / 100) + 1;
+    return level;
+  };
+
+  const calcRemainderExp = () => {
+    if (userTotalExp < 100) {
+      return userTotalExp;
+    }
+    const result = userTotalExp % 100;
+    return result;
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
       <div className="bg-[url('./assets/paper-box.png')] bg-repeat w-5/6 h-[70vh] flex items-center justify-around p-10">
@@ -43,8 +56,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
                     user.username.slice(1).toLowerCase()
                   : ""}
               </h1>
-              <h1 className="text-3xl font-bold">Level 1</h1>
-              <h2 className="text-2xl">Total Exp: {userTotalExp}</h2>
+              <h1 className="text-3xl font-bold">Level {calcLevel()}</h1>
+              <h2 className="text-2xl">Exp: {calcRemainderExp()}</h2>
             </div>
           </div>
           <Achievements />
