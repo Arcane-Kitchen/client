@@ -2,9 +2,18 @@ import React, { useEffect, useState } from "react";
 import { fetchAllRecipes } from "../api/recipeApi";
 import MiniCalender from "../components/MiniCalender";
 import RecipeCard from "../components/RecipeCard";
-import { DndContext, DragEndEvent, MouseSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  MouseSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import RecipeModal from "../components/RecipeModal";
-import { addRecipeToMealPlan, updateMealPlanByDateAndMealType } from "../api/mealPlanApi"
+import {
+  addRecipeToMealPlan,
+  updateMealPlanByDateAndMealType,
+} from "../api/mealPlanApi";
 import { useAuth } from "../Auth/AuthContext";
 import { MealPlan } from "../App";
 import moment from "moment";
@@ -40,15 +49,15 @@ export interface Recipe {
 }
 
 interface RecipesPageProps {
-  mealPlan: MealPlan[],
-  setMealPlan: React.Dispatch<React.SetStateAction<MealPlan[]>>
+  mealPlan: MealPlan[];
+  setMealPlan: React.Dispatch<React.SetStateAction<MealPlan[]>>;
 }
 
 const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [breakfastMealPlan, setBreakfastMealPlan] = useState<MealPlan[]>([])
-  const [lunchMealPlan, setLunchMealPlan] = useState<MealPlan[]>([])
-  const [dinnerMealPlan, setDinnerMealPlan] = useState<MealPlan[]>([])
+  const [breakfastMealPlan, setBreakfastMealPlan] = useState<MealPlan[]>([]);
+  const [lunchMealPlan, setLunchMealPlan] = useState<MealPlan[]>([]);
+  const [dinnerMealPlan, setDinnerMealPlan] = useState<MealPlan[]>([]);
   const [droppedRecipes, setDroppedRecipes] = useState<Recipe[]>(
     new Array(7).fill(null)
   );
@@ -65,11 +74,17 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
 
   useEffect(() => {
     // Get the start and end of the current week
-    const weekStartDate = moment().startOf("week").startOf("day").format("YYYY-MM-DD");
-    const weekEndDate = moment().endOf("week").startOf("day").format("YYYY-MM-DD");
+    const weekStartDate = moment()
+      .startOf("week")
+      .startOf("day")
+      .format("YYYY-MM-DD");
+    const weekEndDate = moment()
+      .endOf("week")
+      .startOf("day")
+      .format("YYYY-MM-DD");
 
     // Filter meals based on the week
-    const currentWeekMealPlan = mealPlan.filter(meal => {
+    const currentWeekMealPlan = mealPlan.filter((meal) => {
       const date = moment(meal.start).format("YYYY-MM-DD");
       return date >= weekStartDate && date <= weekEndDate;
     });
@@ -98,7 +113,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
     setBreakfastMealPlan(breakfast);
     setLunchMealPlan(lunch);
     setDinnerMealPlan(dinner);
-  }, [mealPlan])
+  }, [mealPlan]);
 
   const openModal = (recipe: Recipe) => {
     setSelectedRecipe(recipe);
@@ -114,13 +129,12 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
     setMessage(msg);
     setTimeout(() => {
       setMessage("");
-    }, 3000)
+    }, 3000);
   };
 
   const { user, session } = useAuth();
 
-  const handleDragEnd = async (e:DragEndEvent) => {
-
+  const handleDragEnd = async (e: DragEndEvent) => {
     if (!e.over || !e.active) return;
 
     const recipe = e.active.data?.current?.recipe;
@@ -132,21 +146,23 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
     updatedDroppedRecipes[overId] = recipe;
 
     if (session && user) {
-
       // Check if there's a recipe in the day slot for the selected meal type
       const checkRecipeInSlot = () => {
         switch (mealType) {
           case "lunch":
-              return lunchMealPlan[overId] || droppedRecipes[overId];
+            return lunchMealPlan[overId] || droppedRecipes[overId];
           case "dinner":
-              return dinnerMealPlan[overId] || droppedRecipes[overId];
+            return dinnerMealPlan[overId] || droppedRecipes[overId];
           default:
-              return breakfastMealPlan[overId] || droppedRecipes[overId];
+            return breakfastMealPlan[overId] || droppedRecipes[overId];
         }
-      }
+      };
 
       const currentDate = moment();
-      const date = currentDate.startOf("week").add(overId, "days").format("YYYY-MM-DD");
+      const date = currentDate
+        .startOf("week")
+        .add(overId, "days")
+        .format("YYYY-MM-DD");
 
       // Prevent adding recipes to past days
       if (overId < moment().day()) {
@@ -156,7 +172,13 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
 
       // Update meal plan if recipe already exists in slot
       if (checkRecipeInSlot()) {
-        const updatedMeal = await updateMealPlanByDateAndMealType(user.id, session.access_token, recipe, date, mealType);
+        const updatedMeal = await updateMealPlanByDateAndMealType(
+          user.id,
+          session.access_token,
+          recipe,
+          date,
+          mealType
+        );
         if (updatedMeal) {
           showMessage("Meal plan updated successfully");
           setDroppedRecipes(updatedDroppedRecipes);
@@ -166,14 +188,18 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
 
       // Add new recipe if no recipe is already in the slot
       if (!droppedRecipes[overId]) {
-        const newMeal = await addRecipeToMealPlan(user.id, session.access_token, recipe, date, mealType);
+        const newMeal = await addRecipeToMealPlan(
+          user.id,
+          session.access_token,
+          recipe,
+          date,
+          mealType
+        );
         if (newMeal) {
           showMessage("Recipe added to meal plan successfully");
           setDroppedRecipes(updatedDroppedRecipes);
         }
       }
-      
-    
     }
   };
 
@@ -184,16 +210,16 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
     },
   });
 
-  const sensors = useSensors(mouseSensor)
+  const sensors = useSensors(mouseSensor);
 
   return (
-    <DndContext onDragEnd={handleDragEnd} sensors={sensors}>    
+    <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
       {/* Recipe Cards Section */}
       <div
         className="flex flex-col items-center justify-center"
         style={{ height: "82vh" }}
       >
-        <h1 className="text-3xl font-bold underline text-white mb-8 mt-3">
+        <h1 className="text-3xl font-bold text-black mb-8 mt-3">
           Available Recipes
         </h1>
 
@@ -217,11 +243,11 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
 
       {/* Mini Calendar Section */}
       <div className="fixed bottom-0 left-0 w-full">
-        <MiniCalender 
+        <MiniCalender
           droppedRecipes={droppedRecipes}
           mealType={mealType}
-          setMealType={setMealType} 
-          breakfastMealPlan={breakfastMealPlan} 
+          setMealType={setMealType}
+          breakfastMealPlan={breakfastMealPlan}
           lunchMealPlan={lunchMealPlan}
           dinnerMealPlan={dinnerMealPlan}
           message={message}
