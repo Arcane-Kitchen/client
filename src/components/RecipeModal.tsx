@@ -1,5 +1,4 @@
-import React from 'react';
-import paperBox from '../assets/paper-box.png';
+import React from "react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -15,9 +14,9 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       <div
         className="bg-white rounded-lg p-8 w-3/4 max-w-2xl relative"
         style={{
-          backgroundImage: `url(${paperBox})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundImage: `url(/paper-box.png)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         <button

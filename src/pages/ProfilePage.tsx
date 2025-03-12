@@ -44,7 +44,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   };
 
   // Calculate the mean happiness
-  const meanHappiness = ((user?.pet_daily_calorie_happiness ?? 0) + (user?.pet_daily_carb_happiness ?? 0) + (user?.pet_daily_protein_happiness ?? 0) + (user?.pet_daily_fat_happiness ?? 0)) / 4;
+  const meanHappiness =
+    ((user?.pet_daily_calorie_happiness ?? 0) +
+      (user?.pet_daily_carb_happiness ?? 0) +
+      (user?.pet_daily_protein_happiness ?? 0) +
+      (user?.pet_daily_fat_happiness ?? 0)) /
+    4;
 
   // Select the appropriate dragon image based on the mean happiness
   let dragonImage;
@@ -58,10 +63,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('./assets/paper-box.png')] bg-repeat w-5/6 h-[70vh] flex items-center justify-around p-10">
+      <div className="bg-[url('/paper-box.png')] bg-repeat w-5/6 h-[70vh] flex items-center justify-around p-10">
         <div>
           <div className="flex items-center gap-10 px-10">
-            <div className="bg-[url('./assets/user-box.svg')] bg-cover bg-center h-40 w-40 flex items-center justify-center">
+            <div className="bg-[url('/user-box.svg')] bg-cover bg-center h-40 w-40 flex items-center justify-center">
               <FaUser color="white" size={80} />
             </div>
             <div>

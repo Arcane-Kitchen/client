@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import signUpBox from "../assets/sign-up-box.svg";
-import background from "../assets/background.png";
 
 const SignUp: React.FC = () => {
   const [signUpForm, setSignUpForm] = useState({
@@ -50,7 +48,11 @@ const SignUp: React.FC = () => {
         signUpForm.email,
         signUpForm.password
       ); // Call signUp from AuthContext
-      result.success ? navigate("/") : console.error("Sign-up failed:", result);
+      if (result.success) {
+        navigate("/");
+      } else {
+        setError("Sign-up failed:");
+      }
     } catch (error) {
       console.error("An error occured: ", error);
     }
@@ -60,7 +62,7 @@ const SignUp: React.FC = () => {
     <div
       className="flex items-center justify-center min-h-screen"
       style={{
-        backgroundImage: `url(${background})`,
+        backgroundImage: `url(/background.png)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -68,7 +70,7 @@ const SignUp: React.FC = () => {
       <div
         className="p-8 flex flex-col items-center justify-center"
         style={{
-          backgroundImage: `url(${signUpBox})`,
+          backgroundImage: `url(/sign-up-box.svg)`,
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",

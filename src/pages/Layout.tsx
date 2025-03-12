@@ -1,16 +1,15 @@
-import { Outlet } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import { Outlet } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const Layout = () => {
-  
-    return (
-        <div className="bg-[url('./assets/background.png')] bg-cover bg-center min-h-screen flex flex-col">
-            <Navbar />
-            <div className="pt-16 h-auto flex-1">
-                <Outlet />
-            </div>
-        </div>
-    )
-}
+  return (
+    <div className="bg-[url('/background.png')] bg-cover bg-center min-h-screen flex flex-col">
+      <Navbar />
+      <div className="pt-16 h-auto flex-1">
+        <Outlet />
+      </div>
+    </div>
+  );
+};
 
-export default Layout
+export default Layout;

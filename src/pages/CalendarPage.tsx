@@ -16,7 +16,10 @@ interface TimeSlotWrapperProps {
   children: React.ReactNode;
 }
 
-const TimeSlotWrapper: React.FC<TimeSlotWrapperProps> = ({ value, children }) => {
+const TimeSlotWrapper: React.FC<TimeSlotWrapperProps> = ({
+  value,
+  children,
+}) => {
   const hour = value.getHours();
   let label = "";
 
@@ -29,7 +32,7 @@ const TimeSlotWrapper: React.FC<TimeSlotWrapperProps> = ({ value, children }) =>
     label = "Dinner";
   }
 
-   const style: CSSProperties = {
+  const style: CSSProperties = {
     padding: "5px",
     textAlign: "center",
   };
@@ -38,24 +41,30 @@ const TimeSlotWrapper: React.FC<TimeSlotWrapperProps> = ({ value, children }) =>
 };
 
 interface CalendarPageProps {
-  mealPlan: MealPlan[],
-  setMealPlan: React.Dispatch<React.SetStateAction<MealPlan[]>>
+  mealPlan: MealPlan[];
+  setMealPlan: React.Dispatch<React.SetStateAction<MealPlan[]>>;
 }
 
-const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan }) => {
-
+const CalendarPage: React.FC<CalendarPageProps> = ({
+  mealPlan,
+  setMealPlan,
+}) => {
   const { user, session, isLoading } = useAuth();
 
   const handleCheckboxChange = async (mealId: string) => {
     const updatedMealPlan = mealPlan.map((meal) => {
-      return meal.id === mealId ? { ...meal, hasBeenEaten: !meal.hasBeenEaten } : meal
-    })
-    
+      return meal.id === mealId
+        ? { ...meal, hasBeenEaten: !meal.hasBeenEaten }
+        : meal;
+    });
+
     if (user && session) {
       try {
         const mealToUpdate = updatedMealPlan.find((meal) => meal.id === mealId);
         if (mealToUpdate) {
-          await updateMealPlanById(user.id, mealId, session.access_token, { has_been_eaten : mealToUpdate.hasBeenEaten })
+          await updateMealPlanById(user.id, mealId, session.access_token, {
+            has_been_eaten: mealToUpdate.hasBeenEaten,
+          });
         }
         setMealPlan(updatedMealPlan);
       } catch (error: any) {
@@ -64,21 +73,21 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan }) =>
     }
   };
 
-  const CustomEvent:React.FC<{ mealPlan: MealPlan }> = ({ mealPlan }) => {
+  const CustomEvent: React.FC<{ mealPlan: MealPlan }> = ({ mealPlan }) => {
     return (
-    <div 
-      className={`relative w-full h-full bg-cover bg-center`}
-      style={{ backgroundImage: `url(${mealPlan.imageUrl})`}}
-    >
-      <input 
-        type="checkbox"
-        defaultChecked={mealPlan.hasBeenEaten}
-        className="absolute top-0.5 right-0.5"
-        style={{ background: 'transparent', border: 'none' }}
-        onChange={() => handleCheckboxChange(mealPlan.id)}
-      />
-    </div>
-    )
+      <div
+        className={`relative w-full h-full bg-cover bg-center`}
+        style={{ backgroundImage: `url(${mealPlan.imageUrl})` }}
+      >
+        <input
+          type="checkbox"
+          defaultChecked={mealPlan.hasBeenEaten}
+          className="absolute top-0.5 right-0.5"
+          style={{ background: "transparent", border: "none" }}
+          onChange={() => handleCheckboxChange(mealPlan.id)}
+        />
+      </div>
+    );
   };
 
   const eventPropGetter = () => {
@@ -92,10 +101,11 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan }) =>
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('./assets/paper-box.png')] bg-cover bg-center w-5/6 h-[70vh] p-10 flex items-center justify-center">
-        {isLoading ? 
+      <div className="bg-[url('/paper-box.png')] bg-cover bg-center w-5/6 h-[70vh] p-10 flex items-center justify-center">
+        {isLoading ? (
           <PacmanLoader />
-          : <Calendar
+        ) : (
+          <Calendar
             className="flex-1"
             localizer={localizer}
             events={mealPlan}
@@ -110,7 +120,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan }) =>
             }}
             eventPropGetter={eventPropGetter}
           />
-        }
+        )}
       </div>
     </div>
   );
