@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import navbarIcon from "../assets/navbar.svg";
 import { useAuth } from "../Auth/AuthContext";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,12 +16,12 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-        await signOut();
-        navigate('/login');
+      await signOut();
+      navigate("/login");
     } catch (error) {
-        console.error('An error occurred: ', error)
+      console.error("An error occurred: ", error);
     }
-  }
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full z-10">
@@ -32,7 +32,7 @@ const Navbar: React.FC = () => {
           className="text-white focus:outline-none"
         >
           <svg
-            className="w-8 h-8"
+            className="w-8 h-8 cursor-pointer"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -55,8 +55,7 @@ const Navbar: React.FC = () => {
             height: "65px",
           }}
         >
-          
-          {session ?  
+          {session ? (
             <>
               <Link to="/" className="px-4">
                 Home
@@ -70,26 +69,29 @@ const Navbar: React.FC = () => {
               <Link to="/recipes" className="px-4">
                 Recipe List
               </Link>
-              <button 
-                className="text-white"
-                onClick={handleLogout}>
-                  Logout
+              <button
+                className="text-white cursor-pointer"
+                onClick={handleLogout}
+              >
+                Logout
               </button>
             </>
-          : <>
-            <Link to="/" className="px-4">
-              Home
-            </Link>
-            <Link to="/recipes" className="px-4">
-              Recipe List
-            </Link>
-            <Link to="/signup" className="px-4">
-              Sign Up
-            </Link>
-            <Link to="/login" className="px-4">
-              Login
-            </Link>
-          </>}
+          ) : (
+            <>
+              <Link to="/" className="px-4">
+                Home
+              </Link>
+              <Link to="/recipes" className="px-4">
+                Recipe List
+              </Link>
+              <Link to="/signup" className="px-4">
+                Sign Up
+              </Link>
+              <Link to="/login" className="px-4">
+                Login
+              </Link>
+            </>
+          )}
         </div>
       )}
     </nav>

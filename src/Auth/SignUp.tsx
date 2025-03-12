@@ -45,7 +45,11 @@ const SignUp: React.FC = () => {
     event.preventDefault();
 
     try {
-      const result = await signUp(signUpForm.username, signUpForm.email, signUpForm.password); // Call signUp from AuthContext
+      const result = await signUp(
+        signUpForm.username,
+        signUpForm.email,
+        signUpForm.password
+      ); // Call signUp from AuthContext
       result.success ? navigate("/") : console.error("Sign-up failed:", result);
     } catch (error) {
       console.error("An error occured: ", error);
@@ -163,7 +167,7 @@ const SignUp: React.FC = () => {
           </div>
           <div className="flex items-center justify-between">
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer"
               type="submit"
             >
               Sign Up
