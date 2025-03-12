@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import signUpBox from "../assets/sign-up-box.svg";
-import background from "../assets/background.png";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -33,7 +31,7 @@ const Login: React.FC = () => {
     <div
       className="flex items-center justify-center min-h-screen"
       style={{
-        backgroundImage: `url(${background})`,
+        backgroundImage: `url(/background.png)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -41,7 +39,7 @@ const Login: React.FC = () => {
       <div
         className="p-8 flex flex-col items-center justify-center"
         style={{
-          backgroundImage: `url(${signUpBox})`,
+          backgroundImage: `url(/sign-up-box.svg)`,
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",

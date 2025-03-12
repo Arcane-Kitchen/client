@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import navbarIcon from "../assets/navbar.svg";
 import { useAuth } from "../Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -51,7 +50,7 @@ const Navbar: React.FC = () => {
         <div
           className="absolute top-0 left-0 w-full bg-cover bg-center text-white flex items-center justify-center p-4"
           style={{
-            backgroundImage: `url(${navbarIcon})`,
+            backgroundImage: `url(/navbar.svg)`,
             height: "65px",
           }}
         >

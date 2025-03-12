@@ -80,7 +80,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
       .catch((error) => {
         console.error(error);
         setIsLoading(false);
-      });    
+      });
   }, []);
 
   useEffect(() => {
@@ -142,7 +142,6 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
       setMessage("");
     }, 3000);
   };
-
 
   const handleDragEnd = async (e: DragEndEvent) => {
     if (!e.over || !e.active) return;
@@ -229,9 +228,10 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
         className="flex flex-col items-center justify-center"
         style={{ height: "82vh" }}
       >
-      {isLoading ? 
+        {isLoading ? (
           <PacmanLoader />
-          : <>
+        ) : (
+          <>
             <h1 className="text-3xl font-bold text-black mb-8 mt-3">
               Available Recipes
             </h1>
@@ -246,14 +246,14 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
                     className="flex items-center w-3/4 gap-5"
                   >
                     <RecipeCard recipe={recipe} />
-                    <button className="bg-[url('./assets/button-box.svg')] bg-cover bg-center h-30 w-45 hover:cursor-pointer">
+                    <button className="bg-[url('/button-box.svg')] bg-cover bg-center h-30 w-45 hover:cursor-pointer">
                       <h1 className="text-white">Add</h1>
                     </button>
                   </div>
                 ))}
             </div>
           </>
-        }
+        )}
       </div>
 
       {/* Mini Calendar Section */}
