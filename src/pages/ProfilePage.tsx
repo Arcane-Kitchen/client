@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import dragon from "../assets/cute-dragon.png";
+import happyDragon from "../assets/happy.png";
+import neutralDragon from "../assets/neutral.png";
+import sadDragon from "../assets/sad.png";
 import Achievements from "../components/Achievements";
 import { useAuth } from "../Auth/AuthContext";
 import { FaUser } from "react-icons/fa";
@@ -41,6 +43,19 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
     return result;
   };
 
+  // Calculate the mean happiness
+  const meanHappiness = ((user?.pet_daily_calorie_happiness ?? 0) + (user?.pet_daily_carb_happiness ?? 0) + (user?.pet_daily_protein_happiness ?? 0) + (user?.pet_daily_fat_happiness ?? 0)) / 4;
+
+  // Select the appropriate dragon image based on the mean happiness
+  let dragonImage;
+  if (meanHappiness >= 75) {
+    dragonImage = happyDragon;
+  } else if (meanHappiness >= 50) {
+    dragonImage = neutralDragon;
+  } else {
+    dragonImage = sadDragon;
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
       <div className="bg-[url('./assets/paper-box.png')] bg-repeat w-5/6 h-[70vh] flex items-center justify-around p-10">
@@ -63,7 +78,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <Achievements />
         </div>
         <div className="flex flex-col">
-          <img className="size-40" src={dragon} alt="cute dragon" />
+          <img className="size-40" src={dragonImage} alt="dragon" />
           <label htmlFor="calories">Calories</label>
           <progress
             id="calories"
