@@ -1,15 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import happyDragon from "../assets/happy.png";
 import neutralDragon from "../assets/neutral.png";
 import sadDragon from "../assets/sad.png";
 import Achievements from "../components/Achievements";
 import { useAuth } from "../Auth/AuthContext";
 import { FaUser } from "react-icons/fa";
+import { MealPlan } from "../App";
 
+interface ProfilePageProps {
+  mealPlan: MealPlan[];
+}
 
-const ProfilePage: React.FC = () => {
-
+const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   const { user } = useAuth();
+  const [userTotalExp, setUserTotalExp] = useState<number>(0);
+
+  useEffect(() => {
+    const totalExp = calcTotalExp();
+    setUserTotalExp(totalExp);
+  }, []);
+
+  const calcTotalExp = () => {
+    let sum = 0;
+    for (const meal of mealPlan) {
+      if (meal.hasBeenEaten) {
+        sum += meal.exp;
+      }
+    }
+    return sum;
+  };
+
+  const calcLevel = () => {
+    const level = Math.floor(userTotalExp / 100) + 1;
+    return level;
+  };
+
+  const calcRemainderExp = () => {
+    if (userTotalExp < 100) {
+      return userTotalExp;
+    }
+    const result = userTotalExp % 100;
+    return result;
+  };
 
   // Calculate the mean happiness
   const meanHappiness = ((user?.pet_daily_calorie_happiness ?? 0) + (user?.pet_daily_carb_happiness ?? 0) + (user?.pet_daily_protein_happiness ?? 0) + (user?.pet_daily_fat_happiness ?? 0)) / 4;
@@ -33,8 +65,14 @@ const ProfilePage: React.FC = () => {
               <FaUser color="white" size={80} />
             </div>
             <div>
-              <h1 className="text-3xl font-bold">{user?.username ? user.username.charAt(0).toUpperCase() + user.username.slice(1).toLowerCase() : ''}</h1>
-              <h1 className="text-3xl font-bold">Level 1</h1>
+              <h1 className="text-3xl font-bold">
+                {user?.username
+                  ? user.username.charAt(0).toUpperCase() +
+                    user.username.slice(1).toLowerCase()
+                  : ""}
+              </h1>
+              <h1 className="text-3xl font-bold">Level {calcLevel()}</h1>
+              <h2 className="text-2xl">Exp: {calcRemainderExp()}</h2>
             </div>
           </div>
           <Achievements />
@@ -42,13 +80,29 @@ const ProfilePage: React.FC = () => {
         <div className="flex flex-col">
           <img className="size-40" src={dragonImage} alt="dragon" />
           <label htmlFor="calories">Calories</label>
-          <progress id="calories" value={user?.pet_daily_calorie_happiness} max={100}></progress>
+          <progress
+            id="calories"
+            value={user?.pet_daily_calorie_happiness}
+            max={100}
+          ></progress>
           <label htmlFor="carbs">Carbs</label>
-          <progress id="carbs" value={user?.pet_daily_carb_happiness} max={100}></progress>
+          <progress
+            id="carbs"
+            value={user?.pet_daily_carb_happiness}
+            max={100}
+          ></progress>
           <label htmlFor="protein">Protein</label>
-          <progress id="protein" value={user?.pet_daily_protein_happiness} max={100}></progress>
+          <progress
+            id="protein"
+            value={user?.pet_daily_protein_happiness}
+            max={100}
+          ></progress>
           <label htmlFor="fat">Fat</label>
-          <progress id="fat" value={user?.pet_daily_fat_happiness} max={100}></progress>
+          <progress
+            id="fat"
+            value={user?.pet_daily_fat_happiness}
+            max={100}
+          ></progress>
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ import {
 import { useAuth } from "../Auth/AuthContext";
 import { MealPlan } from "../App";
 import moment from "moment";
+import { PacmanLoader } from "react-spinners";
 
 export interface Ingredient {
   quantity: number;
@@ -66,10 +67,20 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
   const [mealType, setMealType] = useState<string>("breakfast");
   const [message, setMessage] = useState<string>("");
 
+  const { user, session, setIsLoading, isLoading } = useAuth();
+
   useEffect(() => {
+    setIsLoading(true);
+
     fetchAllRecipes()
-      .then((data) => setRecipes(data))
-      .catch((error) => console.error(error));
+      .then((data) => {
+        setRecipes(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });    
   }, []);
 
   useEffect(() => {
@@ -132,7 +143,6 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
     }, 3000);
   };
 
-  const { user, session } = useAuth();
 
   const handleDragEnd = async (e: DragEndEvent) => {
     if (!e.over || !e.active) return;
@@ -219,26 +229,31 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
         className="flex flex-col items-center justify-center"
         style={{ height: "82vh" }}
       >
-        <h1 className="text-3xl font-bold text-black mb-8 mt-3">
-          Available Recipes
-        </h1>
+      {isLoading ? 
+          <PacmanLoader />
+          : <>
+            <h1 className="text-3xl font-bold text-black mb-8 mt-3">
+              Available Recipes
+            </h1>
 
-        <div className="grid grid-cols-1 gap-10 overflow-auto justify-items-center">
-          {recipes &&
-            recipes.length > 0 &&
-            recipes.map((recipe, index) => (
-              <div
-                key={index}
-                onClick={() => openModal(recipe)}
-                className="flex items-center w-3/4 gap-5"
-              >
-                <RecipeCard recipe={recipe} />
-                <button className="bg-[url('./assets/button-box.svg')] bg-cover bg-center h-30 w-45 hover:cursor-pointer">
-                  <h1 className="text-white">Add</h1>
-                </button>
-              </div>
-            ))}
-        </div>
+            <div className="grid grid-cols-1 gap-10 overflow-auto justify-items-center">
+              {recipes &&
+                recipes.length > 0 &&
+                recipes.map((recipe, index) => (
+                  <div
+                    key={index}
+                    onClick={() => openModal(recipe)}
+                    className="flex items-center w-3/4 gap-5"
+                  >
+                    <RecipeCard recipe={recipe} />
+                    <button className="bg-[url('./assets/button-box.svg')] bg-cover bg-center h-30 w-45 hover:cursor-pointer">
+                      <h1 className="text-white">Add</h1>
+                    </button>
+                  </div>
+                ))}
+            </div>
+          </>
+        }
       </div>
 
       {/* Mini Calendar Section */}
