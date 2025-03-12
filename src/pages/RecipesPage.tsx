@@ -8,6 +8,8 @@ import {
   MouseSensor,
   useSensor,
   useSensors,
+  pointerWithin,
+  rectIntersection,
 } from "@dnd-kit/core";
 import RecipeModal from "../components/RecipeModal";
 import {
@@ -212,6 +214,18 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
     }
   };
 
+  // Collision detection based on pointer coordinates
+  const customCollisionDetectionAlgorithm = (args: any) => {
+    const pointerCollisions = pointerWithin(args);
+    
+    if (pointerCollisions.length > 0) {
+      return pointerCollisions;
+    }
+    
+    // If there are no collisions with the pointer, fallback to rectangle intersections
+    return rectIntersection(args);
+  };
+
   const mouseSensor = useSensor(MouseSensor, {
     // Require the mouse to move by 10 pixels before activating
     activationConstraint: {
@@ -222,7 +236,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
   const sensors = useSensors(mouseSensor);
 
   return (
-    <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+    <DndContext onDragEnd={handleDragEnd} sensors={sensors} collisionDetection={customCollisionDetectionAlgorithm}>
       {/* Recipe Cards Section */}
       <div
         className="flex flex-col items-center justify-center"
