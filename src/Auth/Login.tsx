@@ -17,7 +17,7 @@ const Login: React.FC = () => {
     try {
       const result = await signIn(email, password); // Call signIn from AuthContext
       if (result.success) {
-        navigate("/");
+        navigate("/profile");
       } else {
         setError("Incorrect email or password");
       }

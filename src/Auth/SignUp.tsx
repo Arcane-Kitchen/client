@@ -49,7 +49,7 @@ const SignUp: React.FC = () => {
         signUpForm.password
       ); // Call signUp from AuthContext
       if (result.success) {
-        navigate("/");
+        navigate("/profile");
       } else {
         setError("Sign-up failed:");
       }
