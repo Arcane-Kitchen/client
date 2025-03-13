@@ -204,7 +204,7 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe }) 
 
         {/* Display confirmation or error message */}
         {message && (
-         <div className="absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-4/5 z-10 rounded-sm px-5 py-2 bg-black opacity-70 min-w-3xs">
+         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 -translate-y-2/3 z-10 rounded-sm px-5 py-2 bg-black opacity-70 min-w-3xs lg:top-3/4 lg:-translate-y-4/5">
            <p className="text-center text-white">{message}</p>{" "}
          </div>
        )}
