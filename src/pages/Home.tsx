@@ -7,7 +7,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <div className="bg-[url('/paper-box.png')] bg-repeat w-5/6 h-[70vh] flex flex-col items-center justify-center">
+      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[70vh] flex flex-col items-center justify-center">
         <h1 className="text-3xl font-bold text-black mb-8">
           {`Welcome to Arcane Kitchen${user ? `, ${user?.username}!` : `!`}`}
         </h1>

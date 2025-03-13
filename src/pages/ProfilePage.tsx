@@ -63,7 +63,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('/paper-box.png')] bg-repeat w-5/6 h-[70vh] flex items-center justify-around p-10">
+      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[70vh] flex items-center justify-around p-10">
         <div>
           <div className="flex items-center gap-10 px-10">
             <div className="bg-[url('/user-box.svg')] bg-cover bg-center h-40 w-40 flex items-center justify-center">

@@ -31,7 +31,7 @@ const Login: React.FC = () => {
     <div
       className="flex items-center justify-center min-h-screen"
       style={{
-        backgroundImage: `url(/background.png)`,
+        backgroundImage: `url(/background.jpg)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

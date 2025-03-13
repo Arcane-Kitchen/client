@@ -101,7 +101,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('/paper-box.png')] bg-cover bg-center w-5/6 h-[70vh] p-10 flex items-center justify-center">
+      <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 h-[70vh] p-10 flex items-center justify-center">
         {isLoading ? (
           <PacmanLoader />
         ) : (

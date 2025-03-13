@@ -25,7 +25,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
       {...listeners}
       {...attributes}
       style={style}
-      className="w-3/4 h-full bg-[url('/paper-box.png')] bg-cover bg-center px-15 py-5 flex hover:cursor-grab border-black border-solid border-1"
+      className="w-3/4 h-full bg-[url('/paper-box.jpg')] bg-cover bg-center px-15 py-5 flex hover:cursor-grab border-black border-solid border-1"
     >
       <div className="flex flex-col gap-3 items-center p-1">
         <h1 className="font-bold underline">{recipe.name}</h1>
