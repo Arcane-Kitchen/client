@@ -63,7 +63,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('/paper-box.png')] bg-repeat w-5/6 h-[70vh] flex justify-around p-4">
+      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[70vh] flex justify-around p-4">
         <div className="flex flex-col items-center">
           <h1 className="font-bold text-2xl">Pet Name: </h1>
           <h2 className="text-2xl">Dino the Dragon</h2>
@@ -108,7 +108,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
 
           <div className="m-2 p-2 w-full  flex justify-around">
             <button
-              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 p-1"
+              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-1"
               onClick={() => {
                 navigate("/recipes");
               }}
@@ -116,7 +116,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
               Add Meals
             </button>
             <button
-              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 p-1"
+              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-1"
               onClick={() => {
                 navigate("/calendar");
               }}

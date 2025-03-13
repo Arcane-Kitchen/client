@@ -14,7 +14,7 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       <div
         className="bg-white rounded-lg p-8 w-3/4 max-w-2xl relative"
         style={{
-          backgroundImage: `url(/paper-box.png)`,
+          backgroundImage: `url(/paper-box.jpg)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
