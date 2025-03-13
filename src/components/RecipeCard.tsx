@@ -1,4 +1,5 @@
 import { Recipe } from "../types";
+import { IoIosTimer } from "react-icons/io";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -9,40 +10,33 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
 
   return (
     <div
+<<<<<<< HEAD
       className="w-3/4 h-full bg-[url('/paper-box.jpg')] bg-cover bg-center px-15 py-5 flex hover:cursor-grab border-black border-solid border-1"
+=======
+      className="w-full h-full bg-[url('/paper-box.png')] bg-cover bg-center hover:cursor-pointer border-black border-solid border-1"
+>>>>>>> 5a61586 (feat: redesign recipe card UI)
     >
-      <div className="flex flex-col gap-3 items-center p-1">
-        <h1 className="font-bold underline">{recipe.name}</h1>
-        <p>{recipe.description}</p>
-        <p>
-          <span className="font-bold">Type:</span> {recipe.meal_type}
-        </p>
-        <p>
-          <span className="font-bold">Difficulty:</span> {recipe.difficulty}
-        </p>
-        <p>
-          <span className="font-bold">Calories:</span>{" "}
-          {recipe.nutrition.calories}
-        </p>
-        <ul>
-          {Object.entries(recipe.nutrition.macronutrients).map(
-            ([key, value]) => (
-              <li>
-                <span className="font-bold">{key}</span> &nbsp; amount:{" "}
-                {value.amount} {value.unit} &nbsp; percentage:{" "}
-                {value.percentage}%
-              </li>
-            )
-          )}
-        </ul>
-      </div>
-      <div>
+      <div className="w-full p-2">
         {recipe.image &&
           <img
-            className="border-black border-solid border-1"
+            className="object-cover w-full mb-2"
             src={recipe.image}
+            alt={recipe.name}
           />
         }
+        <h1 className="font-bold text-xl">{recipe.name}</h1>
+        <div className="flex gap-2 mb-2">
+          <div className="flex gap-0.5 items-center">
+            <img src="/level-icon.png" className="size-2.5" />
+            <p className="text-[10px] mb-0">{recipe.difficulty.charAt(0) + recipe.difficulty.slice(1).toLowerCase()}</p>
+          </div>
+          <p className="text-[10px] flex items-center"><IoIosTimer />{recipe.prep_time} minutes</p>
+          <div className="flex gap-0.5 items-baseline text-black">
+            <img src="/calories-icon.png" className="size-2.5" />
+            <p className="text-[10px]">{recipe.nutrition.calories}</p>
+          </div>
+        </div>
+        <p className="text-sm/5 mb-2">{recipe.description}</p>
       </div>
     </div>
   );

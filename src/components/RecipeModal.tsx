@@ -19,7 +19,6 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe }) 
   const [selectedMealType, setSelectedMealType] = useState<string>("");
 
   const handleDayClick = (index: number) => {
-    console.log(selectedRecipe)
     setSelectedDay(index);
   }
 

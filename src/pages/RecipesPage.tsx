@@ -11,6 +11,9 @@ import { MealPlan } from "../App";
 import moment from "moment";
 import { PacmanLoader } from "react-spinners";
 import { Recipe } from "../types";
+import { IoFilter, IoSearch } from "react-icons/io5";
+import { IoIosSearch } from "react-icons/io";
+
 
 export interface Ingredient {
   quantity: number;
@@ -193,30 +196,35 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
     <>
       {/* Recipe Cards Section */}
       <div
-        className="flex flex-col items-center justify-center"
-        style={{ height: "82vh" }}
+        className="flex flex-col justify-center"
       >
         {isLoading ? (
           <PacmanLoader />
         ) : (
           <>
-            <h1 className="text-3xl font-bold text-black mb-8 mt-3">
-              Available Recipes
-            </h1>
+            <div className="flex p-5 h-vh">
+              <div className="flex-1 relative">
+                <IoSearch size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500" />
+                <input 
+                  className="pl-12 text-2xl shadow appearance-none rounded-lg text-gray-700 focus:outline-none p-2 bg-[#e5e7e9]"
+                  placeholder="Search for recipes" 
+                />
+              </div>
+              <button className="px-2">
+                <IoFilter size={30} className=" text-neutral-700"/>
+              </button>
+            </div>
 
-            <div className="grid grid-cols-1 gap-10 overflow-auto justify-items-center">
+            <div className="grid grid-cols-2 gap-5 px-5 overflow-auto justify-items-center">
               {recipes &&
                 recipes.length > 0 &&
                 recipes.map((recipe, index) => (
                   <div
                     key={index}
                     onClick={() => openModal(recipe)}
-                    className="flex items-center w-3/4 gap-5"
+                    className="flex items-center w-full gap-5"
                   >
                     <RecipeCard recipe={recipe} />
-                    <button className="bg-[url('/button-box.svg')] bg-cover bg-center h-30 w-45 hover:cursor-pointer">
-                      <h1 className="text-white">Add</h1>
-                    </button>
                   </div>
                 ))}
             </div>
