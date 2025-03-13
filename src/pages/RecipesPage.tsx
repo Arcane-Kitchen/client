@@ -12,8 +12,6 @@ import moment from "moment";
 import { PacmanLoader } from "react-spinners";
 import { Recipe } from "../types";
 import { IoFilter, IoSearch } from "react-icons/io5";
-import { IoIosSearch } from "react-icons/io";
-
 
 export interface Ingredient {
   quantity: number;
@@ -39,9 +37,6 @@ interface RecipesPageProps {
 
 const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [breakfastMealPlan, setBreakfastMealPlan] = useState<MealPlan[]>([]);
-  const [lunchMealPlan, setLunchMealPlan] = useState<MealPlan[]>([]);
-  const [dinnerMealPlan, setDinnerMealPlan] = useState<MealPlan[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [mealType, setMealType] = useState<string>("breakfast");
@@ -62,49 +57,6 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
         setIsLoading(false);
       });
   }, []);
-
-  useEffect(() => {
-    // Get the start and end of the current week
-    const weekStartDate = moment()
-      .startOf("week")
-      .startOf("day")
-      .format("YYYY-MM-DD");
-    const weekEndDate = moment()
-      .endOf("week")
-      .startOf("day")
-      .format("YYYY-MM-DD");
-
-    // Filter meals based on the week
-    const currentWeekMealPlan = mealPlan.filter((meal) => {
-      const date = moment(meal.start).format("YYYY-MM-DD");
-      return date >= weekStartDate && date <= weekEndDate;
-    });
-
-    // Initialize the arrays
-    const breakfast = new Array(7).fill(null);
-    const lunch = new Array(7).fill(null);
-    const dinner = new Array(7).fill(null);
-
-    // Loop through the meals and place them in the right index based on the day of the week
-    currentWeekMealPlan.forEach((meal) => {
-      const mealDate = moment(meal.start);
-      const dayOfWeek = mealDate.day();
-
-      // Assign the meal to the appropriate array
-      if (meal.start.getHours() === 0) {
-        breakfast[dayOfWeek] = meal;
-      } else if (meal.start.getHours() === 8) {
-        lunch[dayOfWeek] = meal;
-      } else if (meal.start.getHours() === 16) {
-        dinner[dayOfWeek] = meal;
-      }
-    });
-
-    // Set the state for each meal type
-    setBreakfastMealPlan(breakfast);
-    setLunchMealPlan(lunch);
-    setDinnerMealPlan(dinner);
-  }, [mealPlan]);
 
   const openModal = (recipe: Recipe) => {
     setSelectedRecipe(recipe);
@@ -193,47 +145,43 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
   };
 
   return (
-    <>
-      {/* Recipe Cards Section */}
-      <div
-        className="flex flex-col justify-center"
-      >
-        {isLoading ? (
-          <PacmanLoader />
-        ) : (
-          <>
-            <div className="flex p-5 h-vh">
-              <div className="flex-1 relative">
-                <IoSearch size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500" />
-                <input 
-                  className="pl-12 text-2xl shadow appearance-none rounded-lg text-gray-700 focus:outline-none p-2 bg-[#e5e7e9]"
-                  placeholder="Search for recipes" 
-                />
-              </div>
-              <button className="px-2">
-                <IoFilter size={30} className=" text-neutral-700"/>
-              </button>
+    <div className="flex flex-col h-dvh relative">
+      {isLoading ? (
+        <PacmanLoader className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
+      ) : (
+        <>
+          {/* Search bar and filter section */}
+          <div className="flex-1 flex p-5 lg:px-15 lg:w-full">
+            <div className="flex-1 relative lg:flex-0">
+              <IoSearch size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500" />
+              <input 
+                className="pl-12 text-xl shadow appearance-none rounded-lg text-gray-700 focus:outline-none p-2 bg-[#e5e7e9] lg:w-sm lg:text-2xl"
+                placeholder="Search for recipes" 
+              />
             </div>
+            <button className="px-2">
+              <IoFilter size={30} className=" text-neutral-700"/>
+            </button>
+          </div>
 
-            <div className="grid grid-cols-2 gap-5 px-5 overflow-auto justify-items-center">
-              {recipes &&
-                recipes.length > 0 &&
-                recipes.map((recipe, index) => (
-                  <div
-                    key={index}
-                    onClick={() => openModal(recipe)}
-                    className="flex items-center w-full gap-5"
-                  >
-                    <RecipeCard recipe={recipe} />
-                  </div>
-                ))}
-            </div>
-          </>
-        )}
-      </div>
-      
+          <div className="grid grid-cols-2 gap-5 px-5 pb-5 justify-items-center lg:grid-cols-3 lg:px-15">
+            {recipes &&
+              recipes.length > 0 &&
+              recipes.map((recipe, index) => (
+                <div
+                  key={index}
+                  onClick={() => openModal(recipe)}
+                  className="flex items-center w-full gap-5"
+                >
+                  <RecipeCard recipe={recipe} />
+                </div>
+              ))}
+          </div>
+        </>
+      )}
+
       {selectedRecipe && <RecipeModal isOpen={isModalOpen} onClose={closeModal} selectedRecipe={selectedRecipe} /> }
-    </>
+    </div>
   );
 };
 

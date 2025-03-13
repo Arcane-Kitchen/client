@@ -10,11 +10,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
 
   return (
     <div
-<<<<<<< HEAD
-      className="w-3/4 h-full bg-[url('/paper-box.jpg')] bg-cover bg-center px-15 py-5 flex hover:cursor-grab border-black border-solid border-1"
-=======
-      className="w-full h-full bg-[url('/paper-box.png')] bg-cover bg-center hover:cursor-pointer border-black border-solid border-1"
->>>>>>> 5a61586 (feat: redesign recipe card UI)
+      className="w-full h-full bg-[url('/paper-box.jpg')] bg-cover bg-center hover:cursor-pointer border-black border-solid border-1"
     >
       <div className="w-full p-2">
         {recipe.image &&
