@@ -63,8 +63,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('/paper-box.png')] bg-repeat w-5/6 h-[70vh] flex items-center justify-around p-10">
-        <div>
+      <div className="bg-[url('/paper-box.png')] bg-repeat w-5/6 h-[70vh] flex justify-around p-4">
+        {/* <div>
           <div className="flex items-center gap-10 px-10">
             <div className="bg-[url('/user-box.svg')] bg-cover bg-center h-40 w-40 flex items-center justify-center">
               <FaUser color="white" size={80} />
@@ -80,34 +80,41 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
               <h2 className="text-2xl">Exp: {calcRemainderExp()}</h2>
             </div>
           </div>
-          <Achievements />
-        </div>
-        <div className="flex flex-col">
-          <img className="size-40" src={dragonImage} alt="dragon" />
-          <label htmlFor="calories">Calories</label>
+        </div> */}
+        <div className="flex flex-col mt-15">
+          <label htmlFor="calories">Calorie Lvl 1</label>
           <progress
+            className="w-20"
             id="calories"
             value={user?.pet_daily_calorie_happiness}
             max={100}
           ></progress>
-          <label htmlFor="carbs">Carbs</label>
+          <label htmlFor="carbs">Carb Lvl 1</label>
           <progress
+            className="w-20"
             id="carbs"
             value={user?.pet_daily_carb_happiness}
             max={100}
           ></progress>
-          <label htmlFor="protein">Protein</label>
+          <label htmlFor="protein">Protein Lvl 1</label>
           <progress
+            className="w-20"
             id="protein"
             value={user?.pet_daily_protein_happiness}
             max={100}
           ></progress>
-          <label htmlFor="fat">Fat</label>
+          <label htmlFor="fat">Fat Lvl 1</label>
           <progress
+            className="w-20"
             id="fat"
             value={user?.pet_daily_fat_happiness}
             max={100}
           ></progress>
+        </div>
+        <div className="flex flex-col items-center">
+          <h1 className="font-bold text-2xl">Pet Name: </h1>
+          <h2 className="text-2xl">Dino the Dragon</h2>
+          <img className="size-40" src={dragonImage} alt="dragon" />
         </div>
       </div>
     </div>
