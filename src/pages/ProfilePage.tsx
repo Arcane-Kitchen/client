@@ -6,6 +6,7 @@ import Achievements from "../components/Achievements";
 import { useAuth } from "../Auth/AuthContext";
 import { FaUser } from "react-icons/fa";
 import { MealPlan } from "../App";
+import { useNavigate } from "react-router-dom";
 
 interface ProfilePageProps {
   mealPlan: MealPlan[];
@@ -14,6 +15,7 @@ interface ProfilePageProps {
 const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   const { user } = useAuth();
   const [userTotalExp, setUserTotalExp] = useState<number>(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const totalExp = calcTotalExp();
@@ -81,40 +83,66 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             </div>
           </div>
         </div> */}
-        <div className="flex flex-col mt-15">
-          <label htmlFor="calories">Calorie Lvl 1</label>
-          <progress
-            className="w-20"
-            id="calories"
-            value={user?.pet_daily_calorie_happiness}
-            max={100}
-          ></progress>
-          <label htmlFor="carbs">Carb Lvl 1</label>
-          <progress
-            className="w-20"
-            id="carbs"
-            value={user?.pet_daily_carb_happiness}
-            max={100}
-          ></progress>
-          <label htmlFor="protein">Protein Lvl 1</label>
-          <progress
-            className="w-20"
-            id="protein"
-            value={user?.pet_daily_protein_happiness}
-            max={100}
-          ></progress>
-          <label htmlFor="fat">Fat Lvl 1</label>
-          <progress
-            className="w-20"
-            id="fat"
-            value={user?.pet_daily_fat_happiness}
-            max={100}
-          ></progress>
-        </div>
         <div className="flex flex-col items-center">
           <h1 className="font-bold text-2xl">Pet Name: </h1>
           <h2 className="text-2xl">Dino the Dragon</h2>
           <img className="size-40" src={dragonImage} alt="dragon" />
+          <label htmlFor="calories">
+            <span className="font-bold">Calories</span> Lvl 1
+          </label>
+          <progress
+            className="w-19/20"
+            id="calories"
+            value={20}
+            max={100}
+          ></progress>
+          <label htmlFor="carbs">
+            <span className="font-bold">Carbs</span> Lvl 1
+          </label>
+          <progress
+            className="w-19/20"
+            id="carbs"
+            value={30}
+            max={100}
+          ></progress>
+          <label htmlFor="protein">
+            <span className="font-bold">Protein</span> Lvl 1
+          </label>
+          <progress
+            className="w-19/20"
+            id="protein"
+            value={40}
+            max={100}
+          ></progress>
+          <label htmlFor="fat">
+            <span className="font-bold">Fat</span> Lvl 1
+          </label>
+          <progress
+            className="w-19/20"
+            id="fat"
+            value={35}
+            max={100}
+          ></progress>
+          <h1 className="">To level up: </h1>
+
+          <div className="m-2 p-2 w-full  flex justify-around">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 p-1"
+              onClick={() => {
+                navigate("/recipes");
+              }}
+            >
+              Add Meals
+            </button>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 p-1"
+              onClick={() => {
+                navigate("/calendar");
+              }}
+            >
+              Eat Meals
+            </button>
+          </div>
         </div>
       </div>
     </div>
