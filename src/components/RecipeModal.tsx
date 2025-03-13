@@ -1,7 +1,10 @@
 import { useState} from "react";
 import { Recipe } from "../types";
+import { useAuth } from "../Auth/AuthContext";
+ import { useNavigate } from "react-router-dom";
 import { IoChevronBackCircle } from "react-icons/io5";
 import { FaCircleXmark } from "react-icons/fa6";
+import { addRecipeToMealPlan } from "../api/mealPlanApi";
 import moment from "moment";
 
 
@@ -17,15 +20,60 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe }) 
   const mealTypes = ["Breakfast", "Lunch", "Dinner"];
   const [selectedDay, setSelectedDay] = useState<number>(moment().day());
   const [selectedMealType, setSelectedMealType] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+ 
+  const { user, session } = useAuth();
+  const navigate = useNavigate();
 
   const handleDayClick = (index: number) => {
-    console.log(selectedRecipe)
     setSelectedDay(index);
   }
 
   const handleMealTypeClick = (type: string) => {
     setSelectedMealType(type);
   }
+
+  const handleAddClick = async () => {
+    if (session && user) {
+      if (!selectedMealType) {
+        showMessage("Please select meal type");
+        return;
+      }
+
+      const currentDate = moment();
+      
+      // Prevent adding recipes to past days
+      if (selectedDay < currentDate.day()) {
+        showMessage("Cannot add meal plan to past days");
+        return;
+      }
+
+      const date = currentDate
+        .startOf("week")
+        .add(selectedDay, "days")
+        .format("YYYY-MM-DD");
+      
+      // Add new recipe to meal plan
+      const newMeal = await addRecipeToMealPlan(
+        user.id,
+        session.access_token,
+        selectedRecipe,
+        date,
+        selectedMealType
+      );
+
+      if (newMeal) {
+        showMessage("Recipe added to meal plan");
+      }
+    }
+  };
+
+  const showMessage = (msg: string) => {
+    setMessage(msg);
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
+  };
 
   if (!isOpen) return null;
 
@@ -42,7 +90,7 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe }) 
             <FaCircleXmark size={40} className="text-[#19243e] hover:text-slate-600 hidden lg:block"/>
           </button>
 
-        <div className="overflow-auto h-[88vh] lg:flex lg:flex-col lg:h-3/4 lg:w-auto">
+        <div className="overflow-auto h-[87vh] lg:flex lg:flex-col lg:h-3/4 lg:w-auto">
 
           <div className="lg:p-5 lg:flex-1 lg:flex">
             {selectedRecipe.image && 
@@ -102,36 +150,64 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe }) 
         </div>
         
         {/* Add meal plan functionality */}
-        <div className="absolute bottom-0 left-0 w-full flex gap-2 border-t-2 border-gray-400 p-4 lg:h-1/4 lg:justify-center lg:items-center">
-          <div className="flex-1 flex flex-col gap-2 lg:items-center lg:flex-0">
-            <div className="flex-1 flex gap-2 items-center justify-around">
-              {daysOfTheWeek.map((day, index) => (
-                <button 
-                  key={`${index}-${day}`} 
-                  className={`hover:cursor-pointer text-white rounded-full size-8 lg:size-12 ${selectedDay === index ? "bg-[#19243e]": "bg-gray-400"}`}
-                  onClick={() => handleDayClick(index)}
+        <div className={`absolute bottom-0 left-0 w-full flex gap-2 border-t-2 p-4 lg:h-1/4 lg:justify-center lg:items-center ${!user ? "bg-amber-50 border-amber-50" : " border-gray-400"}`}>
+           {user ? (
+            <>
+               <div className="flex-1 flex flex-col gap-2 lg:items-center lg:flex-0">
+                 <div className="flex-1 flex gap-2 items-center justify-around">
+                   {daysOfTheWeek.map((day, index) => (
+                     <button 
+                       key={`${index}-${day}`} 
+                       className={`hover:cursor-pointer text-white rounded-full size-8 lg:size-12 ${selectedDay === index ? "bg-[#19243e]": "bg-gray-400"}`}
+                       onClick={() => handleDayClick(index)}
+                     >
+                       {day}
+                     </button>
+                   ))}
+                 </div>
+                 <div className="flex-1 flex gap-2 lg:w-full">
+                   {mealTypes.map((type) => (
+                     <button 
+                       key={type} 
+                       className={`flex-1 hover:cursor-pointer text-white lg:py-2 ${selectedMealType === type ? "bg-[#19243e]": "bg-gray-400"}`}
+                       onClick={() => handleMealTypeClick(type)}
+                     >
+                     {type}
+                   </button>
+                   ))}
+                 </div>
+               </div>
+               <button className="bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 hover:cursor-pointer">
+                 <h1 className="text-white" onClick={handleAddClick}>Add</h1>
+               </button> 
+            </>
+           ) : (
+            <div className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full">
+               <p className="text-center">Sign up or log in now to build your meal plan!</p>
+               <div className="flex items-center justify-center gap-2 lg:w-full">
+                <button
+                  className="bg-[#19243e] text-white py-2 px-6 rounded-lg w-1/3"
+                  onClick={() => navigate("/signup")}
                 >
-                  {day}
+                  Sign Up
                 </button>
-              ))}
-            </div>
-            <div className="flex-1 flex gap-2 lg:w-full">
-              {mealTypes.map((type) => (
-                <button 
-                  key={type} 
-                  className={`flex-1 hover:cursor-pointer text-white lg:py-2 ${selectedMealType === type ? "bg-[#19243e]": "bg-gray-400"}`}
-                  onClick={() => handleMealTypeClick(type)}
+                <button
+                  className="bg-[#19243e] text-white py-2 px-6 rounded-lg w-1/3"
+                  onClick={() => navigate("/login")}
                 >
-                {type}
-              </button>
-              ))}
+                  Login
+                </button>
+              </div>
             </div>
-          </div>
-          <button className="bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 hover:cursor-pointer">
-            <h1 className="text-white">Add</h1>
-          </button>
+           )}
         </div>
-        
+
+        {/* Display confirmation or error message */}
+        {message && (
+         <div className="absolute top-3/4 left-1/2 -translate-x-1/2 -translate-y-4/5 z-10 rounded-sm px-5 py-2 bg-black opacity-70 min-w-3xs">
+           <p className="text-center text-white">{message}</p>{" "}
+         </div>
+       )}
       </div>
     </div>
   );
