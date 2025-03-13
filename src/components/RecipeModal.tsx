@@ -44,7 +44,7 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe }) 
 
         <div className="overflow-auto h-[88vh] lg:flex lg:flex-col lg:h-3/4 lg:w-auto">
 
-          <div className="p-5 lg:flex-1 lg:flex">
+          <div className="lg:p-5 lg:flex-1 lg:flex">
             {selectedRecipe.image && 
               <img
                 src={selectedRecipe.image}
