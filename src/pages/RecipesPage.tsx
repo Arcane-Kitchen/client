@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllRecipes } from "../api/recipeApi";
-import MiniCalender from "../components/MiniCalender";
 import RecipeCard from "../components/RecipeCard";
-import {
-  DndContext,
-  DragEndEvent,
-  MouseSensor,
-  useSensor,
-  useSensors,
-  pointerWithin,
-  rectIntersection,
-} from "@dnd-kit/core";
 import RecipeModal from "../components/RecipeModal";
 import {
   addRecipeToMealPlan,
@@ -20,6 +10,7 @@ import { useAuth } from "../Auth/AuthContext";
 import { MealPlan } from "../App";
 import moment from "moment";
 import { PacmanLoader } from "react-spinners";
+import { Recipe } from "../types";
 
 export interface Ingredient {
   quantity: number;
@@ -38,19 +29,6 @@ export interface Macronutrient {
   percentage: number;
 }
 
-export interface Recipe {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  difficulty: string;
-  prep_time: number;
-  instructions: string;
-  nutrition: Nutrition;
-  meal_type: string[];
-  ingredients: { [key: string]: Ingredient };
-}
-
 interface RecipesPageProps {
   mealPlan: MealPlan[];
   setMealPlan: React.Dispatch<React.SetStateAction<MealPlan[]>>;
@@ -61,9 +39,6 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
   const [breakfastMealPlan, setBreakfastMealPlan] = useState<MealPlan[]>([]);
   const [lunchMealPlan, setLunchMealPlan] = useState<MealPlan[]>([]);
   const [dinnerMealPlan, setDinnerMealPlan] = useState<MealPlan[]>([]);
-  const [droppedRecipes, setDroppedRecipes] = useState<Recipe[]>(
-    new Array(7).fill(null)
-  );
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [mealType, setMealType] = useState<string>("breakfast");
@@ -214,29 +189,8 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
     }
   };
 
-  // Collision detection based on pointer coordinates
-  const customCollisionDetectionAlgorithm = (args: any) => {
-    const pointerCollisions = pointerWithin(args);
-    
-    if (pointerCollisions.length > 0) {
-      return pointerCollisions;
-    }
-    
-    // If there are no collisions with the pointer, fallback to rectangle intersections
-    return rectIntersection(args);
-  };
-
-  const mouseSensor = useSensor(MouseSensor, {
-    // Require the mouse to move by 10 pixels before activating
-    activationConstraint: {
-      distance: 10,
-    },
-  });
-
-  const sensors = useSensors(mouseSensor);
-
   return (
-    <DndContext onDragEnd={handleDragEnd} sensors={sensors} collisionDetection={customCollisionDetectionAlgorithm}>
+    <>
       {/* Recipe Cards Section */}
       <div
         className="flex flex-col items-center justify-center"
@@ -269,55 +223,9 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
           </>
         )}
       </div>
-
-      {/* Mini Calendar Section */}
-      <div className="fixed bottom-0 left-0 w-full">
-        <MiniCalender
-          droppedRecipes={droppedRecipes}
-          mealType={mealType}
-          setMealType={setMealType}
-          breakfastMealPlan={breakfastMealPlan}
-          lunchMealPlan={lunchMealPlan}
-          dinnerMealPlan={dinnerMealPlan}
-          message={message}
-        />
-      </div>
-
-      <RecipeModal isOpen={isModalOpen} onClose={closeModal}>
-        {selectedRecipe && (
-          <div>
-            <h2 className="text-2xl font-bold mb-4">{selectedRecipe.name}</h2>
-            <div className="flex flex-row gap-4">
-              <div className="w-1/2">
-                <h3 className="text-xl font-bold mb-2">Ingredients:</h3>
-                <ul className="list-disc list-inside mb-4">
-                  {Object.entries(selectedRecipe.ingredients).map(
-                    ([key, ingredient], index) => (
-                      <li key={index}>
-                        {ingredient.quantity} {ingredient.unit} {key}{" "}
-                        {ingredient.description &&
-                          `- ${ingredient.description}`}
-                      </li>
-                    )
-                  )}
-                </ul>
-                <h3>
-                  <span className="font-bold">Prep Time:</span>{" "}
-                  {selectedRecipe.prep_time} minutes
-                </h3>
-              </div>
-              <img
-                src={selectedRecipe.image}
-                alt={selectedRecipe.name}
-                className="w-1/2 mb-4"
-              />
-            </div>
-            <h3 className="text-xl font-bold mb-2">Instructions:</h3>
-            <p>{selectedRecipe.instructions}</p>
-          </div>
-        )}
-      </RecipeModal>
-    </DndContext>
+      
+      {selectedRecipe && <RecipeModal isOpen={isModalOpen} onClose={closeModal} selectedRecipe={selectedRecipe} /> }
+    </>
   );
 };
 

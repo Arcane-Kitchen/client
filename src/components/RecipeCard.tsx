@@ -1,30 +1,14 @@
-import { Recipe } from "../pages/RecipesPage";
-import { useDraggable } from "@dnd-kit/core";
+import { Recipe } from "../types";
 
 interface RecipeCardProps {
   recipe: Recipe;
 }
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: recipe.id,
-      data: { recipe },
-    });
 
-  const style = {
-    opacity: isDragging ? 0.5 : 1,
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
-  };
 
   return (
     <div
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-      style={style}
       className="w-3/4 h-full bg-[url('/paper-box.jpg')] bg-cover bg-center px-15 py-5 flex hover:cursor-grab border-black border-solid border-1"
     >
       <div className="flex flex-col gap-3 items-center p-1">
@@ -53,10 +37,12 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
         </ul>
       </div>
       <div>
-        <img
-          className="border-black border-solid border-1"
-          src={recipe.image}
-        />
+        {recipe.image &&
+          <img
+            className="border-black border-solid border-1"
+            src={recipe.image}
+          />
+        }
       </div>
     </div>
   );
