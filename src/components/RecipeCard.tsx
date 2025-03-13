@@ -12,7 +12,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
     <div
       className="w-full h-full bg-[url('/paper-box.jpg')] bg-cover bg-center hover:cursor-pointer"
     >
-      <div className="w-full p-2 gap-2 flex flex-col lg:flex-row-reverse lg:p-5 ">
+      <div className="w-full p-2 gap-2 flex flex-col lg:flex-row-reverse">
         {recipe.image &&
           <img
             className="object-cover w-full lg:mb-0 lg:w-1/3"
@@ -20,8 +20,8 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
             alt={recipe.name}
           />
         }
-        <div>
-          <h1 className="font-bold text-xl/5 mb-2 lg:text-3xl">{recipe.name}</h1>
+        <div className="lg:px-2">
+          <h1 className="font-bold text-xl lg:mb-2 lg:text-3xl">{recipe.name}</h1>
           <div className="flex gap-2 mb-2">
             <div className="flex gap-0.5 items-center">
               <img src="/level-icon.png" className="size-2.5 lg:size-3" />
