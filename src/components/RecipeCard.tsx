@@ -1,62 +1,40 @@
-import { Recipe } from "../pages/RecipesPage";
-import { useDraggable } from "@dnd-kit/core";
+import { Recipe } from "../types";
+import { IoIosTimer } from "react-icons/io";
 
 interface RecipeCardProps {
   recipe: Recipe;
 }
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: recipe.id,
-      data: { recipe },
-    });
 
-  const style = {
-    opacity: isDragging ? 0.5 : 1,
-    transform: transform
-      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-      : undefined,
-  };
 
   return (
     <div
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-      style={style}
-      className="w-3/4 h-full bg-[url('/paper-box.jpg')] bg-cover bg-center px-15 py-5 flex hover:cursor-grab border-black border-solid border-1"
+      className="w-full h-full bg-[url('/paper-box.jpg')] bg-cover bg-center hover:cursor-pointer"
     >
-      <div className="flex flex-col gap-3 items-center p-1">
-        <h1 className="font-bold underline">{recipe.name}</h1>
-        <p>{recipe.description}</p>
-        <p>
-          <span className="font-bold">Type:</span> {recipe.meal_type}
-        </p>
-        <p>
-          <span className="font-bold">Difficulty:</span> {recipe.difficulty}
-        </p>
-        <p>
-          <span className="font-bold">Calories:</span>{" "}
-          {recipe.nutrition.calories}
-        </p>
-        <ul>
-          {Object.entries(recipe.nutrition.macronutrients).map(
-            ([key, value]) => (
-              <li>
-                <span className="font-bold">{key}</span> &nbsp; amount:{" "}
-                {value.amount} {value.unit} &nbsp; percentage:{" "}
-                {value.percentage}%
-              </li>
-            )
-          )}
-        </ul>
-      </div>
-      <div>
-        <img
-          className="border-black border-solid border-1"
-          src={recipe.image}
-        />
+      <div className="w-full p-2 gap-2 flex flex-col lg:flex-row-reverse">
+        {recipe.image &&
+          <img
+            className="object-cover w-full lg:mb-0 lg:w-1/3"
+            src={recipe.image}
+            alt={recipe.name}
+          />
+        }
+        <div className="lg:px-2">
+          <h1 className="font-bold text-xl lg:mb-2 lg:text-3xl">{recipe.name}</h1>
+          <div className="flex gap-2 mb-2">
+            <div className="flex gap-0.5 items-center">
+              <img src="/level-icon.png" className="size-2.5 lg:size-3" />
+              <p className="text-[10px] mb-0 lg:text-sm">{recipe.difficulty.charAt(0) + recipe.difficulty.slice(1).toLowerCase()}</p>
+            </div>
+            <p className="text-[10px] flex items-center lg:text-sm"><IoIosTimer />{recipe.prep_time} minutes</p>
+            <div className="flex gap-0.5 items-baseline text-black">
+              <img src="/calories-icon.png" className="size-2.5 lg:size-3" />
+              <p className="text-[10px] lg:text-sm">{recipe.nutrition.calories}</p>
+            </div>
+          </div>
+          <p className="text-sm/5 mb-2 lg:text-base/5">{recipe.description}</p>
+        </div>
       </div>
     </div>
   );
