@@ -81,7 +81,7 @@ function App() {
           }
         />
         <Route
-          path="calendar"
+          path="meal-plan"
           element={
             <CalendarPage mealPlan={mealPlan} setMealPlan={setMealPlan} recipes={recipes}/>
           }

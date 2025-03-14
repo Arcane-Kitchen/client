@@ -100,7 +100,7 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe, se
       if (user && session && setMealPlan) {
         try {
           await updateMealPlanById(user.id, selectedMeal.id, session.access_token, {
-            hasBeenEaten: selectedMeal.hasBeenEaten,
+            hasBeenEaten: !selectedMeal.hasBeenEaten,
           });
           setSelectedMeal(meal);
           setMealPlan(updatedMealPlan);
@@ -225,7 +225,7 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe, se
                  <h1 className="text-white" onClick={handleAddClick}>Add</h1>
                </button> 
             </>
-           ) : user && location.pathname === "/calendar" ? (
+           ) : user && location.pathname === "/meal-plan" ? (
             <div className="flex-1 flex justify-center">
               <button 
                 className={` py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 hover:cursor-pointer ${selectedMeal && selectedMeal.hasBeenEaten ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-400 text-gray-300"}`}
