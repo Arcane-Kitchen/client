@@ -25,8 +25,8 @@ export interface Meal {
 export interface MealPlan {
   id: string;
   title: string;
-  start: Date;
-  end: Date;
+  date: string;
+  mealType: "breakfast" | "lunch" | "dinner";
   imageUrl: string;
   hasBeenEaten: boolean;
   exp: number;
@@ -47,26 +47,14 @@ function App() {
           );
           const mappedMealPlan = await Promise.all(
             mealPlan.map(async (meal: Meal) => {
-              const start = new Date(meal.day_to_eat);
-
-              if (meal.chosen_meal_type === "breakfast") {
-                start.setHours(0, 0, 0);
-              } else if (meal.chosen_meal_type === "lunch") {
-                start.setHours(8, 0, 0);
-              } else {
-                start.setHours(16, 0, 0);
-              }
-
-              const end = new Date(start);
-              end.setHours(start.getHours() + 7);
-
+              const date = new Date(meal.day_to_eat).toLocaleDateString();
               const recipe = await fetchARecipeById(meal.recipe_id);
 
               return {
                 id: meal.id,
                 title: meal.recipe_id,
-                start,
-                end,
+                date,
+                mealType: meal.chosen_meal_type,
                 imageUrl: recipe.image,
                 hasBeenEaten: meal.has_been_eaten,
                 exp: meal.exp,
@@ -95,7 +83,7 @@ function App() {
         <Route
           path="recipes"
           element={
-            <RecipesPage mealPlan={mealPlan} setMealPlan={setMealPlan} />
+            <RecipesPage />
           }
         />
         <Route
