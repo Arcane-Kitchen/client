@@ -1,23 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllRecipes } from "../api/recipeApi";
-import MiniCalender from "../components/MiniCalender";
 import RecipeCard from "../components/RecipeCard";
-import {
-  DndContext,
-  DragEndEvent,
-  MouseSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
 import RecipeModal from "../components/RecipeModal";
-import {
-  addRecipeToMealPlan,
-  updateMealPlanByDateAndMealType,
-} from "../api/mealPlanApi";
 import { useAuth } from "../Auth/AuthContext";
-import { MealPlan } from "../App";
-import moment from "moment";
 import { PacmanLoader } from "react-spinners";
+import { Recipe } from "../types";
+import { IoFilter, IoSearch } from "react-icons/io5";
 
 export interface Ingredient {
   quantity: number;
@@ -36,38 +24,12 @@ export interface Macronutrient {
   percentage: number;
 }
 
-export interface Recipe {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  difficulty: string;
-  prep_time: number;
-  instructions: string;
-  nutrition: Nutrition;
-  meal_type: string[];
-  ingredients: { [key: string]: Ingredient };
-}
-
-interface RecipesPageProps {
-  mealPlan: MealPlan[];
-  setMealPlan: React.Dispatch<React.SetStateAction<MealPlan[]>>;
-}
-
-const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
+const RecipesPage: React.FC = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [breakfastMealPlan, setBreakfastMealPlan] = useState<MealPlan[]>([]);
-  const [lunchMealPlan, setLunchMealPlan] = useState<MealPlan[]>([]);
-  const [dinnerMealPlan, setDinnerMealPlan] = useState<MealPlan[]>([]);
-  const [droppedRecipes, setDroppedRecipes] = useState<Recipe[]>(
-    new Array(7).fill(null)
-  );
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [mealType, setMealType] = useState<string>("breakfast");
-  const [message, setMessage] = useState<string>("");
 
-  const { user, session, setIsLoading, isLoading } = useAuth();
+  const { setIsLoading, isLoading } = useAuth();
 
   useEffect(() => {
     setIsLoading(true);
@@ -83,49 +45,6 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
       });
   }, []);
 
-  useEffect(() => {
-    // Get the start and end of the current week
-    const weekStartDate = moment()
-      .startOf("week")
-      .startOf("day")
-      .format("YYYY-MM-DD");
-    const weekEndDate = moment()
-      .endOf("week")
-      .startOf("day")
-      .format("YYYY-MM-DD");
-
-    // Filter meals based on the week
-    const currentWeekMealPlan = mealPlan.filter((meal) => {
-      const date = moment(meal.start).format("YYYY-MM-DD");
-      return date >= weekStartDate && date <= weekEndDate;
-    });
-
-    // Initialize the arrays
-    const breakfast = new Array(7).fill(null);
-    const lunch = new Array(7).fill(null);
-    const dinner = new Array(7).fill(null);
-
-    // Loop through the meals and place them in the right index based on the day of the week
-    currentWeekMealPlan.forEach((meal) => {
-      const mealDate = moment(meal.start);
-      const dayOfWeek = mealDate.day();
-
-      // Assign the meal to the appropriate array
-      if (meal.start.getHours() === 0) {
-        breakfast[dayOfWeek] = meal;
-      } else if (meal.start.getHours() === 8) {
-        lunch[dayOfWeek] = meal;
-      } else if (meal.start.getHours() === 16) {
-        dinner[dayOfWeek] = meal;
-      }
-    });
-
-    // Set the state for each meal type
-    setBreakfastMealPlan(breakfast);
-    setLunchMealPlan(lunch);
-    setDinnerMealPlan(dinner);
-  }, [mealPlan]);
-
   const openModal = (recipe: Recipe) => {
     setSelectedRecipe(recipe);
     setIsModalOpen(true);
@@ -136,174 +55,44 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ mealPlan }) => {
     setIsModalOpen(false);
   };
 
-  const showMessage = (msg: string) => {
-    setMessage(msg);
-    setTimeout(() => {
-      setMessage("");
-    }, 3000);
-  };
-
-  const handleDragEnd = async (e: DragEndEvent) => {
-    if (!e.over || !e.active) return;
-
-    const recipe = e.active.data?.current?.recipe;
-    const overId = parseInt(e.over.id.toString(), 10);
-
-    if (!overId || !recipe) return;
-
-    const updatedDroppedRecipes = [...droppedRecipes];
-    updatedDroppedRecipes[overId] = recipe;
-
-    if (session && user) {
-      // Check if there's a recipe in the day slot for the selected meal type
-      const checkRecipeInSlot = () => {
-        switch (mealType) {
-          case "lunch":
-            return lunchMealPlan[overId] || droppedRecipes[overId];
-          case "dinner":
-            return dinnerMealPlan[overId] || droppedRecipes[overId];
-          default:
-            return breakfastMealPlan[overId] || droppedRecipes[overId];
-        }
-      };
-
-      const currentDate = moment();
-      const date = currentDate
-        .startOf("week")
-        .add(overId, "days")
-        .format("YYYY-MM-DD");
-
-      // Prevent adding recipes to past days
-      if (overId < moment().day()) {
-        showMessage("Cannot add meal plan to past days");
-        return;
-      }
-
-      // Update meal plan if recipe already exists in slot
-      if (checkRecipeInSlot()) {
-        const updatedMeal = await updateMealPlanByDateAndMealType(
-          user.id,
-          session.access_token,
-          recipe,
-          date,
-          mealType
-        );
-        if (updatedMeal) {
-          showMessage("Meal plan updated successfully");
-          setDroppedRecipes(updatedDroppedRecipes);
-        }
-        return;
-      }
-
-      // Add new recipe if no recipe is already in the slot
-      if (!droppedRecipes[overId]) {
-        const newMeal = await addRecipeToMealPlan(
-          user.id,
-          session.access_token,
-          recipe,
-          date,
-          mealType
-        );
-        if (newMeal) {
-          showMessage("Recipe added to meal plan successfully");
-          setDroppedRecipes(updatedDroppedRecipes);
-        }
-      }
-    }
-  };
-
-  const mouseSensor = useSensor(MouseSensor, {
-    // Require the mouse to move by 10 pixels before activating
-    activationConstraint: {
-      distance: 10,
-    },
-  });
-
-  const sensors = useSensors(mouseSensor);
-
   return (
-    <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
-      {/* Recipe Cards Section */}
-      <div
-        className="flex flex-col items-center justify-center"
-        style={{ height: "82vh" }}
-      >
-        {isLoading ? (
-          <PacmanLoader />
-        ) : (
-          <>
-            <h1 className="text-3xl font-bold text-black mb-8 mt-3">
-              Available Recipes
-            </h1>
-
-            <div className="grid grid-cols-1 gap-10 overflow-auto justify-items-center">
-              {recipes &&
-                recipes.length > 0 &&
-                recipes.map((recipe, index) => (
-                  <div
-                    key={index}
-                    onClick={() => openModal(recipe)}
-                    className="flex items-center w-3/4 gap-5"
-                  >
-                    <RecipeCard recipe={recipe} />
-                    <button className="bg-[url('/button-box.svg')] bg-cover bg-center h-30 w-45 hover:cursor-pointer">
-                      <h1 className="text-white">Add</h1>
-                    </button>
-                  </div>
-                ))}
-            </div>
-          </>
-        )}
-      </div>
-
-      {/* Mini Calendar Section */}
-      <div className="fixed bottom-0 left-0 w-full">
-        <MiniCalender
-          droppedRecipes={droppedRecipes}
-          mealType={mealType}
-          setMealType={setMealType}
-          breakfastMealPlan={breakfastMealPlan}
-          lunchMealPlan={lunchMealPlan}
-          dinnerMealPlan={dinnerMealPlan}
-          message={message}
-        />
-      </div>
-
-      <RecipeModal isOpen={isModalOpen} onClose={closeModal}>
-        {selectedRecipe && (
-          <div>
-            <h2 className="text-2xl font-bold mb-4">{selectedRecipe.name}</h2>
-            <div className="flex flex-row gap-4">
-              <div className="w-1/2">
-                <h3 className="text-xl font-bold mb-2">Ingredients:</h3>
-                <ul className="list-disc list-inside mb-4">
-                  {Object.entries(selectedRecipe.ingredients).map(
-                    ([key, ingredient], index) => (
-                      <li key={index}>
-                        {ingredient.quantity} {ingredient.unit} {key}{" "}
-                        {ingredient.description &&
-                          `- ${ingredient.description}`}
-                      </li>
-                    )
-                  )}
-                </ul>
-                <h3>
-                  <span className="font-bold">Prep Time:</span>{" "}
-                  {selectedRecipe.prep_time} minutes
-                </h3>
-              </div>
-              <img
-                src={selectedRecipe.image}
-                alt={selectedRecipe.name}
-                className="w-1/2 mb-4"
+    <div className="flex flex-col h-dvh relative">
+      {isLoading ? (
+        <PacmanLoader className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
+      ) : (
+        <>
+          {/* Search bar and filter section */}
+          <div className="flex-1 flex p-5 lg:px-15 lg:w-full">
+            <div className="flex-1 relative lg:flex-0">
+              <IoSearch size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500" />
+              <input 
+                className="pl-12 text-xl shadow appearance-none rounded-lg text-gray-700 focus:outline-none p-2 bg-[#e5e7e9] lg:w-sm lg:text-2xl"
+                placeholder="Search for recipes" 
               />
             </div>
-            <h3 className="text-xl font-bold mb-2">Instructions:</h3>
-            <p>{selectedRecipe.instructions}</p>
+            <button className="px-2">
+              <IoFilter size={30} className=" text-neutral-700"/>
+            </button>
           </div>
-        )}
-      </RecipeModal>
-    </DndContext>
+
+          <div className="grid grid-cols-2 gap-5 px-5 pb-5 justify-items-center lg:grid-cols-3 lg:px-15">
+            {recipes &&
+              recipes.length > 0 &&
+              recipes.map((recipe, index) => (
+                <div
+                  key={index}
+                  onClick={() => openModal(recipe)}
+                  className="flex items-center w-full gap-5"
+                >
+                  <RecipeCard recipe={recipe} />
+                </div>
+              ))}
+          </div>
+        </>
+      )}
+
+      {selectedRecipe && <RecipeModal isOpen={isModalOpen} onClose={closeModal} selectedRecipe={selectedRecipe} /> }
+    </div>
   );
 };
 
