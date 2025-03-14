@@ -10,30 +10,12 @@ import Layout from "./pages/Layout";
 import NewRecipePage from "./components/NewRecipePage";
 import { useAuth } from "./Auth/AuthContext";
 import { fetchFullUserMealPlan } from "./api/mealPlanApi";
-import { fetchARecipeById } from "./api/recipeApi";
-
-export interface Meal {
-  id: string;
-  recipe_id: string;
-  day_to_eat: string;
-  chosen_meal_type: string;
-  servings: number;
-  exp: number;
-  has_been_eaten: boolean;
-}
-
-export interface MealPlan {
-  id: string;
-  title: string;
-  date: string;
-  mealType: "breakfast" | "lunch" | "dinner";
-  imageUrl: string;
-  hasBeenEaten: boolean;
-  exp: number;
-}
+import { fetchAllRecipes, fetchARecipeById } from "./api/recipeApi";
+import { Recipe, Meal, MealRawData } from "./types";
 
 function App() {
-  const [mealPlan, setMealPlan] = useState<MealPlan[]>([]);
+  const [mealPlan, setMealPlan] = useState<Meal[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const { user, session, setIsLoading } = useAuth();
 
   useEffect(() => {
@@ -46,13 +28,13 @@ function App() {
             session.access_token
           );
           const mappedMealPlan = await Promise.all(
-            mealPlan.map(async (meal: Meal) => {
+            mealPlan.map(async (meal: MealRawData) => {
               const date = new Date(meal.day_to_eat).toLocaleDateString();
               const recipe = await fetchARecipeById(meal.recipe_id);
 
               return {
                 id: meal.id,
-                title: meal.recipe_id,
+                recipeId: meal.recipe_id,
                 date,
                 mealType: meal.chosen_meal_type,
                 imageUrl: recipe.image,
@@ -72,6 +54,18 @@ function App() {
     }
   }, [session]);
 
+  useEffect(() => {
+    fetchAllRecipes()
+      .then((data) => {
+        setRecipes(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });
+  }, [])
+
   return (
     <Routes>
       <Route path="/signup" element={<SignUp />} />
@@ -83,13 +77,13 @@ function App() {
         <Route
           path="recipes"
           element={
-            <RecipesPage />
+            <RecipesPage recipes={recipes} />
           }
         />
         <Route
           path="calendar"
           element={
-            <CalendarPage mealPlan={mealPlan} setMealPlan={setMealPlan} />
+            <CalendarPage mealPlan={mealPlan} setMealPlan={setMealPlan} recipes={recipes}/>
           }
         />
       </Route>

@@ -1,38 +1,47 @@
 import { useState} from "react";
-import { Recipe } from "../types";
+import { Recipe, Meal } from "../types";
 import { useAuth } from "../Auth/AuthContext";
- import { useNavigate } from "react-router-dom";
+ import { useNavigate, useLocation } from "react-router-dom";
 import { IoChevronBackCircle } from "react-icons/io5";
 import { FaCircleXmark } from "react-icons/fa6";
-import { addRecipeToMealPlan } from "../api/mealPlanApi";
+import { FaCheckCircle } from "react-icons/fa";
+import { addRecipeToMealPlan, updateMealPlanById } from "../api/mealPlanApi";
 import moment from "moment";
-
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedRecipe: Recipe;
+  selectedMeal?: Meal | null;
+  setSelectedMeal?: React.Dispatch<React.SetStateAction<Meal | null>>;
+  mealPlan?: Meal[];
+  setMealPlan?: React.Dispatch<React.SetStateAction<Meal[]>>
 }
 
-const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe }) => {
+const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe, selectedMeal, setSelectedMeal, mealPlan, setMealPlan }) => {
 
   const daysOfTheWeek = ["S", "M", "T", "W", "TH", "F", "S"];
   const mealTypes = ["Breakfast", "Lunch", "Dinner"];
   const [selectedDay, setSelectedDay] = useState<number>(moment().day());
   const [selectedMealType, setSelectedMealType] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+
  
   const { user, session } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
+  // Select a day for the meal plan
   const handleDayClick = (index: number) => {
     setSelectedDay(index);
   }
 
+  // Select a meal type
   const handleMealTypeClick = (type: string) => {
     setSelectedMealType(type);
   }
 
+  // Add recipe to the meal plan
   const handleAddClick = async () => {
     if (session && user) {
       if (!selectedMealType) {
@@ -68,6 +77,41 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe }) 
     }
   };
 
+  // Mark the meal as cooked
+  const handleCookedClick = async () => {
+
+    if (selectedMeal && setSelectedMeal && mealPlan) {
+
+      // Prevent completing meals for future dates
+      if (selectedMeal.date > moment().startOf('day').format("M/DD/YYYY")) {
+        showMessage("Cannot complete a meal for a future date");
+        return;
+      }
+
+      const updatedMealPlan = mealPlan.map((meal) => {
+        return meal.id === selectedMeal.id
+          ? { ...meal, hasBeenEaten: !meal.hasBeenEaten }
+          : meal;
+      });
+
+      const meal = { ...selectedMeal };
+      meal.hasBeenEaten = !selectedMeal.hasBeenEaten;
+
+      if (user && session && setMealPlan) {
+        try {
+          await updateMealPlanById(user.id, selectedMeal.id, session.access_token, {
+            hasBeenEaten: selectedMeal.hasBeenEaten,
+          });
+          setSelectedMeal(meal);
+          setMealPlan(updatedMealPlan);
+        } catch (error: any) {
+          console.error("Error updating meal plan:", error);
+        }
+      } 
+    }
+  };
+
+  // Show message in the modal for 3 seconds
   const showMessage = (msg: string) => {
     setMessage(msg);
     setTimeout(() => {
@@ -151,7 +195,7 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe }) 
         
         {/* Add meal plan functionality */}
         <div className={`absolute bottom-0 left-0 w-full flex gap-2 border-t-2 p-4 lg:h-1/4 lg:justify-center lg:items-center ${!user ? "bg-amber-50 border-amber-50" : " border-gray-400"}`}>
-           {user ? (
+           {user && location.pathname === "/recipes" ? (
             <>
                <div className="flex-1 flex flex-col gap-2 lg:items-center lg:flex-0">
                  <div className="flex-1 flex gap-2 items-center justify-around">
@@ -181,18 +225,28 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe }) 
                  <h1 className="text-white" onClick={handleAddClick}>Add</h1>
                </button> 
             </>
+           ) : user && location.pathname === "/calendar" ? (
+            <div className="flex-1 flex justify-center">
+              <button 
+                className={` py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 hover:cursor-pointer ${selectedMeal && selectedMeal.hasBeenEaten ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-400 text-gray-300"}`}
+                onClick={handleCookedClick}
+              >
+                <FaCheckCircle />
+                <h1 className={`${selectedMeal && selectedMeal.hasBeenEaten ? "text-[#ebd6aa]" : "text-gray-700"}`}>{selectedMeal && selectedMeal.hasBeenEaten ? "Cooked" : "Cooked ?"}</h1>
+              </button> 
+            </div>
            ) : (
             <div className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full">
-               <p className="text-center">Sign up or log in now to build your meal plan!</p>
+               <p className="text-center text-[#19243e]">Sign up or log in now to build your meal plan!</p>
                <div className="flex items-center justify-center gap-2 lg:w-full">
                 <button
-                  className="bg-[#19243e] text-white py-2 px-6 rounded-lg w-1/3"
+                  className="bg-[#19243e] text-white py-2 px-6 rounded-lg w-1/3 hover:cursor-pointer hover:scale-105 hover:shadow-lg"
                   onClick={() => navigate("/signup")}
                 >
                   Sign Up
                 </button>
                 <button
-                  className="bg-[#19243e] text-white py-2 px-6 rounded-lg w-1/3"
+                  className="border-1 border-[#19243e] text-[#19243e] py-2 px-6 rounded-lg w-1/3 hover:cursor-pointer hover:scale-105 hover:shadow-lg"
                   onClick={() => navigate("/login")}
                 >
                   Login

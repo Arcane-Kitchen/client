@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { fetchAllRecipes } from "../api/recipeApi";
+import React, { useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import RecipeModal from "../components/RecipeModal";
 import { useAuth } from "../Auth/AuthContext";
@@ -7,49 +6,23 @@ import { PacmanLoader } from "react-spinners";
 import { Recipe } from "../types";
 import { IoFilter, IoSearch } from "react-icons/io5";
 
-export interface Ingredient {
-  quantity: number;
-  unit: string;
-  description?: string;
+interface RecipesPageProps {
+  recipes: Recipe[]
 }
 
-export interface Nutrition {
-  calories: number;
-  macronutrients: { [key: string]: Macronutrient };
-}
-
-export interface Macronutrient {
-  amount: number;
-  unit: string;
-  percentage: number;
-}
-
-const RecipesPage: React.FC = () => {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+const RecipesPage: React.FC<RecipesPageProps> = ({ recipes }) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const { setIsLoading, isLoading } = useAuth();
+  const { isLoading } = useAuth();
 
-  useEffect(() => {
-    setIsLoading(true);
-
-    fetchAllRecipes()
-      .then((data) => {
-        setRecipes(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setIsLoading(false);
-      });
-  }, []);
-
+  // Open the modal and set the selected recipe
   const openModal = (recipe: Recipe) => {
     setSelectedRecipe(recipe);
     setIsModalOpen(true);
   };
 
+  // Close the modal and reset selected recipe
   const closeModal = () => {
     setSelectedRecipe(null);
     setIsModalOpen(false);
@@ -57,12 +30,14 @@ const RecipesPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-dvh relative">
+      {/* Conditionally render a loading spinner or the recipes */}
       {isLoading ? (
         <PacmanLoader className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
       ) : (
         <>
           {/* Search bar and filter section */}
           <div className="flex-1 flex p-5 lg:px-15 lg:w-full">
+            {/* Search input field */}
             <div className="flex-1 relative lg:flex-0">
               <IoSearch size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500" />
               <input 
@@ -70,19 +45,22 @@ const RecipesPage: React.FC = () => {
                 placeholder="Search for recipes" 
               />
             </div>
+            {/* Filter button */}
             <button className="px-2">
               <IoFilter size={30} className=" text-neutral-700"/>
             </button>
           </div>
 
+          {/* Recipe grid display */}
           <div className="grid grid-cols-2 gap-5 px-5 pb-5 justify-items-center lg:grid-cols-3 lg:px-15">
+            {/* Render recipe cards */}
             {recipes &&
               recipes.length > 0 &&
               recipes.map((recipe, index) => (
                 <div
                   key={index}
                   onClick={() => openModal(recipe)}
-                  className="flex items-center w-full gap-5"
+                  className="flex items-center w-full gap-5 hover:scale-105 hover:shadow-lg"
                 >
                   <RecipeCard recipe={recipe} />
                 </div>
@@ -91,6 +69,7 @@ const RecipesPage: React.FC = () => {
         </>
       )}
 
+      {/* Display modal if a recipe is selected */}
       {selectedRecipe && <RecipeModal isOpen={isModalOpen} onClose={closeModal} selectedRecipe={selectedRecipe} /> }
     </div>
   );
