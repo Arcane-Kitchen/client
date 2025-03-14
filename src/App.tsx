@@ -11,6 +11,7 @@ import NewRecipePage from "./components/NewRecipePage";
 import { useAuth } from "./Auth/AuthContext";
 import { fetchFullUserMealPlan } from "./api/mealPlanApi";
 import { fetchARecipeById } from "./api/recipeApi";
+import { updateUserLastLoginById } from "./api/userApi";
 
 export interface Meal {
   id: string;
@@ -39,6 +40,23 @@ function App() {
   useEffect(() => {
     if (user && session) {
       setIsLoading(true);
+
+      // update user last login date
+      const loginDateUpdate = async () => {
+        try {
+          const today = new Date();
+          const userToday = today.toISOString();
+          await updateUserLastLoginById(
+            user?.id,
+            userToday,
+            session?.access_token
+          );
+        } catch (error: any) {
+          console.error(error);
+        }
+      };
+
+      // fetch use meal data
       const fetchUserMealData = async () => {
         try {
           const mealPlan = await fetchFullUserMealPlan(
@@ -80,6 +98,7 @@ function App() {
           setIsLoading(false);
         }
       };
+      loginDateUpdate();
       fetchUserMealData();
     }
   }, [session]);

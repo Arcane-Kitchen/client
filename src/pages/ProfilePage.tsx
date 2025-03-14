@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import happyDragon from "../assets/happy.png";
-import neutralDragon from "../assets/neutral.png";
-import sadDragon from "../assets/sad.png";
+// import neutralDragon from "../assets/neutral.png";
+// import sadDragon from "../assets/sad.png";
 import { useAuth } from "../Auth/AuthContext";
 import { MealPlan } from "../App";
 import { useNavigate } from "react-router-dom";
@@ -12,12 +12,11 @@ interface ProfilePageProps {
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   const { user } = useAuth();
-  const [userTotalExp, setUserTotalExp] = useState<number>(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const totalExp = calcTotalExp();
-    setUserTotalExp(totalExp);
+    // const totalExp = calcTotalExp();
+    // setUserTotalExp(totalExp);
   }, []);
 
   const calcTotalExp = () => {
@@ -42,6 +41,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
     const result = exp % 100;
     return result;
   };
+
+  const checkDailyCalories = () => {};
 
   // Calculate the mean happiness
   // const meanHappiness =
