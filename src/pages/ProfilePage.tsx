@@ -63,31 +63,25 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[70vh] flex justify-around p-4">
+      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[80vh] flex justify-around p-4">
         <div className="flex flex-col items-center">
           <h1 className="font-bold text-2xl">Pet Name: </h1>
           <h2 className="text-2xl">Dino the Dragon</h2>
           <img className="size-40" src={dragonImage} alt="dragon" />
-          <label htmlFor="calories">
-            <span className="font-bold">Calories</span> Lvl 1
-          </label>
-          <progress
-            className="w-19/20"
-            id="calories"
-            value={20}
-            max={100}
-          ></progress>
-          <label htmlFor="carbs">
-            <span className="font-bold">Carbs</span> Lvl 1
-          </label>
-          <progress
-            className="w-19/20"
-            id="carbs"
-            value={30}
-            max={100}
-          ></progress>
-          <label htmlFor="protein">
-            <span className="font-bold">Protein</span> Lvl 1
+          <div className="w-full m-1">
+            <label className="self-start text-[20px]" htmlFor="calories">
+              <span className="font-bold">Level</span> 1
+            </label>
+            <progress
+              className="w-19/20 h-4"
+              id="calories"
+              value={20}
+              max={100}
+            ></progress>
+          </div>
+
+          <label className="self-start" htmlFor="protein">
+            <span className="font-bold">Strength</span> (protein) 1
           </label>
           <progress
             className="w-19/20"
@@ -95,8 +89,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             value={40}
             max={100}
           ></progress>
-          <label htmlFor="fat">
-            <span className="font-bold">Fat</span> Lvl 1
+          <label className="self-start" htmlFor="fat">
+            <span className="font-bold">Defense</span> (fat) 1
           </label>
           <progress
             className="w-19/20"
@@ -104,7 +98,25 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             value={35}
             max={100}
           ></progress>
-          <h1 className="">To level up: </h1>
+          <label className="self-start" htmlFor="carbs">
+            <span className="font-bold">Dexterity</span> (carbs) 1
+          </label>
+          <progress
+            className="w-19/20"
+            id="carbs"
+            value={30}
+            max={100}
+          ></progress>
+          <label className="self-start" htmlFor="calories">
+            <span className="font-bold">Stamina</span> (calories) 1
+          </label>
+          <progress
+            className="w-19/20"
+            id="calories"
+            value={20}
+            max={100}
+          ></progress>
+          <h1 className="">To boost your stats: </h1>
 
           <div className="m-2 p-2 w-full  flex justify-around">
             <button
