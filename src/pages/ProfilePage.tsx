@@ -30,90 +30,145 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
     return sum;
   };
 
-  const calcLevel = () => {
-    const level = Math.floor(userTotalExp / 100) + 1;
+  const calcLevel = (exp: number) => {
+    const level = Math.floor(exp / 100) + 1;
     return level;
   };
 
-  const calcRemainderExp = () => {
-    if (userTotalExp < 100) {
-      return userTotalExp;
+  const calcRemainderExp = (exp: number) => {
+    if (exp < 100) {
+      return exp;
     }
-    const result = userTotalExp % 100;
+    const result = exp % 100;
     return result;
   };
 
   // Calculate the mean happiness
-  const meanHappiness =
-    ((user?.pet_daily_calorie_happiness ?? 0) +
-      (user?.pet_daily_carb_happiness ?? 0) +
-      (user?.pet_daily_protein_happiness ?? 0) +
-      (user?.pet_daily_fat_happiness ?? 0)) /
-    4;
+  // const meanHappiness =
+  //   ((user?.pet_daily_calorie_happiness ?? 0) +
+  //     (user?.pet_daily_carb_happiness ?? 0) +
+  //     (user?.pet_daily_protein_happiness ?? 0) +
+  //     (user?.pet_daily_fat_happiness ?? 0)) /
+  //   4;
 
   // Select the appropriate dragon image based on the mean happiness
-  let dragonImage;
-  if (meanHappiness >= 75) {
-    dragonImage = happyDragon;
-  } else if (meanHappiness >= 50) {
-    dragonImage = neutralDragon;
-  } else {
-    dragonImage = sadDragon;
-  }
+  const dragonImage = happyDragon;
+  // if (meanHappiness >= 75) {
+  //   dragonImage = happyDragon;
+  // } else if (meanHappiness >= 50) {
+  //   dragonImage = neutralDragon;
+  // } else {
+  //   dragonImage = sadDragon;
+  // }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
       <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[80vh] flex justify-around p-4">
         <div className="flex flex-col items-center">
           <h1 className="font-bold text-2xl">Pet Name: </h1>
-          <h2 className="text-2xl">Dino the Dragon</h2>
-          <img className="size-40" src={dragonImage} alt="dragon" />
-          <div className="w-full m-1">
-            <label className="self-start text-[20px]" htmlFor="calories">
-              <span className="font-bold">Level</span> 1
-            </label>
-            <progress
-              className="w-19/20 h-4"
-              id="calories"
-              value={20}
-              max={100}
-            ></progress>
+          <h2 className="text-2xl">{user?.pet_name}</h2>
+          <div className="flex">
+            <img className="size-40" src={dragonImage} alt="dragon" />
+            <div className="flex flex-col items center">
+              <h1>Today:</h1>
+              <div className="flex">
+                <div className="bg-green-500 w-[20px] h-[20px] m-1"></div>
+                <p>Go eat / plan!</p>
+              </div>
+              <div className="flex">
+                <div className="bg-yellow-500 w-[20px] h-[20px] m-1"></div>
+                <p>Done!</p>
+              </div>
+              <div className="flex">
+                <div className="bg-red-500 w-[20px] h-[20px] m-1"></div>
+                <p>Stop!</p>
+              </div>
+            </div>
           </div>
 
-          <label className="self-start" htmlFor="protein">
-            <span className="font-bold">Strength</span> (protein) 1
-          </label>
+          <div className="flex w-full justify-between">
+            <label htmlFor="protein">
+              <span className="font-bold">Strength</span> (protein)
+            </label>
+            <p>
+              <span className="font-bold">
+                Lvl {calcLevel(user?.pet_protein_exp)}
+              </span>
+            </p>
+          </div>
           <progress
-            className="w-19/20"
+            className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 [&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500 inset-shadow-sm"
             id="protein"
-            value={40}
+            value={calcRemainderExp(user?.pet_protein_exp)}
             max={100}
           ></progress>
-          <label className="self-start" htmlFor="fat">
-            <span className="font-bold">Defense</span> (fat) 1
-          </label>
+
+          <div className="flex w-full justify-between">
+            <label htmlFor="fat">
+              <span className="font-bold">Defense</span> (fat)
+            </label>
+            <p>
+              <span className="font-bold">
+                Lvl {calcLevel(user?.pet_fat_exp)}
+              </span>
+            </p>
+          </div>
           <progress
-            className="w-19/20"
+            className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 [&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500"
             id="fat"
-            value={35}
+            value={calcRemainderExp(user?.pet_fat_exp)}
             max={100}
           ></progress>
-          <label className="self-start" htmlFor="carbs">
-            <span className="font-bold">Dexterity</span> (carbs) 1
-          </label>
+
+          <div className="flex w-full justify-between">
+            <label htmlFor="carbs">
+              <span className="font-bold">Dexterity</span> (carbs)
+            </label>
+            <p>
+              <span className="font-bold">
+                Lvl {calcLevel(user?.pet_calorie_exp)}
+              </span>
+            </p>
+          </div>
           <progress
-            className="w-19/20"
+            className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 [&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500"
             id="carbs"
-            value={30}
+            value={calcRemainderExp(user?.pet_carb_exp)}
             max={100}
           ></progress>
-          <label className="self-start" htmlFor="calories">
-            <span className="font-bold">Stamina</span> (calories) 1
-          </label>
+
+          <div className="flex w-full justify-between">
+            <label htmlFor="calories">
+              <span className="font-bold">Stamina</span> (calories)
+            </label>
+            <p>
+              <span className="font-bold">
+                Lvl {calcLevel(user?.pet_calorie_exp)}
+              </span>
+            </p>
+          </div>
           <progress
-            className="w-19/20"
+            className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 [&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500"
             id="calories"
-            value={20}
+            value={calcRemainderExp(user?.pet_calorie_exp)}
+            max={100}
+          ></progress>
+
+          <div className="flex w-full justify-between">
+            <label htmlFor="wisdom">
+              <span className="font-bold">Wisdom</span> (meal planning)
+            </label>
+            <p>
+              <span className="font-bold">
+                Lvl {calcLevel(user?.pet_wisdom_exp)}
+              </span>
+            </p>
+          </div>
+
+          <progress
+            className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 [&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500"
+            id="wisdom"
+            value={calcRemainderExp(user?.pet_wisdom_exp)}
             max={100}
           ></progress>
           <h1 className="">To boost your stats: </h1>
