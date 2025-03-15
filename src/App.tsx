@@ -12,6 +12,7 @@ import { useAuth } from "./Auth/AuthContext";
 import { fetchFullUserMealPlan } from "./api/mealPlanApi";
 import { fetchAllRecipes, fetchARecipeById } from "./api/recipeApi";
 import { Recipe, Meal, MealRawData } from "./types";
+import { updateUserLastLoginById } from "./api/userApi";
 
 function App() {
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
@@ -21,6 +22,23 @@ function App() {
   useEffect(() => {
     if (user && session) {
       setIsLoading(true);
+
+      // update user last login date
+      const loginDateUpdate = async () => {
+        try {
+          const today = new Date();
+          const userToday = today.toISOString();
+          await updateUserLastLoginById(
+            user?.id,
+            userToday,
+            session?.access_token
+          );
+        } catch (error: any) {
+          console.error(error);
+        }
+      };
+
+      // fetch use meal data
       const fetchUserMealData = async () => {
         try {
           const mealPlan = await fetchFullUserMealPlan(
@@ -50,6 +68,7 @@ function App() {
           setIsLoading(false);
         }
       };
+      loginDateUpdate();
       fetchUserMealData();
     }
   }, [session]);
@@ -64,7 +83,7 @@ function App() {
         console.error(error);
         setIsLoading(false);
       });
-  }, [])
+  }, []);
 
   return (
     <Routes>
@@ -74,16 +93,15 @@ function App() {
         <Route index element={<Home />} /> {/* Default route */}
         <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
         <Route path="/new-recipe" element={<NewRecipePage />} />
-        <Route
-          path="recipes"
-          element={
-            <RecipesPage recipes={recipes} />
-          }
-        />
+        <Route path="recipes" element={<RecipesPage recipes={recipes} />} />
         <Route
           path="meal-plan"
           element={
-            <CalendarPage mealPlan={mealPlan} setMealPlan={setMealPlan} recipes={recipes}/>
+            <CalendarPage
+              mealPlan={mealPlan}
+              setMealPlan={setMealPlan}
+              recipes={recipes}
+            />
           }
         />
       </Route>
