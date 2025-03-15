@@ -1,5 +1,4 @@
-import { Recipe } from "../pages/RecipesPage";
-import { Meal } from "../App";
+import { Recipe, Meal } from "../types";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL
 
@@ -96,7 +95,7 @@ export const updateMealPlanById = async (id: string, mealPlanId: string, token: 
                 "Authorization": `Bearer ${token}`,
                 "X-Supabase-Auth": token,
             },
-            body: JSON.stringify({ "hasBeenEaten" : updatedMealPlan.has_been_eaten })
+            body: JSON.stringify({ "hasBeenEaten" : updatedMealPlan.hasBeenEaten })
         })
     
         if (!response.ok) {

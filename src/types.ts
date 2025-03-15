@@ -14,6 +14,7 @@ export interface Nutrition {
 }
 
 export interface Recipe {
+  id: string,
   name: string;
   description: string;
   image: string | null;
@@ -23,4 +24,24 @@ export interface Recipe {
   nutrition: Nutrition;
   meal_type: string[];
   ingredients: { [key: string]: Ingredient };
+}
+
+export interface MealRawData {
+  id: string;
+  recipe_id: string;
+  day_to_eat: string;
+  chosen_meal_type: string;
+  servings: number;
+  exp: number;
+  has_been_eaten: boolean;
+}
+
+export interface Meal {
+  id: string;
+  recipeId: string;
+  date: string;
+  mealType: "breakfast" | "lunch" | "dinner";
+  imageUrl: string;
+  hasBeenEaten: boolean;
+  exp: number;
 }
