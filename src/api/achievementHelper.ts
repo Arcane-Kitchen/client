@@ -19,7 +19,7 @@ export const checkForAchievements = async (userId: string) => {
     if (activityCount.length === 1) {
       // Get the reward_id for the achievement
       const { data: achievementData, error: achievementError } = await supabase
-        .from('Achievement') 
+        .from('Achievement')
         .select('id')
         .eq('name', 'First Recipe Added')
         .single();
@@ -32,8 +32,8 @@ export const checkForAchievements = async (userId: string) => {
 
       // Save achievement to user_achievement table
       const { data: userAchievementData, error: userAchievementError } = await supabase
-        .from('User_Achievement') 
-        .insert([{ user_id: userId, reward_id: achievementData.id }]);
+        .from('User_Achievement')
+        .insert([{ user_id: userId, reward_id: achievementData.id, date_earned: new Date().toISOString() }]);
 
       if (userAchievementError) {
         throw userAchievementError;

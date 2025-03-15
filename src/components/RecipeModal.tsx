@@ -74,18 +74,24 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe, se
       if (newMeal) {
         showMessage("Recipe added to meal plan");
       }
-      const activityResponse = await fetch(`http://localhost:8080/activity/add-activity`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: user.id, recipeId: selectedRecipe.id }),
-      });
 
-      const activityResult = await activityResponse.json();
-      if (activityResponse.ok && activityResult.message.includes('Achievement unlocked')) {
-        // Display notification for achievement unlocked
-        showMessage(activityResult.message);
+      try {
+        const activityResponse = await fetch(`http://localhost:8080/activity/add-activity`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId: user.id, recipeId: selectedRecipe.id }),
+        });
+  
+        const activityResult = await activityResponse.json();
+        if (activityResponse.ok && activityResult.message.includes('Achievement unlocked')) {
+          // Display notification for achievement unlocked
+          showMessage(activityResult.message);
+        }
+      } catch (error) {
+        console.error('Error adding activity:', error);
+        showMessage('Error adding activity');
       }
     }
   };
