@@ -68,6 +68,9 @@ const Navbar: React.FC = () => {
               <Link to="/recipes" className="px-4">
                 Recipe List
               </Link>
+              <Link to="/achievements" className="px-4">
+                Achievements
+              </Link>
               <button
                 className="text-white cursor-pointer"
                 onClick={handleLogout}

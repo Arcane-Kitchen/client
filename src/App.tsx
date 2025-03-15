@@ -6,6 +6,7 @@ import SignUp from "./Auth/SignUp";
 import RecipesPage from "./pages/RecipesPage";
 import CalendarPage from "./pages/CalendarPage";
 import ProfilePage from "./pages/ProfilePage";
+import AchievementsPage from './pages/AchievementsPage';
 import Layout from "./pages/Layout";
 import NewRecipePage from "./components/NewRecipePage";
 import { useAuth } from "./Auth/AuthContext";
@@ -13,6 +14,7 @@ import { fetchFullUserMealPlan } from "./api/mealPlanApi";
 import { fetchAllRecipes, fetchARecipeById } from "./api/recipeApi";
 import { Recipe, Meal, MealRawData } from "./types";
 import { updateUserLastLoginById } from "./api/userApi";
+import AchievementSubscriptionProvider from "./components/AchievementSubscriptionProvider";
 
 function App() {
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
@@ -86,6 +88,7 @@ function App() {
   }, []);
 
   return (
+    <AchievementSubscriptionProvider>
     <Routes>
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<Login />} />
@@ -94,6 +97,7 @@ function App() {
         <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
         <Route path="/new-recipe" element={<NewRecipePage />} />
         <Route path="recipes" element={<RecipesPage recipes={recipes} />} />
+        <Route path="/achievements" element={<AchievementsPage />} />
         <Route
           path="meal-plan"
           element={
@@ -107,6 +111,7 @@ function App() {
       </Route>
       <Route path="*" element={<Home />} />
     </Routes>
+    </AchievementSubscriptionProvider>
   );
 }
 
