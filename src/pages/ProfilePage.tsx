@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import happyDragon from "../assets/happy.png";
 // import neutralDragon from "../assets/neutral.png";
 // import sadDragon from "../assets/sad.png";
 import { useAuth } from "../Auth/AuthContext";
 import { Meal } from "../types";
 import { useNavigate } from "react-router-dom";
-import { fetchUserPastDayRecipes } from "../api/recipeApi";
+import { fetchARecipeById } from "../api/recipeApi";
 
 interface ProfilePageProps {
   mealPlan: Meal[];
@@ -14,34 +14,70 @@ interface ProfilePageProps {
 const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [strengthColor, setStrengthColor] = useState<string>(
+    "[&::-webkit-progress-value]:bg-green-500"
+  );
+  const [defenseColor, setDefenseColor] = useState<string>(
+    "[&::-webkit-progress-value]:bg-green-500"
+  );
+  const [dexterityColor, setDexterityColor] = useState<string>(
+    "[&::-webkit-progress-value]:bg-green-500"
+  );
+  const [staminaColor, setStaminaColor] = useState<string>(
+    "[&::-webkit-progress-value]:bg-green-500"
+  );
+  const [wisdomColor, setWisdomColor] = useState<string>(
+    "[&::-webkit-progress-value]:bg-green-500"
+  );
 
   useEffect(() => {
-    checkDailyCalories();
+    checkDailyStatColors();
   }, []);
 
-  const checkDailyCalories = async () => {
-    // const lastLogin = user?.updated_at;
-    // const currentTime = new Date(lastLogin);
-    // const currentTimeToIso = currentTime.toISOString();
-    // const startOfDay = new Date(lastLogin);
-    // startOfDay.setHours(0, 0, 0, 0);
-    // const startOfDayToIso = startOfDay.toISOString();
-    // const recipes = await fetchUserPastDayRecipes(
-    //   user?.id,
-    //   startOfDayToIso,
-    //   currentTimeToIso
-    // );
-    // console.log(recipes);
-  };
+  const checkDailyStatColors = async () => {
+    // using last login date that has user time zone, calculate user's current date
+    const currentDay = new Date(user?.updated_at);
+    const currentDayLocal = currentDay.toLocaleDateString();
 
-  const calcTotalExp = () => {
-    let sum = 0;
-    for (const meal of mealPlan) {
-      if (meal.hasBeenEaten) {
-        sum += meal.exp;
+    // filter users meals that they have eaten today
+    const todayMeals = mealPlan.filter((meal) => {
+      if (meal.hasBeenEaten && meal.date === currentDayLocal) {
+        return true;
       }
+      return false;
+    });
+
+    // using meals eaten today, fetch recipe nutrition info for the meals
+    const todayMealsCalories = await Promise.all(
+      todayMeals.map(async (meal) => {
+        const recipe = await fetchARecipeById(meal.recipeId);
+        return recipe.nutrition.calories;
+      })
+    );
+
+    // sum up the total calories
+    if (todayMealsCalories.length !== 0) {
+      const todayEatenTotalCalories = todayMealsCalories.reduce(
+        (acc: number, val: number) => {
+          return acc + val;
+        }
+      );
     }
-    return sum;
+
+    // we will use this conditional to determine the color change baseed on nutrition
+    // for simplicity and testing, for now, simply count number of meals eaten today
+    //if user has eaten three meals today, will change to yellow
+    if (todayMeals.length >= 3) {
+      setStrengthColor("[&::-webkit-progress-value]:bg-yellow-500");
+      setDefenseColor("[&::-webkit-progress-value]:bg-yellow-500");
+      setDexterityColor("[&::-webkit-progress-value]:bg-yellow-500");
+      setStaminaColor("[&::-webkit-progress-value]:bg-yellow-500");
+    } else {
+      setStrengthColor("[&::-webkit-progress-value]:bg-green-500");
+      setDefenseColor("[&::-webkit-progress-value]:bg-green-500");
+      setDexterityColor("[&::-webkit-progress-value]:bg-green-500");
+      setStaminaColor("[&::-webkit-progress-value]:bg-green-500");
+    }
   };
 
   const calcLevel = (exp: number) => {
@@ -56,14 +92,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
     const result = exp % 100;
     return result;
   };
-
-  // Calculate the mean happiness
-  // const meanHappiness =
-  //   ((user?.pet_daily_calorie_happiness ?? 0) +
-  //     (user?.pet_daily_carb_happiness ?? 0) +
-  //     (user?.pet_daily_protein_happiness ?? 0) +
-  //     (user?.pet_daily_fat_happiness ?? 0)) /
-  //   4;
 
   // Select the appropriate dragon image based on the mean happiness
   const dragonImage = happyDragon;
@@ -111,7 +139,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             </p>
           </div>
           <progress
-            className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 [&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500 inset-shadow-sm"
+            className={`w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${strengthColor}`}
             id="protein"
             value={calcRemainderExp(user?.pet_protein_exp)}
             max={100}
@@ -128,7 +156,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             </p>
           </div>
           <progress
-            className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 [&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500"
+            className={`w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${defenseColor}`}
             id="fat"
             value={calcRemainderExp(user?.pet_fat_exp)}
             max={100}
@@ -145,7 +173,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             </p>
           </div>
           <progress
-            className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 [&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500"
+            className={`w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${dexterityColor}`}
             id="carbs"
             value={calcRemainderExp(user?.pet_carb_exp)}
             max={100}
@@ -162,7 +190,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             </p>
           </div>
           <progress
-            className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 [&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500"
+            className={`w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${staminaColor}`}
             id="calories"
             value={calcRemainderExp(user?.pet_calorie_exp)}
             max={100}
@@ -180,7 +208,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           </div>
 
           <progress
-            className="w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 [&::-webkit-progress-value]:bg-green-500 [&::-moz-progress-bar]:bg-green-500"
+            className={`w-full [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${wisdomColor}`}
             id="wisdom"
             value={calcRemainderExp(user?.pet_wisdom_exp)}
             max={100}
