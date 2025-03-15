@@ -60,122 +60,115 @@ const SignUp: React.FC = () => {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen"
+      className="flex items-center justify-center min-h-screen w-full"
       style={{
         backgroundImage: `url(/background.jpg)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div
-        className="p-8 flex flex-col items-center justify-center"
-        style={{
-          backgroundImage: `url(/sign-up-box.svg)`,
-          backgroundSize: "contain",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          width: "1200px",
-          height: "900px",
-        }}
-      >
+      <div className="p-4 flex items-center justify-center relative">
+        <img src="/sign-up-box.svg" className="w-full h-full transform scale-y-280 lg:w-4/5 lg:scale-y-110" />
         {/* Sign Up Form */}
-        <h2 className="text-2xl font-bold mb-4 text-center text-white">
-          Sign Up
-        </h2>
-        <form className="px-6 w-2/5" onSubmit={handleSubmit}>
-          {/* Username Input */}
-          <div className="mb-4">
-            <label
-              className="block text-white text-sm font-bold mb-2"
-              htmlFor="email"
-            >
-              Username
-            </label>
-            <input
-              className="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-white"
-              id="username"
-              type="text"
-              placeholder="Username"
-              value={signUpForm.username}
-              required={true}
-              onChange={handleChange}
-            />
-          </div>
-          {/* Email Input */}
-          <div className="mb-4">
-            <label
-              className="block text-white text-sm font-bold mb-2"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <input
-              className="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-white"
-              id="email"
-              type="email"
-              placeholder="Email"
-              value={signUpForm.email}
-              required={true}
-              onChange={handleChange}
-            />
-          </div>
-          {/* Password Input */}
-          <div className="mb-2">
-            <label
-              className="block text-white text-sm font-bold mb-2"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              className="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline bg-white"
-              id="password"
-              type="password"
-              placeholder="Password"
-              value={signUpForm.password}
-              required={true}
-              minLength={6}
-              onChange={handleChange}
-            />
-            {error && <p className="text-red-500 text-xs">{error}</p>}
-          </div>
-          {/* Confirm Passowrd Input */}
-          <div className="mb-6">
-            <label
-              className="block text-white text-sm font-bold mb-2"
-              htmlFor="confirmPassword"
-            >
-              Confirm Password
-            </label>
-            <input
-              className="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline bg-white"
-              id="confirmPassword"
-              type="password"
-              placeholder="Confirm Password"
-              value={signUpForm.confirmPassword}
-              required={true}
-              minLength={6}
-              onChange={handleChange}
-            />
-            {error && <p className="text-red-500 text-xs">{error}</p>}
-            <p
-              className="text-white cursor-pointer hover:text-blue-500"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Have an account? Login!
-            </p>
-          </div>
-          <div className="flex items-center justify-between">
-            <button
-              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer"
-              type="submit"
-            >
-              Sign Up
-            </button>
-          </div>
-        </form>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full flex flex-col items-center justify-center lg:w-4/5">
+          <h2 className="text-2xl font-bold mb-4 text-center text-white lg:text-3xl">
+            Sign Up
+          </h2>
+          <form className="px-6 w-4/5 lg:w-3/5" onSubmit={handleSubmit}>
+            {/* Username Input */}
+            <div className="mb-4">
+              <label
+                className="block text-white text-sm font-bold mb-2"
+                htmlFor="email"
+              >
+                Username
+              </label>
+              <input
+                className="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-white"
+                id="username"
+                type="text"
+                placeholder="Username"
+                value={signUpForm.username}
+                required={true}
+                onChange={handleChange}
+              />
+            </div>
+            {/* Email Input */}
+            <div className="mb-4">
+              <label
+                className="block text-white text-sm font-bold mb-2"
+                htmlFor="email"
+              >
+                Email
+              </label>
+              <input
+                className="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-white"
+                id="email"
+                type="email"
+                placeholder="Email"
+                value={signUpForm.email}
+                required={true}
+                onChange={handleChange}
+              />
+            </div>
+            {/* Password Input */}
+            <div className="mb-2">
+              <label
+                className="block text-white text-sm font-bold mb-2"
+                htmlFor="password"
+              >
+                Password
+              </label>
+              <input
+                className="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline bg-white"
+                id="password"
+                type="password"
+                placeholder="Password"
+                value={signUpForm.password}
+                required={true}
+                minLength={6}
+                onChange={handleChange}
+              />
+              {error && <p className="text-red-500 text-xs">{error}</p>}
+            </div>
+            {/* Confirm Passowrd Input */}
+            <div className="mb-6">
+              <label
+                className="block text-white text-sm font-bold mb-2"
+                htmlFor="confirmPassword"
+              >
+                Confirm Password
+              </label>
+              <input
+                className="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline bg-white"
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirm Password"
+                value={signUpForm.confirmPassword}
+                required={true}
+                minLength={6}
+                onChange={handleChange}
+              />
+              {error && <p className="text-red-500 text-xs">{error}</p>}
+              <p
+                className="text-white cursor-pointer hover:text-blue-500"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Have an account? Login!
+              </p>
+            </div>
+            <div className="flex items-center justify-center">
+              <button
+                className="w-3/5 bg-[#ebd6aa] hover:bg-[#d0a56b] active:bg-[#b58a4d] text-[#19243e] font-bold py-2 px-4 rounded cursor-pointer hover:scale-105 hover:shadow-lg"
+                type="submit"
+              >
+                Sign Up
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
