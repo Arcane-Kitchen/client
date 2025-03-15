@@ -77,7 +77,7 @@ export const updateUserLastLoginById = async (
 
     return response.json();
   } catch (error) {
-    console.error("Error updating user meal plan: ", error);
+    console.error("Error updating last user login date: ", error);
     throw error;
   }
 };
