@@ -89,11 +89,11 @@ function App() {
     <Routes>
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Home recipes={recipes} />}></Route>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} /> {/* Default route */}
         <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
-        <Route path="/new-recipe" element={<NewRecipePage />} />
-        <Route path="recipes" element={<RecipesPage recipes={recipes} />} />
+        <Route path="new-recipe" element={<NewRecipePage />} />
+        <Route path="recipes" element={<RecipesPage recipes={recipes} />}/>
         <Route
           path="meal-plan"
           element={
@@ -105,7 +105,7 @@ function App() {
           }
         />
       </Route>
-      <Route path="*" element={<Home />} />
+      <Route path="*" element={<Home recipes={recipes} />} />
     </Routes>
   );
 }

@@ -3,12 +3,12 @@ import happyDragon from "../assets/happy.png";
 // import neutralDragon from "../assets/neutral.png";
 // import sadDragon from "../assets/sad.png";
 import { useAuth } from "../Auth/AuthContext";
-import { MealPlan } from "../App";
+import { Meal } from "../types";
 import { useNavigate } from "react-router-dom";
 import { fetchARecipeById } from "../api/recipeApi";
 
 interface ProfilePageProps {
-  mealPlan: MealPlan[];
+  mealPlan: Meal[];
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
@@ -227,7 +227,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             <button
               className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-1"
               onClick={() => {
-                navigate("/calendar");
+                navigate("/meal-plan");
               }}
             >
               Eat Meals
