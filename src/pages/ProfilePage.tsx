@@ -227,7 +227,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             <button
               className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-1"
               onClick={() => {
-                navigate("/calendar");
+                navigate("/meal-plan");
               }}
             >
               Eat Meals
