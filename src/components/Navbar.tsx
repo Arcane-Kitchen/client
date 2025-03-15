@@ -62,7 +62,7 @@ const Navbar: React.FC = () => {
               <Link to="/profile" className="px-4">
                 Profile
               </Link>
-              <Link to="/calendar" className="px-4">
+              <Link to="/meal-plan" className="px-4">
                 Calendar
               </Link>
               <Link to="/recipes" className="px-4">
