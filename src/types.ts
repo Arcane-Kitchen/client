@@ -44,4 +44,5 @@ export interface Meal {
   imageUrl: string;
   hasBeenEaten: boolean;
   exp: number;
+  calories: number;
 }

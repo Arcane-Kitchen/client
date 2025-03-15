@@ -58,6 +58,7 @@ function App() {
                 imageUrl: recipe.image,
                 hasBeenEaten: meal.has_been_eaten,
                 exp: meal.exp,
+                calories: recipe.nutrition.calories,
               };
             })
           );
@@ -93,7 +94,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
         <Route path="new-recipe" element={<NewRecipePage />} />
-        <Route path="recipes" element={<RecipesPage recipes={recipes} />}/>
+        <Route path="recipes" element={<RecipesPage recipes={recipes} mealPlan={mealPlan} />}/>
         <Route
           path="meal-plan"
           element={
