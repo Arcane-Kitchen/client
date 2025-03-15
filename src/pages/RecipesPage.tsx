@@ -3,14 +3,15 @@ import RecipeCard from "../components/RecipeCard";
 import RecipeModal from "../components/RecipeModal";
 import { useAuth } from "../Auth/AuthContext";
 import { PacmanLoader } from "react-spinners";
-import { Recipe } from "../types";
+import { Recipe, Meal } from "../types";
 import { IoFilter, IoSearch } from "react-icons/io5";
 
 interface RecipesPageProps {
-  recipes: Recipe[]
+  recipes: Recipe[];
+  mealPlan: Meal[];
 }
 
-const RecipesPage: React.FC<RecipesPageProps> = ({ recipes }) => {
+const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -70,7 +71,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes }) => {
       )}
 
       {/* Display modal if a recipe is selected */}
-      {selectedRecipe && <RecipeModal isOpen={isModalOpen} onClose={closeModal} selectedRecipe={selectedRecipe} /> }
+      {selectedRecipe && <RecipeModal isOpen={isModalOpen} onClose={closeModal} selectedRecipe={selectedRecipe} mealPlan={mealPlan} /> }
     </div>
   );
 };

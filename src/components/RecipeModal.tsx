@@ -60,7 +60,18 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe, se
       const date = currentDate
         .startOf("week")
         .add(selectedDay, "days")
-        .format("YYYY-MM-DD");
+        .format("M/DD/YYYY");
+
+      const existingMealPlan = mealPlan?.find((meal) => meal.date === date && meal.mealType === selectedMealType);
+
+      // Update the meal plan if a meal plan already exists for the selected date and meal type
+      if (existingMealPlan && existingMealPlan.recipeId !== selectedRecipe.id) {
+        const updatedMeal = await updateMealPlanById(user.id, existingMealPlan.id, session.access_token, { recipeId: selectedRecipe.id });
+        if (updatedMeal) {
+          showMessage(`${moment().day(selectedDay).format('dddd')} ${selectedMealType.toLowerCase()} meal plan updated successfully`);
+        }
+        return;
+      }
       
       // Add new recipe to meal plan
       const newMeal = await addRecipeToMealPlan(
