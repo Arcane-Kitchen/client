@@ -5,6 +5,7 @@ import happyDragon from "../assets/happy.png";
 import { useAuth } from "../Auth/AuthContext";
 import { MealPlan } from "../App";
 import { useNavigate } from "react-router-dom";
+import { fetchUserPastDayRecipes } from "../api/recipeApi";
 
 interface ProfilePageProps {
   mealPlan: MealPlan[];
@@ -17,7 +18,26 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   useEffect(() => {
     // const totalExp = calcTotalExp();
     // setUserTotalExp(totalExp);
+    checkDailyCalories();
   }, []);
+
+  const checkDailyCalories = async () => {
+    const lastLogin = user?.updated_at;
+    const currentTime = new Date(lastLogin);
+    const startOfDay = new Date(lastLogin);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const recipes = await fetchUserPastDayRecipes(
+      user?.id,
+      startOfDay,
+      currentTime
+    );
+    console.log(recipes);
+
+    // console.log(lastLogin);
+    // console.log(currentTime);
+    // console.log(startOfDay);
+  };
 
   const calcTotalExp = () => {
     let sum = 0;
@@ -41,8 +61,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
     const result = exp % 100;
     return result;
   };
-
-  const checkDailyCalories = () => {};
 
   // Calculate the mean happiness
   // const meanHappiness =

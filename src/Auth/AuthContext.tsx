@@ -33,6 +33,7 @@ interface SupabaseResponse {
 interface UserProfile {
   id: string;
   username: string;
+  updated_at: string;
   pet_calorie_exp: number;
   pet_carb_exp: number;
   pet_fat_exp: number;
