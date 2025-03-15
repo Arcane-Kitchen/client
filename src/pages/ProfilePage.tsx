@@ -22,13 +22,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   const checkDailyCalories = async () => {
     const lastLogin = user?.updated_at;
     const currentTime = new Date(lastLogin);
+    // const currentTimeToIso = currentTime.toISOString();
     const startOfDay = new Date(lastLogin);
     startOfDay.setHours(0, 0, 0, 0);
+    const startOfDayToIso = startOfDay.toISOString();
 
     const recipes = await fetchUserPastDayRecipes(
       user?.id,
-      startOfDay,
-      currentTime
+      startOfDayToIso,
+      user?.updated_at
     );
     console.log(recipes);
   };
