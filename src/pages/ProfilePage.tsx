@@ -3,12 +3,12 @@ import happyDragon from "../assets/happy.png";
 // import neutralDragon from "../assets/neutral.png";
 // import sadDragon from "../assets/sad.png";
 import { useAuth } from "../Auth/AuthContext";
-import { MealPlan } from "../App";
+import { Meal } from "../types";
 import { useNavigate } from "react-router-dom";
 import { fetchUserPastDayRecipes } from "../api/recipeApi";
 
 interface ProfilePageProps {
-  mealPlan: MealPlan[];
+  mealPlan: Meal[];
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
