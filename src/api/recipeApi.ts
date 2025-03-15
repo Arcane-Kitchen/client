@@ -57,31 +57,3 @@ export const fetchARecipeById = async (id: string) => {
     throw error;
   }
 };
-
-// get all users recipes from past day
-export const fetchUserPastDayRecipes = async (
-  userId: number,
-  start: string,
-  current: string
-) => {
-  try {
-    const response = await fetch(`${baseUrl}/recipes/${userId}/pastday`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ startOfDay: start, currentTime: current }),
-    });
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error("Recipe not found");
-      }
-      throw new Error("An error occurred while fetching recipe");
-    }
-    return response.json();
-  } catch (error) {
-    console.error("Error fetching recipe: ", error);
-    throw error;
-  }
-};
