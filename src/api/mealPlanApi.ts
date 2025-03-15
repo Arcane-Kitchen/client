@@ -81,3 +81,28 @@ export const updateMealPlanById = async (id: string, mealPlanId: string, token: 
         throw error;
     }
 }
+
+// Deletes a meal from the user's meal plan
+export const removeMealFromMealPlan = async (id: string, token:string, mealPlanId: string) => {
+    try {
+        const response = await fetch(`${baseUrl}/users/${id}/meal-plan/${mealPlanId}`, {
+            method: "DELETE",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "X-Supabase-Auth": token,
+            },
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error("User meal plan not found");
+            }
+            throw new Error("An error occurred while deleting meal from user meal plan");
+        }
+    } catch (error) {
+        console.error("Error deleting meal from user meal plan: ", error);
+        throw error;
+    }
+}

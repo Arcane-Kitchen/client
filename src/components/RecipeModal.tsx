@@ -2,10 +2,10 @@ import { useState} from "react";
 import { Recipe, Meal } from "../types";
 import { useAuth } from "../Auth/AuthContext";
  import { useNavigate, useLocation } from "react-router-dom";
-import { IoChevronBackCircle } from "react-icons/io5";
+import { IoChevronBackCircle, IoRemove } from "react-icons/io5";
 import { FaCircleXmark } from "react-icons/fa6";
 import { FaCheckCircle } from "react-icons/fa";
-import { addRecipeToMealPlan, updateMealPlanById } from "../api/mealPlanApi";
+import { addRecipeToMealPlan, updateMealPlanById, removeMealFromMealPlan } from "../api/mealPlanApi";
 import moment from "moment";
 
 interface ModalProps {
@@ -135,6 +135,16 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe, se
     }
   };
 
+  // Delete the meal from the meal plan
+  const handleDelete = async () => {
+    if (user && session && selectedMeal && mealPlan && setMealPlan) {
+      await removeMealFromMealPlan(user.id, session.access_token, selectedMeal.id);
+      const updatedMealPlan = mealPlan.filter((meal) => meal.id !== selectedMeal.id);
+      setMealPlan(updatedMealPlan);
+      onClose();
+    }
+  }
+
   // Show message in the modal for 3 seconds
   const showMessage = (msg: string) => {
     setMessage(msg);
@@ -250,14 +260,23 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe, se
                </button> 
             </>
            ) : user && location.pathname === "/meal-plan" ? (
-            <div className="flex-1 flex justify-center">
+            <div className="flex-1 flex justify-center gap-4">
               <button 
-                className={` py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 hover:cursor-pointer ${selectedMeal && selectedMeal.hasBeenEaten ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-400 text-gray-300"}`}
+                className={` py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 hover:shadow-lg ${selectedMeal && selectedMeal.hasBeenEaten ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-400 text-gray-300"}`}
                 onClick={handleCookedClick}
               >
                 <FaCheckCircle />
                 <h1 className={`${selectedMeal && selectedMeal.hasBeenEaten ? "text-[#ebd6aa]" : "text-gray-700"}`}>{selectedMeal && selectedMeal.hasBeenEaten ? "Cooked" : "Cooked ?"}</h1>
-              </button> 
+              </button>
+              {selectedMeal && moment(selectedMeal.date, "M/DD/YYYY").isSameOrAfter(moment(), "day") && (
+                <button 
+                  className={` py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 cursor-pointer bg-gray-300 text-gray-700 hover:scale-105 hover:shadow-lg"}`}
+                  onClick={handleDelete}
+                >
+                  <IoRemove />
+                  <h1>Remove</h1>
+                </button> 
+              )}
             </div>
            ) : (
             <div className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full">
