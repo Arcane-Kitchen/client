@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import happyDragon from "../assets/happy.png";
 // import neutralDragon from "../assets/neutral.png";
 // import sadDragon from "../assets/sad.png";
@@ -16,8 +16,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // const totalExp = calcTotalExp();
-    // setUserTotalExp(totalExp);
     checkDailyCalories();
   }, []);
 
@@ -33,10 +31,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
       currentTime
     );
     console.log(recipes);
-
-    // console.log(lastLogin);
-    // console.log(currentTime);
-    // console.log(startOfDay);
   };
 
   const calcTotalExp = () => {
