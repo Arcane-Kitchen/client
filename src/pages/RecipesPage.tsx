@@ -1,19 +1,32 @@
 import React, { useEffect, useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import RecipeModal from "../components/RecipeModal";
+import FilterModal from "../components/FilterModal";
 import { useAuth } from "../Auth/AuthContext";
 import { PacmanLoader } from "react-spinners";
-import { Recipe, Meal } from "../types";
-import { IoFilter, IoSearch } from "react-icons/io5";
+import { Recipe, Meal, Filter } from "../types";
+import { IoSearch } from "react-icons/io5";
+import { FaFilter } from "react-icons/fa";
+
 
 interface RecipesPageProps {
   recipes: Recipe[];
   mealPlan: Meal[];
+  filteredRecipes: Recipe[];
+  setFilteredRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
 }
 
-const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
+const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRecipes, setFilteredRecipes }) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
+  const [filters, setFilters] = useState<Filter>({
+    mealType: [false, false, false, false],
+    cookingTime: [false, false, false],
+    calorieRange: [false, false, false],
+    difficultyLevel: [false, false, false],
+  })
+  
 
   const { isLoading } = useAuth();
 
@@ -37,6 +50,10 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
     setIsModalOpen(false);
   };
 
+  const toggleFilter = () => {
+    setIsFilterModalOpen(!isFilterModalOpen);
+  }
+
   return (
     <div className="flex flex-col h-dvh relative">
       {/* Conditionally render a loading spinner or the recipes */}
@@ -45,7 +62,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
       ) : (
         <>
           {/* Search bar and filter section */}
-          <div className="flex-1 flex p-5 lg:px-15 lg:w-full">
+          <div className="flex p-5 lg:px-15 lg:w-full">
             {/* Search input field */}
             <div className="flex-1 relative lg:flex-0">
               <IoSearch
@@ -58,17 +75,17 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
               />
             </div>
             {/* Filter button */}
-            <button className="px-2">
-              <IoFilter size={30} className=" text-neutral-700" />
+            <button className="px-2 cursor-pointer" onClick={toggleFilter}>
+              <FaFilter size={25} className=" text-neutral-700" />
             </button>
           </div>
 
           {/* Recipe grid display */}
           <div className="grid grid-cols-2 gap-5 px-5 pb-5 justify-items-center lg:grid-cols-3 lg:px-15">
             {/* Render recipe cards */}
-            {recipes &&
-              recipes.length > 0 &&
-              recipes.map((recipe, index) => (
+            {filteredRecipes &&
+              filteredRecipes.length > 0 &&
+              filteredRecipes.map((recipe, index) => (
                 <div
                   key={index}
                   onClick={() => openModal(recipe)}
@@ -89,6 +106,11 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
           selectedRecipe={selectedRecipe}
           mealPlan={mealPlan}
         />
+      )}
+
+      {/* Display filter modal when filter button is clicked */}
+      {isFilterModalOpen && (
+        <FilterModal onClose={toggleFilter} filters={filters} setFilters={setFilters} recipes={recipes} setFilteredRecipes={setFilteredRecipes}/>
       )}
     </div>
   );
