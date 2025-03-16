@@ -17,6 +17,7 @@ import { updateUserLastLoginById } from "./api/userApi";
 function App() {
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
   const { user, session, setIsLoading } = useAuth();
 
   useEffect(() => {
@@ -78,6 +79,7 @@ function App() {
     fetchAllRecipes()
       .then((data) => {
         setRecipes(data);
+        setFilteredRecipes(data);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -94,7 +96,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
         <Route path="new-recipe" element={<NewRecipePage />} />
-        <Route path="recipes" element={<RecipesPage recipes={recipes} mealPlan={mealPlan} />}/>
+        <Route path="recipes" element={<RecipesPage recipes={recipes} mealPlan={mealPlan} filteredRecipes={filteredRecipes} setFilteredRecipes={setFilteredRecipes}/>}/>
         <Route
           path="meal-plan"
           element={

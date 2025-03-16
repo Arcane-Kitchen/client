@@ -46,3 +46,10 @@ export interface Meal {
   exp: number;
   calories: number;
 }
+
+export interface Filter {
+  mealType: boolean[];
+  cookingTime: boolean[];
+  calorieRange: boolean[];
+  difficultyLevel: boolean[];
+}
