@@ -38,8 +38,8 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
 
     return (
         <div className="fixed inset-0 bg-[rgba(255,255,255,0.5)] z-50 w-vh h-vh lg:flex lg:justify-center lg:items-center">
-            <div className="bg-white p-6 rounded-md shadow-2xl mt-17 ml-15 h-[92vh] flex flex-col gap-5 justify-between relative">
-                <div className="flex gap-5 flex-col">
+            <div className="bg-white p-6 rounded-md shadow-2xl mt-17 ml-15 h-[92vh] flex flex-col gap-5 justify-between relative lg:mt-0 lg:ml-0 lg:w-1/2 lg:h-fit lg:items-center lg:gap-10">
+                <div className="flex gap-5 flex-col lg:w-4/5">
                     <div className="flex gap-2 items-center justify-between">
                         <div className="flex gap-2 items-center">
                             <FaFilter />
@@ -112,9 +112,9 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                     </div>
                 </div>
                 
-                <div className="flex flex-col gap-2">
-                    <button className="cursor-pointer bg-gray-200 rounded-full p-2 hover:scale-105 hover:shadow-lg hover:bg-[#19243e] hover:text-[#ebd6aa]" onClick={handleClearAll}>Clear All</button>
-                    <button className="cursor-pointer bg-[#ebd6aa] text-[#19243e] rounded-full p-2 hover:scale-105 hover:shadow-lg hover:bg-[#19243e] hover:text-[#ebd6aa]" onClick={handleApply}>Apply</button>
+                <div className="flex flex-col gap-2 lg:w-4/5 lg:flex-row">
+                    <button className="cursor-pointer bg-gray-200 rounded-full p-2 hover:scale-105 hover:shadow-lg hover:bg-[#19243e] hover:text-[#ebd6aa] lg:flex-1" onClick={handleClearAll}>Clear All</button>
+                    <button className="cursor-pointer bg-[#ebd6aa] text-[#19243e] rounded-full p-2 hover:scale-105 hover:shadow-lg hover:bg-[#19243e] hover:text-[#ebd6aa] lg:flex-1" onClick={handleApply}>Apply</button>
                 </div>
             </div>
         </div>
