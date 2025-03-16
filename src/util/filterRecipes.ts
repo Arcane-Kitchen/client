@@ -93,7 +93,7 @@ const filterByDifficultyLevel = (recipe: Recipe, difficultyLevelFilters: boolean
 // Filter recipes based on selected filters
 export const filterRecipes = (recipes: Recipe[], filters: Filter) => {
 
-    recipes.filter((recipe) => {
+    return recipes.filter((recipe) => {
         const isMealTypeMatch = filterByMealType(recipe, filters.mealType);
         const isCookingTimeMatch = filterByCookingTime(recipe, filters.cookingTime);
         const isCalorieRangeMatch = filterByCalorieRange(recipe, filters.calorieRange);

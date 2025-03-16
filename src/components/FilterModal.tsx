@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { FaFilter } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
-import { Filter } from '../types';
+import { Filter, Recipe } from '../types';
+import { filterRecipes } from '../util/filterRecipes';
 
 interface FilterProps {
     onClose: () => void;
     filters: Filter;
     setFilters: React.Dispatch<React.SetStateAction<Filter>>;
+    recipes: Recipe[];
+    setFilteredRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
   }
 
-const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters }) => {
+const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, recipes, setFilteredRecipes }) => {
 
     const handleFilterClick = (filterType: keyof Filter, index: number) => {
         const newFilters = { ...filters };
@@ -19,6 +22,8 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters }) =>
     }
 
     const handleApplyClick = () => {
+        const filteredRecipes = filterRecipes(recipes, filters);
+        setFilteredRecipes(filteredRecipes);
         onClose();
     }
 
