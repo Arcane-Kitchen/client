@@ -53,3 +53,12 @@ export interface Filter {
   calorieRange: boolean[];
   difficultyLevel: boolean[];
 }
+
+export interface UserProfile {
+  gender: string;
+  age: string;
+  weight: string;
+  height: string;
+  activityLevel: string;
+  goal: string;
+}
