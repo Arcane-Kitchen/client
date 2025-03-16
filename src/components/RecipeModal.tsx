@@ -17,6 +17,7 @@ interface ModalProps {
   mealPlan?: Meal[];
   setMealPlan?: React.Dispatch<React.SetStateAction<Meal[]>>
 }
+const baseUrl = import.meta.env.VITE_API_BASE_URL
 
 const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe, selectedMeal, setSelectedMeal, mealPlan, setMealPlan }) => {
 
@@ -76,7 +77,7 @@ const RecipeModal: React.FC<ModalProps> = ({ isOpen, onClose, selectedRecipe, se
       }
 
       try {
-        const activityResponse = await fetch(`http://localhost:8080/activity/add-activity`, {
+        const activityResponse = await fetch(`${baseUrl}/activity/add-activity`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
