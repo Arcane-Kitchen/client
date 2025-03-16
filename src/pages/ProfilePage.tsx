@@ -5,7 +5,6 @@ import happyDragon from "../assets/happy.png";
 import { useAuth } from "../Auth/AuthContext";
 import { Meal } from "../types";
 import { useNavigate } from "react-router-dom";
-import { fetchARecipeById } from "../api/recipeApi";
 
 interface ProfilePageProps {
   mealPlan: Meal[];
@@ -47,22 +46,22 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
       return false;
     });
 
-    // using meals eaten today, fetch recipe nutrition info for the meals
-    const todayMealsCalories = await Promise.all(
-      todayMeals.map(async (meal) => {
-        const recipe = await fetchARecipeById(meal.recipeId);
-        return recipe.nutrition.calories;
-      })
-    );
+    // using meals eaten today, fetch recipe nutrition info for the meals (COMMENTED OUT FOR NOW, MAY USE LATER)
+    // const todayMealsCalories = await Promise.all(
+    //   todayMeals.map(async (meal) => {
+    //     const recipe = await fetchARecipeById(meal.recipeId);
+    //     return recipe.nutrition.calories;
+    //   })
+    // );
 
-    // sum up the total calories
-    if (todayMealsCalories.length !== 0) {
-      const todayEatenTotalCalories = todayMealsCalories.reduce(
-        (acc: number, val: number) => {
-          return acc + val;
-        }
-      );
-    }
+    // sum up the total calories (COMMENTED OUT FOR NOW, MAY USE LATER)
+    // if (todayMealsCalories.length !== 0) {
+    //   const todayEatenTotalCalories = todayMealsCalories.reduce(
+    //     (acc: number, val: number) => {
+    //       return acc + val;
+    //     }
+    //   );
+    // }
 
     // we will use this conditional to determine the color change baseed on nutrition
     // for simplicity and testing, for now, simply count number of meals eaten today
