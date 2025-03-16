@@ -12,20 +12,15 @@ const AchievementSubscriptionProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     if (user) {
-      console.log('Setting up subscription for user:', user.id);
 
       const subscription = supabase
         .channel('User_Activity')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'User_Activity', filter: `user_id=eq.${user.id}` }, (payload) => {
-          console.log('New activity:', payload);
           checkForAchievements(user.id);
         })
         .subscribe();
 
-      console.log('Subscription set up:', subscription);
-
       return () => {
-        console.log('Removing subscription for user:', user.id);
         supabase.removeChannel(subscription);
       };
     }

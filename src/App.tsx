@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Login from "./Auth/Login";
 import Home from "./pages/Home";
 import SignUp from "./Auth/SignUp";
@@ -111,6 +113,7 @@ function App() {
       </Route>
       <Route path="*" element={<Home />} />
     </Routes>
+    <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </AchievementSubscriptionProvider>
   );
 }
