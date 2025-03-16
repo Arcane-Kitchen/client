@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import RecipeModal from "../components/RecipeModal";
+import FilterModal from "../components/FilterModal";
 import { useAuth } from "../Auth/AuthContext";
 import { PacmanLoader } from "react-spinners";
-import { Recipe, Meal } from "../types";
-import { IoFilter, IoSearch } from "react-icons/io5";
+import { Recipe, Meal, Filter } from "../types";
+import { IoSearch } from "react-icons/io5";
+import { FaFilter } from "react-icons/fa";
+
 
 interface RecipesPageProps {
   recipes: Recipe[];
@@ -14,6 +17,13 @@ interface RecipesPageProps {
 const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
+  const [filters, setFilters] = useState<Filter>({
+    mealType: [false, false, false, false],
+    cookingTime: [false, false, false],
+    calorieRange: [false, false, false],
+    difficultyLevel: [false, false, false],
+})
 
   const { isLoading } = useAuth();
 
@@ -37,6 +47,10 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
     setIsModalOpen(false);
   };
 
+  const toggleFilter = () => {
+    setIsFilterModalOpen(!isFilterModalOpen);
+  }
+
   return (
     <div className="flex flex-col h-dvh relative">
       {/* Conditionally render a loading spinner or the recipes */}
@@ -58,8 +72,8 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
               />
             </div>
             {/* Filter button */}
-            <button className="px-2">
-              <IoFilter size={30} className=" text-neutral-700" />
+            <button className="px-2 cursor-pointer" onClick={toggleFilter}>
+              <FaFilter size={25} className=" text-neutral-700" />
             </button>
           </div>
 
@@ -89,6 +103,11 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
           selectedRecipe={selectedRecipe}
           mealPlan={mealPlan}
         />
+      )}
+
+      {/* Display filter modal when filter button is clicked */}
+      {isFilterModalOpen && (
+        <FilterModal onClose={toggleFilter} filters={filters} setFilters={setFilters}/>
       )}
     </div>
   );
