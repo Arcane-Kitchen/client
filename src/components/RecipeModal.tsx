@@ -12,6 +12,7 @@ import {
 } from "../api/mealPlanApi";
 import moment from "moment";
 import { updateUserStat } from "../api/userApi";
+import { fetchARecipeById } from "../api/recipeApi";
 
 interface ModalProps {
   isOpen: boolean;
@@ -50,6 +51,88 @@ const RecipeModal: React.FC<ModalProps> = ({
   // Select a meal type
   const handleMealTypeClick = (type: string) => {
     setSelectedMealType(type);
+  };
+
+  // Handle point calc based on goal/actual ratio
+  const handlePointCalc = (ratio: number) => {
+    if (ratio > 0.9) {
+      return 10;
+    }
+    if (ratio > 0.8) {
+      return 8;
+    }
+    if (ratio > 0.7) {
+      return 6;
+    }
+    if (ratio > 0.6) {
+      return 4;
+    }
+    return 2;
+  };
+
+  // Handle updating stat
+  const handleUpdateStat = async (
+    statName: string,
+    eatenMacroValue: number
+  ) => {
+    switch (statName) {
+      case "carb":
+        if (user?.daily_carb_goal) {
+          let ratio = user.daily_carb_goal / eatenMacroValue;
+          if (ratio > 1) ratio = 1 / ratio;
+          const points = handlePointCalc(ratio);
+          await updateUserStat(
+            user.id,
+            user.pet_carb_exp + points,
+            "carb",
+            session.access_token
+          );
+          return points;
+        }
+        break;
+      case "fat":
+        if (user?.daily_fat_goal) {
+          let ratio = user.daily_fat_goal / eatenMacroValue;
+          if (ratio > 1) ratio = 1 / ratio;
+          const points = handlePointCalc(ratio);
+          await updateUserStat(
+            user.id,
+            user.pet_fat_exp + points,
+            "fat",
+            session.access_token
+          );
+          return points;
+        }
+        break;
+      case "protein":
+        if (user?.daily_protein_goal) {
+          let ratio = user.daily_protein_goal / eatenMacroValue;
+          if (ratio > 1) ratio = 1 / ratio;
+          const points = handlePointCalc(ratio);
+          await updateUserStat(
+            user.id,
+            user.pet_protein_exp + points,
+            "protein",
+            session.access_token
+          );
+          return points;
+        }
+        break;
+      case "calorie":
+        if (user?.daily_calorie_goal) {
+          let ratio = user.daily_calorie_goal / eatenMacroValue;
+          if (ratio > 1) ratio = 1 / ratio;
+          const points = handlePointCalc(ratio);
+          await updateUserStat(
+            user.id,
+            user.pet_calorie_exp + points,
+            "calorie",
+            session.access_token
+          );
+          return points;
+        }
+        break;
+    }
   };
 
   // Add recipe to the meal plan
@@ -171,31 +254,29 @@ const RecipeModal: React.FC<ModalProps> = ({
           setSelectedMeal(meal);
           setMealPlan(updatedMealPlan);
           // after successfully eating, update strength, defense, dex, and stamina points
-          await updateUserStat(
-            user.id,
-            user.pet_calorie_exp + 10,
+          // first, grab eaten meal's nutrition info
+          const recipe = await fetchARecipeById(meal.recipeId);
+          const nutrition = recipe.nutrition;
+          const eatenCalories = nutrition.calories;
+          const eatenCarbPercent = nutrition.macronutrients.carbs.percentage;
+          const eatenFatPercent = nutrition.macronutrients.fat.percentage;
+          const eatenProteinPercent =
+            nutrition.macronutrients.protein.percentage;
+          // next, calculate points for each stat and update
+          const caloriePoints = await handleUpdateStat(
             "calorie",
-            session.access_token
+            eatenCalories
           );
-          await updateUserStat(
-            user.id,
-            user.pet_carb_exp + 10,
-            "carb",
-            session.access_token
-          );
-          await updateUserStat(
-            user.id,
-            user.pet_protein_exp + 10,
+          const carbPoints = await handleUpdateStat("carb", eatenCarbPercent);
+          const fatPoints = await handleUpdateStat("fat", eatenFatPercent);
+          const proteinPoints = await handleUpdateStat(
             "protein",
-            session.access_token
+            eatenProteinPercent
           );
-          await updateUserStat(
-            user.id,
-            user.pet_fat_exp + 10,
-            "fat",
-            session.access_token
+
+          showMessage(
+            `Strength +${proteinPoints} Defense +${fatPoints} Dexterity +${carbPoints} Stamina +${caloriePoints}`
           );
-          showMessage("Strength +10 Defense +10 Dex +10 Stamina +10");
         } catch (error: any) {
           console.error("Error updating meal plan:", error);
         }
