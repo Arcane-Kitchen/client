@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FaFilter } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 import { Filter, Recipe } from '../types';
@@ -21,10 +21,19 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
         setFilters(newFilters);
     }
 
-    const handleApplyClick = () => {
+    const handleApply = () => {
         const filteredRecipes = filterRecipes(recipes, filters);
         setFilteredRecipes(filteredRecipes);
         onClose();
+    }
+
+    const handleClearAll = () => {
+        const newFilters = { ...filters };
+        Object.entries(newFilters).forEach(([key, value]) => {
+            newFilters[key as keyof Filter] = value.map(() => false);
+        }) 
+        setFilters(newFilters);
+        setFilteredRecipes(recipes);
     }
 
     return (
@@ -102,8 +111,11 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                         </div>
                     </div>
                 </div>
-
-                <button className="cursor-pointer bg-gray-200 rounded-full p-2 hover:scale-105 hover:shadow-lg hover:bg-[#19243e] hover:text-[#ebd6aa]" onClick={handleApplyClick}>Apply</button>
+                
+                <div className="flex flex-col gap-2">
+                    <button className="cursor-pointer bg-gray-200 rounded-full p-2 hover:scale-105 hover:shadow-lg hover:bg-[#19243e] hover:text-[#ebd6aa]" onClick={handleClearAll}>Clear All</button>
+                    <button className="cursor-pointer bg-[#ebd6aa] text-[#19243e] rounded-full p-2 hover:scale-105 hover:shadow-lg hover:bg-[#19243e] hover:text-[#ebd6aa]" onClick={handleApply}>Apply</button>
+                </div>
             </div>
         </div>
     )

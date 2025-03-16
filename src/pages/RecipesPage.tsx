@@ -62,7 +62,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
       ) : (
         <>
           {/* Search bar and filter section */}
-          <div className="flex-1 flex p-5 lg:px-15 lg:w-full">
+          <div className="flex p-5 lg:px-15 lg:w-full">
             {/* Search input field */}
             <div className="flex-1 relative lg:flex-0">
               <IoSearch
