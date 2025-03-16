@@ -5,7 +5,6 @@ import { useAuth } from "../Auth/AuthContext";
 import { PacmanLoader } from "react-spinners";
 import { Recipe, Meal } from "../types";
 import { IoFilter, IoSearch } from "react-icons/io5";
-import { updateUserStat } from "../api/userApi";
 
 interface RecipesPageProps {
   recipes: Recipe[];
@@ -15,7 +14,6 @@ interface RecipesPageProps {
 const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const { user, session } = useAuth();
 
   const { isLoading } = useAuth();
 
@@ -23,12 +21,9 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan }) => {
     // testStatUpdate();
   }, []);
 
-  const statUpdate = async (statName: string, newAmount: number) => {
-    // const statAndValue = {};
-    // const stat = "pet_calorie_exp";
-    // statAndValue[stat] = value;
-    await updateUserStat(user?.id, newAmount, statName, session?.access_token);
-  };
+  // const statUpdate = async (statName: string, newAmount: number) => {
+  //   await updateUserStat(user?.id, newAmount, statName, session?.access_token);
+  // };
 
   // Open the modal and set the selected recipe
   const openModal = (recipe: Recipe) => {
