@@ -14,21 +14,29 @@ interface FilterProps {
 
 const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, recipes, setFilteredRecipes }) => {
 
+    // Toggle the value for a specific filter
     const handleFilterClick = (filterType: keyof Filter, index: number) => {
         const newFilters = { ...filters };
+
+        // Reset the selected filter by setting all values to false
         newFilters[filterType] = newFilters[filterType].map(() => false);
+        // Toggle the selected index to true
         newFilters[filterType][index] = !newFilters[filterType][index];
         setFilters(newFilters);
     }
 
+    // Filter the recipes based on the selected filters
     const handleApply = () => {
         const filteredRecipes = filterRecipes(recipes, filters);
         setFilteredRecipes(filteredRecipes);
         onClose();
     }
 
+    // Reset all filters
     const handleClearAll = () => {
         const newFilters = { ...filters };
+
+        // Reset each filter array to have all false values
         Object.entries(newFilters).forEach(([key, value]) => {
             newFilters[key as keyof Filter] = value.map(() => false);
         }) 
@@ -40,6 +48,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
         <div className="fixed inset-0 bg-[rgba(255,255,255,0.5)] z-50 w-vh h-vh lg:flex lg:justify-center lg:items-center">
             <div className="bg-white p-6 rounded-md shadow-2xl mt-17 ml-15 h-[92vh] flex flex-col gap-5 justify-between relative lg:mt-0 lg:ml-0 lg:w-1/2 lg:h-fit lg:items-center lg:gap-10">
                 <div className="flex gap-5 flex-col lg:w-4/5">
+                    {/* Header of the filter modal */}
                     <div className="flex gap-2 items-center justify-between">
                         <div className="flex gap-2 items-center">
                             <FaFilter />
@@ -50,6 +59,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                         </button>
                     </div>
 
+                    {/* Meal Type Filter */}
                     <div className="flex flex-col gap-2">
                         <h1>Meal Type</h1>
                         <div className="flex gap-2">
@@ -63,6 +73,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                         </div>
                     </div>
 
+                    {/* Cooking Time Filter */}
                     <div className="flex flex-col gap-2">
                         <h1>Cooking Time</h1>
                         <div className="flex gap-2">
@@ -75,7 +86,8 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                             ))}
                         </div>
                     </div>
-
+                    
+                    {/* Calorie Range Filter */}
                     <div className="flex flex-col gap-2">
                         <h1>Calorie Range</h1>
                         <div className="flex gap-2">
@@ -88,7 +100,8 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                             ))}
                         </div>
                     </div>
-
+                    
+                    {/* Difficulty Level Filter */}
                     <div className="flex flex-col gap-2">
                         <h1>Difficulty Level</h1>
                         <div className="flex gap-2">
@@ -101,17 +114,9 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                             ))}
                         </div>
                     </div>
-
-                    <div className="flex flex-col gap-2">
-                        <h1>Dietary Preferences</h1>
-                        <div className="flex gap-2">
-                            <button className="cursor-pointer bg-gray-200 rounded-full px-2 py-1">Vegan</button>
-                            <button className="cursor-pointer bg-gray-200 rounded-full px-2 py-1">Gluten-free</button>
-                            <button className="cursor-pointer bg-gray-200 rounded-full px-2 py-1">Keto</button>
-                        </div>
-                    </div>
                 </div>
                 
+                {/* Apply and Clear All buttons */}
                 <div className="flex flex-col gap-2 lg:w-4/5 lg:flex-row">
                     <button className="cursor-pointer bg-gray-200 rounded-full p-2 hover:scale-105 hover:shadow-lg hover:bg-[#19243e] hover:text-[#ebd6aa] lg:flex-1" onClick={handleClearAll}>Clear All</button>
                     <button className="cursor-pointer bg-[#ebd6aa] text-[#19243e] rounded-full p-2 hover:scale-105 hover:shadow-lg hover:bg-[#19243e] hover:text-[#ebd6aa] lg:flex-1" onClick={handleApply}>Apply</button>
