@@ -21,6 +21,7 @@ import AchievementSubscriptionProvider from "./components/AchievementSubscriptio
 function App() {
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
   const { user, session, setIsLoading } = useAuth();
 
   useEffect(() => {
@@ -62,6 +63,7 @@ function App() {
                 imageUrl: recipe.image,
                 hasBeenEaten: meal.has_been_eaten,
                 exp: meal.exp,
+                calories: recipe.nutrition.calories,
               };
             })
           );
@@ -81,6 +83,7 @@ function App() {
     fetchAllRecipes()
       .then((data) => {
         setRecipes(data);
+        setFilteredRecipes(data);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -94,11 +97,11 @@ function App() {
     <Routes>
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Home recipes={recipes} />}></Route>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} /> {/* Default route */}
         <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
-        <Route path="/new-recipe" element={<NewRecipePage />} />
-        <Route path="recipes" element={<RecipesPage recipes={recipes} />} />
+        <Route path="new-recipe" element={<NewRecipePage />} />
+        <Route path="recipes" element={<RecipesPage recipes={recipes} mealPlan={mealPlan} filteredRecipes={filteredRecipes} setFilteredRecipes={setFilteredRecipes}/>}/>
         <Route path="/achievements" element={<AchievementsPage />} />
         <Route
           path="meal-plan"
@@ -111,7 +114,7 @@ function App() {
           }
         />
       </Route>
-      <Route path="*" element={<Home />} />
+      <Route path="*" element={<Home recipes={recipes} />} />
     </Routes>
     <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
     </AchievementSubscriptionProvider>

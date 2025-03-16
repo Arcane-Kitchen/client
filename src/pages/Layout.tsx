@@ -5,7 +5,7 @@ const Layout = () => {
   return (
     <div className="bg-[url('/background.jpg')] bg-cover bg-center min-h-screen max-h-screen flex flex-col">
       <Navbar />
-      <div className="pt-16 h-auto flex-1 overflow-y-auto">
+      <div className="pt-16 h-auto flex-1 overflow-y-auto lg:pt-24">
         <Outlet />
       </div>
     </div>

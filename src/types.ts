@@ -14,7 +14,7 @@ export interface Nutrition {
 }
 
 export interface Recipe {
-  id: string,
+  id: string;
   name: string;
   description: string;
   image: string | null;
@@ -44,4 +44,12 @@ export interface Meal {
   imageUrl: string;
   hasBeenEaten: boolean;
   exp: number;
+  calories: number;
+}
+
+export interface Filter {
+  mealType: boolean[];
+  cookingTime: boolean[];
+  calorieRange: boolean[];
+  difficultyLevel: boolean[];
 }

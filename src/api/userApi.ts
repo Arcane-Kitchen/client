@@ -81,3 +81,33 @@ export const updateUserLastLoginById = async (
     throw error;
   }
 };
+
+// update user stat by chosen amount
+export const updateUserStat = async (
+  id: string | undefined,
+  amount: number,
+  stat: string,
+  token: string
+) => {
+  try {
+    const response = await fetch(`${baseUrl}/users/${id}/stat`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "X-Supabase-Auth": token,
+      },
+      body: JSON.stringify({ statAmount: amount, chosenStat: stat }),
+    });
+
+    if (!response.ok) {
+      throw new Error("An error occurred while updating stat");
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error updating stat: ", error);
+    throw error;
+  }
+};

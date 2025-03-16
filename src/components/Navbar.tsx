@@ -23,80 +23,67 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-10">
-      <div className="flex items-center justify-between p-4 bg-gray-800">
-        <div className="text-white text-2xl font-bold">Arcane Kitchen</div>
-        <button
-          onClick={toggleNavbar}
-          className="text-white focus:outline-none"
-        >
-          <svg
-            className="w-8 h-8 cursor-pointer"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+    <div className="fixed top-0 left-0 h-16 w-full z-10 lg:h-24">
+      <div className="flex items-center justify-between h-full bg-[#19243e]">
+      <img src="/navbar.svg" className="h-16 transform scale-y-150 relative top-0 left-0 lg:w-full lg:h-full lg:scale-y-100 lg:scale-x-145"/>
+        <div className="absolute top-0 left-0 z-20 h-full w-full flex items-center justify-between px-10 lg:px-25">
+          <div className="text-[#ebd6aa] text-2xl font-bold lg:text-4xl">Arcane Kitchen</div>
+          <button
+            onClick={toggleNavbar}
+            className="text-[#ebd6aa] focus:outline-none"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16m-7 6h7"
-            ></path>
-          </svg>
-        </button>
+            <svg
+              className="w-8 h-8 cursor-pointer lg:w-12 lg:h-12"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              ></path>
+            </svg>
+          </button>
+        </div>
       </div>
       {isOpen && (
         <div
-          className="absolute top-0 left-0 w-full bg-cover bg-center text-white flex items-center justify-center p-4"
-          style={{
-            backgroundImage: `url(/navbar.svg)`,
-            height: "65px",
-          }}
+          className="absolute top-16 right-0 w-full bg-[#19243e] text-[#ebd6aa] text-lg opacity-95 p-4 lg:top-24" 
         >
-          {session ? (
-            <>
-              <Link to="/" className="px-4">
-                Home
-              </Link>
-              <Link to="/profile" className="px-4">
-                Profile
-              </Link>
-              <Link to="/meal-plan" className="px-4">
-                Calendar
-              </Link>
-              <Link to="/recipes" className="px-4">
-                Recipe List
-              </Link>
-              <Link to="/achievements" className="px-4">
-                Achievements
-              </Link>
-              <button
-                className="text-white cursor-pointer"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/" className="px-4">
-                Home
-              </Link>
-              <Link to="/recipes" className="px-4">
-                Recipe List
-              </Link>
-              <Link to="/signup" className="px-4">
-                Sign Up
-              </Link>
-              <Link to="/login" className="px-4">
-                Login
-              </Link>
-            </>
-          )}
+            <nav className="w-full">
+              <ul className="w-full flex flex-col items-center text-center">
+                <li className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${session ? 'hidden' : 'block'}`} onClick={toggleNavbar}>
+                  <Link to='/'>Home</Link>
+                </li>
+                <li className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${session ? 'block' : 'hidden'}`} onClick={toggleNavbar}>
+                  <Link to='/profile'>Profile</Link>
+                </li>
+                <li className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${session ? 'block' : 'hidden'}`} onClick={toggleNavbar}>
+                  <Link to='/meal-plan'>Meal Plan</Link>
+                </li>
+                <li className={"w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl"} onClick={toggleNavbar}>
+                  <Link to='/recipes'>Recipes</Link>
+                </li>
+                <li 
+                  className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${session ? 'block' : 'hidden'}` } 
+                  onClick={handleLogout}
+                >
+                  Logout
+                </li>
+                <li className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${session ? 'hidden' : 'block'}` } onClick={toggleNavbar}>
+                  <Link to='/signup'>Sign Up</Link>
+                </li>
+                <li className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${session ? 'hidden' : 'block'}`} onClick={toggleNavbar}>
+                  <Link to='/login'>Login</Link>
+                </li>
+              </ul>
+            </nav>
         </div>
       )}
-    </nav>
+    </div>
   );
 };
 
