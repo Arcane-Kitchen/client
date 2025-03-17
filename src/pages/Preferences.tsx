@@ -147,7 +147,7 @@ const Preferences = () => {
                                             value="Male"
                                             required={true}
                                             checked={userProfile.gender === "Male"}
-                                            onChange={handleChange}
+                                            onChange={handleUserProfileChange}
                                             className='border-solid border-gray-200 border-1 inset-shadow-xs p-1' 
                                         />
                                         <label className="block text-white font-bold flex-1" htmlFor="Male"> Male</label>
