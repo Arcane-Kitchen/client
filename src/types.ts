@@ -90,3 +90,13 @@ export interface Pet {
     sad: string,
   }
 }
+export interface Enemy {
+  id: string;
+  name: string;
+  img: string;
+  calorie_exp: number;
+  carb_exp: number;
+  protein_exp: number;
+  fat_exp: number;
+  wisdom_exp: number;
+}
