@@ -54,21 +54,19 @@ const AchievementsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div
-        className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[80vh] flex flex-col items-center justify-around p-4"
-      >
-        <h2 className="text-2xl font-bold text-center text-black mt-8">
+      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-11/12 md:w-5/6 h-[80vh] flex flex-col items-center justify-start p-4 pt-2">
+        <h2 className="text-2xl font-bold text-center text-black mt-4 mb-4">
           Achievements
         </h2>
-        <ul className="list-none mt-4 w-full">
+        <ul className="list-none w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {achievements.map((achievement) => (
-            <li key={achievement.reward_id} className="flex items-center justify-between mb-4 p-4 bg-[url('/achievement-box.svg')] bg-cover bg-center w-1/2">
-              <div className="flex flex-col ml-4">
+            <li key={achievement.reward_id} className="flex flex-col items-center justify-between mb-4 p-4 bg-[url('/achievement-box.svg')] bg-cover bg-center w-full h-full rounded-lg shadow-md">
+              <img src={achievement.achievement_img} alt={achievement.achievement_name} className="w-16 h-16 mb-4 object-cover" />
+              <div className="flex flex-col items-center text-white">
                 <span className="font-bold text-lg">{achievement.achievement_name}</span>
-                <span>{achievement.achievement_description}</span>
-                <span>{new Date(achievement.date_earned).toLocaleDateString()}</span>
+                <span className="text-center">{achievement.achievement_description}</span>
+                <span className="text-sm text-gray-300">{new Date(achievement.date_earned).toLocaleDateString()}</span>
               </div>
-              <img src={achievement.achievement_img} alt={achievement.achievement_name} className="w-16 h-16 mr-4 object-cover" />
             </li>
           ))}
         </ul>
