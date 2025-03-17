@@ -1,4 +1,5 @@
 import { UserProfile } from "../types";
+import { activityLevels, goals } from "./constants";
 
 export const calculateDailyCaloriesAndMacrosIntake = (userProfile: UserProfile) => {
     
@@ -18,13 +19,13 @@ export const calculateDailyCaloriesAndMacrosIntake = (userProfile: UserProfile) 
     // Active: BMR x 1.725 
     // Extremely Active: BMR x 1.9 
     let TDEE = 0;
-    if (activityLevel === "Little or no exercise") {
+    if (activityLevel === activityLevels[0]) {
         TDEE = BMR * 1.2;
-    } else if (activityLevel === "Light exercise 1-3 days/week") {
+    } else if (activityLevel === activityLevels[1]) {
         TDEE = BMR * 1.375;
-    } else if (activityLevel === "Moderate exercise 3-5 days/week") {
+    } else if (activityLevel === activityLevels[2]) {
         TDEE = BMR * 1.55;
-    } else if (activityLevel === "Hard exercise 6-7 days/week") {
+    } else if (activityLevel === activityLevels[3]) {
         TDEE = BMR * 1.725;
     } else {
         TDEE = BMR * 1.9;
@@ -35,9 +36,9 @@ export const calculateDailyCaloriesAndMacrosIntake = (userProfile: UserProfile) 
     let fats = (TDEE * 0.25 ) / 9;
     
     // Adjust for specific goals
-    if (goal === "weight loss") {
+    if (goal === goals[1]) {
         protein = parseInt(weight, 10) * 1.7;
-    } else if (goal === "muscle gain") {
+    } else if (goal === goals[2]) {
         protein = parseInt(weight, 10) * 2.5;
         fats = (TDEE * 0.30 ) / 9;
     }

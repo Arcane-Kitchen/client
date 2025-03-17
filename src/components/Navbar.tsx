@@ -102,6 +102,14 @@ const Navbar: React.FC = () => {
                 className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
                   session ? "block" : "hidden"
                 }`}
+                onClick={toggleNavbar}
+              >
+                <Link to="/preferences">Preferences</Link>
+              </li>
+              <li
+                className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
+                  session ? "block" : "hidden"
+                }`}
                 onClick={handleLogout}
               >
                 Logout

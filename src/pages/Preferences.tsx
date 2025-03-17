@@ -1,17 +1,19 @@
 import { useState, useRef } from "react";
 import { UserProfile, DailyCaloriesAndMacros, Pet } from "../types";
 import { calculateDailyCaloriesAndMacrosIntake } from "../util/caloriesAndMacrosCalculator";
-import NutritionChart from "../components/nutritionChart";
+import NutritionChart from "../components/NutritionChart";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper as SwiperType } from "swiper";
 import { useAuth } from "../Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { updateUserCalorieAndMacrosGoal, updateUserPet } from "../api/userApi"
+import { activityLevels, goals, pets, petMoods } from "../util/constants";
+import UserDetailsForm from "../components/UserDetailsForm";
 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const Preferences = () => {
 
@@ -20,24 +22,19 @@ const Preferences = () => {
         age: "",
         weight: "",
         height: "",
-        activityLevel: "Little or no exercise",
-        goal: "Maintain weight"
+        activityLevel: activityLevels[0],
+        goal: goals[0],
     });
     const [dailyCaloriesAndMacros, setDailyCaloriesAndMacros] = useState<DailyCaloriesAndMacros | null>(null);
     const [page, setPage] = useState<number>(1);
     const [pet, setPet] = useState<Pet>({ 
         name: "", 
         imageUrl: { 
-            happy: "/orange-dragon-happy.png", 
-            neutral: "/orange-dragon-neutral.png", 
-            sad: "/orange-dragon-sad.png"
+            happy: petMoods.orangeDragon.happy, 
+            neutral: petMoods.orangeDragon.neutral,
+            sad: petMoods.orangeDragon.sad
         }
     });
-    
-    // Arrays to store pet image URLs based on the pet mood
-    const happyPetsImageUrls = ["/orange-dragon-happy.png", "/unicorn.png", "/werewolf.png"];
-    const neutralPetsImageUrls = ["/orange-dragon-neutral.png", "/unicorn.png", "/werewolf.png"];
-    const sadPetsImageUrls = ["/orange-dragon-sad.png", "/unicorn.png", "/werewolf.png"];
 
     const { user, session } = useAuth();
     const navigate = useNavigate();
@@ -56,10 +53,17 @@ const Preferences = () => {
             event.preventDefault();
 
             if (formRef.current && user && session) {
-                formRef.current.reportValidity(); // Validate form fields
+                const isFormValid = formRef.current.checkValidity(); // Check if the form is valid
+
+                // Trigger browser validation messages if invalid
+                if (!isFormValid) {
+                    formRef.current.reportValidity(); 
+                    return;
+                }
+
                 await updateUserCalorieAndMacrosGoal(user.id, session.access_token, dailyCaloriesAndMacros); // Update user's macros in the database
                 await updateUserPet(user.id, session.access_token, pet); // Update user's pet data in the database
-                navigate("/profile");;
+                navigate("/profile");
             }
         }
         setPage(page + 1);
@@ -83,10 +87,12 @@ const Preferences = () => {
     // Handle changes in the pet selection carousel
     const handleSlideChange = (swiper: SwiperType) => {
         const index = swiper.activeIndex; // Get the current slide index
+        const petType = pets[index];
+        
         const newPet = { ...pet };
-        newPet.imageUrl.happy = happyPetsImageUrls[index];
-        newPet.imageUrl.neutral = neutralPetsImageUrls[index];
-        newPet.imageUrl.sad = sadPetsImageUrls[index];
+        newPet.imageUrl.happy = petMoods[petType].happy;
+        newPet.imageUrl.neutral = petMoods[petType].neutral;
+        newPet.imageUrl.sad = petMoods[petType].sad;
         setPet(newPet);
     }
     
@@ -117,156 +123,15 @@ const Preferences = () => {
                 <div className="absolute top-6/11 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full flex flex-col items-center justify-center lg:w-4/5">
                     {/* Page 1: Personal details form */}
                     {page === 1 ? (
-                        <form ref={formRef} className="px-6 w-4/5 lg:w-3/5">
-                            <h1 className="text-white text-center text-2xl mb-3">Enter your details</h1>
-
-                            {/* Gender Input */}
-                            <div className="flex gap-2 items-center">
-                                <label
-                                    className="block text-white text-sm font-bold mb-2 flex-1"
-                                    htmlFor="gender"
-                                >
-                                    Gender
-                                </label>
-                                <fieldset className="flex justify-around w-2/3 mb-2">
-                                    <div className="flex items-center gap-2">
-                                        <input 
-                                            type="radio"
-                                            id="gender-female"
-                                            name="gender"
-                                            value="Female"
-                                            required={true}
-                                            checked={userProfile.gender === "Female"}
-                                            onChange={handleUserProfileChange}
-                                            className='border-solid border-gray-200 border-1 inset-shadow-xs p-1' 
-                                        />
-                                        <label className="block text-white font-bold flex-1" htmlFor="Female"> Female</label>
-                                    </div>
-
-                                    <div className="flex items-center gap-2">
-                                        <input 
-                                            type="radio"
-                                            id="gender-male"
-                                            name="gender"
-                                            value="Male"
-                                            required={true}
-                                            checked={userProfile.gender === "Male"}
-                                            onChange={handleUserProfileChange}
-                                            className='border-solid border-gray-200 border-1 inset-shadow-xs p-1' 
-                                        />
-                                        <label className="block text-white font-bold flex-1" htmlFor="Male"> Male</label>
-                                    </div>
-                                </fieldset>
-                            </div>
-
-                            {/* Age Input */}
-                            <div className="flex gap-2 items-center">
-                                <label
-                                    className="block text-white text-sm font-bold mb-2 flex-1"
-                                    htmlFor="age"
-                                >
-                                    Age
-                                </label>
-                                <input
-                                    className="shadow appearance-none rounded w-2/3 py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline bg-white"
-                                    id="age"
-                                    name="age"
-                                    type="number"
-                                    placeholder="e.g. 27"
-                                    value={userProfile.age}
-                                    required={true}
-                                    onChange={handleUserProfileChange}
-                                />
-                            </div>
-
-                            {/* Weight Input */}
-                            <div className="flex gap-2 items-center">
-                            <label
-                                className="block text-white text-sm font-bold mb-2 flex-1"
-                                htmlFor="weight"
-                            >
-                                Weight (kg)
-                            </label>
-                            <input
-                                className="shadow appearance-none rounded w-2/3 py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline bg-white"
-                                id="weight"
-                                name="weight"
-                                type="number"
-                                placeholder="e.g. 72"
-                                value={userProfile.weight}
-                                required={true}
-                                onChange={handleUserProfileChange}
-                            />
-                            </div>
-
-                            {/* Height Input */}
-                            <div className="flex gap-2 items-center">
-                            <label
-                                className="block text-white text-sm font-bold mb-2 flex-1"
-                                htmlFor="height"
-                            >
-                                Height (cm)
-                            </label>
-                            <input
-                                className="shadow appearance-none rounded w-2/3 py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline bg-white"
-                                id="height"
-                                name="height"
-                                type="number"
-                                placeholder="e.g. 173"
-                                value={userProfile.height}
-                                required={true}
-                                onChange={handleUserProfileChange}
-                            />
-                            </div>
-                            
-                            {/* Activity Level Dropdown */}
-                            <div className="flex gap-2 items-center">
-                                <label
-                                    className="block text-white text-sm font-bold mb-2 flex-1"
-                                    htmlFor="activityLevel"
-                                >
-                                    Activity Level
-                                </label>
-                                <select 
-                                    id="activityLevel" 
-                                    name="activityLevel"
-                                    className="shadow appearance-none rounded w-2/3 py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline bg-white"
-                                    value={userProfile.activityLevel} 
-                                    onChange={handleUserProfileChange}
-                                >
-                                    <option value="Little or no exercise">Little or no exercise</option>
-                                    <option value="Light exercise 1-3 days/week">Light exercise 1-3 days/week</option>
-                                    <option value="Moderate exercise 3-5 days/week">Moderate exercise 3-5 days/week</option>
-                                    <option value="Hard exercise 6-7 days/week">Hard exercise 6-7 days/week</option>
-                                    <option value="Intense exercise">Intense exercise</option>
-                                </select>
-                            </div>
-
-                            {/* Weight Goal Dropdown */}
-                            <div className="mb-6 flex gap-2 items-center">
-                                <label
-                                    className="block text-white text-sm font-bold mb-2 flex-1"
-                                    htmlFor="goal"
-                                >
-                                    Diet Goal
-                                </label>
-                                <select 
-                                    id="goal" 
-                                    name="goal"
-                                    className="shadow appearance-none rounded w-2/3 py-2 px-3 text-gray-700 mb-2 leading-tight focus:outline-none focus:shadow-outline bg-white"
-                                    value={userProfile.goal} 
-                                    onChange={handleUserProfileChange}
-                                >
-                                    <option value="Maintain weight">Maintain weight</option>
-                                    <option value="Lose weight">Lose weight</option>
-                                    <option value="Gain muscles">Gain muscles</option>
-                                </select>
-                            </div>
-                        </form>
+                        <UserDetailsForm
+                            formRef={formRef}
+                            userProfile={userProfile}
+                            handleUserProfileChange={handleUserProfileChange}
+                        />
                     ) : page === 2 ? (
                         // Page 2: Display recommended calories and macros
                         <div className="px-6 w-4/5">
-                            <h1 className="text-white text-center text-2xl mb-3">Recommended Daily Calories and Macros</h1>
+                            <h1 className="text-white text-center text-2xl mb-3">Set your goals and prepare for the challenges ahead</h1>
                             {dailyCaloriesAndMacros && (
                                 <div className="flex flex-col w-full items-center gap-3">
                                     {/* Macros Chart */}
@@ -285,7 +150,7 @@ const Preferences = () => {
                     ) : (
                         // Page 3: Pet selection and naming
                         <div className="px-6 w-4/5 flex flex-col gap-3">
-                            <h1 className="text-white text-center text-2xl">Choose your pet</h1>
+                            <h1 className="text-white text-center text-2xl">Pick your loyal pet companion to aid you in your journey!</h1>
                             <div className="flex-1">
                                 <Swiper
                                     slidesPerView={1}
@@ -297,11 +162,11 @@ const Preferences = () => {
                                     onSlideChange={handleSlideChange}
                                     modules={[Pagination, Navigation]}
                                 >
-                                    {happyPetsImageUrls.map((pet, index) => {
+                                    {pets.map((pet: keyof typeof petMoods) => {
                                         return (
-                                            <SwiperSlide key={`Pet-${index}`}>
+                                            <SwiperSlide key={pet}>
                                                 <div className="flex items-center h-50">
-                                                    <img src={pet} alt={`Pet-${index}`} className="w-full h-full object-contain"/>
+                                                    <img src={petMoods[pet].happy} alt={`happy ${pet}`} className="w-full h-full object-contain"/>
                                                 </div>
                                             </SwiperSlide>
                                         )

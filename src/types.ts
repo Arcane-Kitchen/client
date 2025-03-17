@@ -90,6 +90,7 @@ export interface Pet {
     sad: string,
   }
 }
+
 export interface Enemy {
   id: string;
   name: string;
