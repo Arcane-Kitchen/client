@@ -5,6 +5,7 @@ import { useAuth } from "../Auth/AuthContext";
 import { fetchEnemyById } from "../api/enemyApi";
 import { Enemy } from "../types";
 import { updateUserStat } from "../api/userApi";
+import { calcLevel } from "../util/statCalc";
 
 const QuestPage: React.FC = () => {
   const [enemy, setEnemy] = useState<Enemy | null>(null);
@@ -91,6 +92,22 @@ const QuestPage: React.FC = () => {
           <h1 className="font-bold text-4xl m-1 p-1">Current Quest</h1>
           <h1 className="text-4xl m-1 p-1">Defeat a {enemy?.name}!</h1>
           <img src={enemy?.img} alt="" />
+          <h1 className="text-2xl font-bold m-1 p-1">
+            Str: {calcLevel(enemy?.protein_exp)}
+          </h1>
+          <h1 className="text-2xl font-bold m-1 p-1">
+            Def: {calcLevel(enemy?.fat_exp)}
+          </h1>
+          <h1 className="text-2xl font-bold m-1 p-1">
+            Dex: {calcLevel(enemy?.carb_exp)}
+          </h1>
+          <h1 className="text-2xl font-bold m-1 p-1">
+            Stamina: {calcLevel(enemy?.calorie_exp)}
+          </h1>
+          <h1 className="text-2xl font-bold m-1 p-1">
+            Wis: {calcLevel(enemy?.wisdom_exp)}
+          </h1>
+
           <button
             onClick={handleFight}
             className="m-1 p-1 w-1/4 text-2xl bg-blue-500"

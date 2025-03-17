@@ -5,6 +5,7 @@ import happyDragon from "../assets/happy.png";
 import { useAuth } from "../Auth/AuthContext";
 import { Meal } from "../types";
 import { useNavigate } from "react-router-dom";
+import { calcLevel, calcRemainderExp } from "../util/statCalc";
 
 interface ProfilePageProps {
   mealPlan: Meal[];
@@ -60,19 +61,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
       setDexterityColor("[&::-webkit-progress-value]:bg-yellow-500");
       setStaminaColor("[&::-webkit-progress-value]:bg-yellow-500");
     }
-  };
-
-  const calcLevel = (exp: number) => {
-    const level = Math.floor(exp / 100) + 1;
-    return level;
-  };
-
-  const calcRemainderExp = (exp: number) => {
-    if (exp < 100) {
-      return exp;
-    }
-    const result = exp % 100;
-    return result;
   };
 
   // Select the appropriate dragon image based on the mean happiness
@@ -145,7 +133,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             </label>
             <p>
               <span className="font-bold">
-                Lvl {calcLevel(user?.pet_calorie_exp)}
+                Lvl {calcLevel(user?.pet_carb_exp)}
               </span>
             </p>
           </div>
