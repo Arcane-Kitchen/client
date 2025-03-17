@@ -41,7 +41,6 @@ const Preferences = () => {
     const formRef = useRef<HTMLFormElement | null>(null);
     
     const handleNextClick = async (event: React.MouseEvent) => {
-        console.log(formRef.current)
         if (page === 1) {
             event.preventDefault();
 
@@ -83,7 +82,6 @@ const Preferences = () => {
         newPet.imageUrl.happy = happyPetsImageUrls[index];
         newPet.imageUrl.neutral = neutralPetsImageUrls[index];
         newPet.imageUrl.sad = sadPetsImageUrls[index];
-        console.log(newPet)
         setPet(newPet);
     }
 
@@ -92,7 +90,6 @@ const Preferences = () => {
 
         const newPet = { ...pet };
         newPet.name = value;
-        console.log(newPet)
         setPet(newPet);
     }
 
