@@ -13,34 +13,30 @@ export const calculateDailyCaloriesAndMacrosIntake = (userProfile: UserProfile) 
     }
 
     // Calculate total daily energy expenditure (TDEE) by multiplying BMR by an activity factor
-    // Sedentary: BMR x 1.2 
-    // Lightly Active: BMR x 1.375 
-    // Moderately Active: BMR x 1.55 
-    // Active: BMR x 1.725 
-    // Extremely Active: BMR x 1.9 
     let TDEE = 0;
-    if (activityLevel === activityLevels[0]) {
+    if (activityLevel === activityLevels[0]) { // Sedentary
         TDEE = BMR * 1.2;
-    } else if (activityLevel === activityLevels[1]) {
+    } else if (activityLevel === activityLevels[1]) { // Lightly Active
         TDEE = BMR * 1.375;
-    } else if (activityLevel === activityLevels[2]) {
+    } else if (activityLevel === activityLevels[2]) { // Moderately Active
         TDEE = BMR * 1.55;
-    } else if (activityLevel === activityLevels[3]) {
+    } else if (activityLevel === activityLevels[3]) { // Active
         TDEE = BMR * 1.725;
-    } else {
+    } else { // Extremely Active
         TDEE = BMR * 1.9;
     }
 
-    // Allocate calories to macros based on goals (e.g weight loss, maintenance, muscle gain)
+    // Default macro breakdown (Maintenance)
     let protein = parseInt(weight, 10) * 1.6;
     let fats = (TDEE * 0.25 ) / 9;
     
     // Adjust for specific goals
-    if (goal === goals[1]) {
+    if (goal === goals[1]) { // Lose weight
         protein = parseInt(weight, 10) * 1.7;
-    } else if (goal === goals[2]) {
+        fats = (TDEE * 0.3) / 9
+    } else if (goal === goals[2]) { // Gain muscle
         protein = parseInt(weight, 10) * 2.5;
-        fats = (TDEE * 0.30 ) / 9;
+        fats = (TDEE * 0.3) / 9;
     }
 
     // Calculate carbs (remaining calories after protein and fats)
@@ -50,27 +46,22 @@ export const calculateDailyCaloriesAndMacrosIntake = (userProfile: UserProfile) 
     const carbs = remainingCalories / 4;
 
     // Calculate macronutrient percentages
-    const proteinPercentage = (proteinCalories / TDEE) * 100;
-    const fatPercentage = (fatCalories / TDEE) * 100;
-    const carbsPercentage = (remainingCalories / TDEE) * 100;
+    const proteinPercentage = Math.round((proteinCalories / TDEE) * 100);
+    const fatPercentage = Math.round((fatCalories / TDEE) * 100);
+    let carbsPercentage = Math.round((remainingCalories / TDEE) * 100);
 
-    // Round each macro percentage to nearest integer
-    const roundedProtein = Math.round(proteinPercentage);
-    const roundedFats = Math.round(fatPercentage);
-    let roundedCarbs = Math.round(carbsPercentage);
-
-    // Calculate the sum of rounded percentages
-    let totalRounded = roundedProtein + roundedFats + roundedCarbs;
+    // Adjust rounding to ensure percentages sum to 100
+    let totalRounded = proteinPercentage + fatPercentage + carbsPercentage;
 
     if (totalRounded !== 100) {
         const difference = 100 - totalRounded;
-        roundedCarbs += difference;
+        carbsPercentage += difference;
     }
 
     return {
         calories: Math.round(TDEE),
-        protein: { "grams": protein, "inCalories": proteinCalories, "percentage": roundedProtein},
-        fats: { "grams": fats, "inCalories": fatCalories, "percentage": roundedFats },
-        carbs: { "grams": carbs, "inCalories": remainingCalories, "percentage": roundedCarbs },
+        protein: { "grams": protein, "inCalories": proteinCalories, "percentage": proteinPercentage},
+        fats: { "grams": fats, "inCalories": fatCalories, "percentage": fatPercentage },
+        carbs: { "grams": carbs, "inCalories": remainingCalories, "percentage": carbsPercentage },
     }
 }

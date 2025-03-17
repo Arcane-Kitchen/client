@@ -10,6 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { updateUserCalorieAndMacrosGoal, updateUserPet } from "../api/userApi"
 import { activityLevels, goals, pets, petMoods } from "../util/constants";
 import UserDetailsForm from "../components/UserDetailsForm";
+import { FaDumbbell } from "react-icons/fa6";
+import { PiSneakerMoveFill } from "react-icons/pi";
+import { FaShieldAlt } from "react-icons/fa";
+
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -105,15 +109,6 @@ const Preferences = () => {
         setPet(newPet);
     }
 
-    // const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const { id, value } = event.target;
-    //     const key = id as keyof DailyCaloriesAndMacros;
-        
-    //     if(dailyCaloriesAndMacros)
-    //     const updatedMacros = { ...dailyCaloriesAndMacros };
-    //     updatedMacros[key].percentage = parseInt(value, 10);
-    // }
-
     return (
         <div className="flex-1 flex flex-col items-center px-2 py-10">
             <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-3/5 aspect-square lg:p-15">
@@ -130,8 +125,8 @@ const Preferences = () => {
                         />
                     ) : page === 2 ? (
                         // Page 2: Display recommended calories and macros
-                        <div className="px-6 w-4/5">
-                            <h1 className="text-white text-center text-2xl mb-3">Set your goals and prepare for the challenges ahead</h1>
+                        <div className="px-6 w-4/5 pb-5">
+                            <h1 className="text-white text-center text-2xl mb-3">Your goals to prepare for the challenges ahead</h1>
                             {dailyCaloriesAndMacros && (
                                 <div className="flex flex-col w-full items-center gap-3">
                                     {/* Macros Chart */}
@@ -139,13 +134,22 @@ const Preferences = () => {
                                         <h1 className="text-white text-center text-3xl/5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">{dailyCaloriesAndMacros.calories}<br /><span className="text-lg/0">kcal</span></h1>
                                         <NutritionChart dataValues={dailyCaloriesAndMacros} labels={["carbs", "fats", "protein"]}/>
                                     </div>
-                                    {/* Adjust the macros if necessary */}
-                                    {/* <div className="flex-1">
-                                        <input id="carbs" type="range" min={1} max={100} value={dailyCaloriesAndMacros?.carbs.percentage} />
-                                    </div> */}
+                                    <div className="w-3/4">
+                                        <div className="flex justify-between">
+                                            <div className="text-white flex gap-2 items-center"><PiSneakerMoveFill color="#d14b3a" />Carbs</div>
+                                            <p className="text-white">{`${dailyCaloriesAndMacros.carbs.grams.toFixed()}g (${dailyCaloriesAndMacros.carbs.percentage}%)`}</p>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <div className="text-white flex gap-2 items-center"><FaShieldAlt color="#4a6e37" />Fat</div>
+                                            <p className="text-white">{`${dailyCaloriesAndMacros.fats.grams.toFixed()}g (${dailyCaloriesAndMacros.fats.percentage}%)`}</p>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <div className="text-white flex gap-2 items-center"><FaDumbbell color="#f0c046" />Protein</div>
+                                            <p className="text-white">{`${dailyCaloriesAndMacros.protein.grams.toFixed()}g (${dailyCaloriesAndMacros.protein.percentage}%)`}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
-                            
                         </div>
                     ) : (
                         // Page 3: Pet selection and naming
@@ -175,9 +179,9 @@ const Preferences = () => {
                             </div>
                             {/* Pet name input */}
                             <form ref={formRef} className="px-6 w-full lg:w-3/5">
-                                <div className="flex gap-2 items-center">
+                                <div className="flex flex-col items-center">
                                     <label
-                                        className="block text-white text-lg font-bold mb-2 flex-1"
+                                        className="block text-white text-lg font-bold flex-1"
                                         htmlFor="petName"
                                     >
                                         Pet name: 
