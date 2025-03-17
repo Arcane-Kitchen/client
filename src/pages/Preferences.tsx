@@ -33,6 +33,7 @@ const Preferences = () => {
         }
     });
     
+    // Arrays to store pet image URLs based on the pet mood
     const happyPetsImageUrls = ["/orange-dragon-happy.png", "/unicorn.png", "/werewolf.png"];
     const neutralPetsImageUrls = ["/orange-dragon-neutral.png", "/unicorn.png", "/werewolf.png"];
     const sadPetsImageUrls = ["/orange-dragon-sad.png", "/unicorn.png", "/werewolf.png"];
@@ -45,7 +46,7 @@ const Preferences = () => {
             event.preventDefault();
 
             if (formRef.current) {
-                formRef.current.reportValidity();
+                formRef.current.reportValidity(); // Validate form fields
                 const recommendedCaloriesAndMacros = calculateDailyCaloriesAndMacrosIntake(userProfile);
                 setDailyCaloriesAndMacros(recommendedCaloriesAndMacros);
             }
@@ -53,9 +54,9 @@ const Preferences = () => {
             event.preventDefault();
 
             if (formRef.current && user && session) {
-                formRef.current.reportValidity();
-                await updateUserCalorieAndMacrosGoal(user.id, session.access_token, dailyCaloriesAndMacros);
-                await updateUserPet(user.id, session.access_token, pet);
+                formRef.current.reportValidity(); // Validate form fields
+                await updateUserCalorieAndMacrosGoal(user.id, session.access_token, dailyCaloriesAndMacros); // Update user's macros in the database
+                await updateUserPet(user.id, session.access_token, pet); // Update user's pet data in the database
                 return;
             }
         }
@@ -66,6 +67,7 @@ const Preferences = () => {
         setPage(page - 1);
     }
 
+    // Handle changes in the user profile form fields
     const handleUserProfileChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = event.target;
         const key = name as keyof UserProfile;
@@ -76,15 +78,17 @@ const Preferences = () => {
         setUserProfile(updatedUserProfile);
     }
 
+    // Handle changes in the pet selection carousel
     const handleSlideChange = (swiper: SwiperType) => {
-        const index = swiper.activeIndex;
+        const index = swiper.activeIndex; // Get the current slide index
         const newPet = { ...pet };
         newPet.imageUrl.happy = happyPetsImageUrls[index];
         newPet.imageUrl.neutral = neutralPetsImageUrls[index];
         newPet.imageUrl.sad = sadPetsImageUrls[index];
         setPet(newPet);
     }
-
+    
+    // Handle changes in the pet name input field
     const handlePetNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
 
@@ -109,6 +113,7 @@ const Preferences = () => {
             <div className="h-65 w-full p-4 flex flex-col items-center justify-center relative">
                 <img src="/sign-up-box.svg" className="w-full transform scale-y-210 lg:w-4/5 lg:scale-y-110" />
                 <div className="absolute top-6/11 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full flex flex-col items-center justify-center lg:w-4/5">
+                    {/* Page 1: Personal details form */}
                     {page === 1 ? (
                         <form ref={formRef} className="px-6 w-4/5 lg:w-3/5">
                             <h1 className="text-white text-center text-2xl mb-3">Enter your details</h1>
@@ -257,6 +262,7 @@ const Preferences = () => {
                             </div>
                         </form>
                     ) : page === 2 ? (
+                        // Page 2: Display recommended calories and macros
                         <div className="px-6 w-4/5">
                             <h1 className="text-white text-center text-2xl mb-3">Recommended Daily Calories and Macros</h1>
                             {dailyCaloriesAndMacros && (
@@ -275,14 +281,13 @@ const Preferences = () => {
                             
                         </div>
                     ) : (
+                        // Page 3: Pet selection and naming
                         <div className="px-6 w-4/5 flex flex-col gap-3">
                             <h1 className="text-white text-center text-2xl">Choose your pet</h1>
-                            {/* Pet carousel */}
                             <div className="flex-1">
                                 <Swiper
                                     slidesPerView={1}
                                     spaceBetween={30}
-                                    // loop={true}
                                     pagination={{
                                       clickable: true,
                                     }}
@@ -291,16 +296,17 @@ const Preferences = () => {
                                     modules={[Pagination, Navigation]}
                                 >
                                     {happyPetsImageUrls.map((pet, index) => {
-                                    return (
-                                        <SwiperSlide key={`Pet-${index}`}>
-                                            <div className="flex items-center h-50">
-                                                <img src={pet} alt={`Pet-${index}`} className="w-full h-full object-contain"/>
-                                            </div>
-                                        </SwiperSlide>
-                                    )
+                                        return (
+                                            <SwiperSlide key={`Pet-${index}`}>
+                                                <div className="flex items-center h-50">
+                                                    <img src={pet} alt={`Pet-${index}`} className="w-full h-full object-contain"/>
+                                                </div>
+                                            </SwiperSlide>
+                                        )
                                     })}
                                 </Swiper>  
                             </div>
+                            {/* Pet name input */}
                             <form ref={formRef} className="px-6 w-full lg:w-3/5">
                                 <div className="flex gap-2 items-center">
                                     <label
@@ -326,7 +332,7 @@ const Preferences = () => {
                 </div>
             </div>
 
-            {/* Next Button */}
+            {/* Navigation buttons */}
             <div className="mt-25 flex items-center justify-center gap-5">
                 <button className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 cursor-pointer ${page === 1 ? "hidden" : "block"}`} onClick={handleBackClick}>
                     <h1 className="text-white">Back</h1>
