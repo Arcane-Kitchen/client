@@ -44,6 +44,7 @@ interface UserProfile {
   pet_protein_exp: number;
   pet_wisdom_exp: number;
   pet_name: string;
+  pet_img_happy: string;
 }
 
 // Create the AuthContext with an initial undefined value

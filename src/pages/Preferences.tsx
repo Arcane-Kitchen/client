@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper as SwiperType } from "swiper";
 import { useAuth } from "../Auth/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { updateUserCalorieAndMacrosGoal, updateUserPet } from "../api/userApi"
 
 import 'swiper/css';
@@ -39,6 +40,7 @@ const Preferences = () => {
     const sadPetsImageUrls = ["/orange-dragon-sad.png", "/unicorn.png", "/werewolf.png"];
 
     const { user, session } = useAuth();
+    const navigate = useNavigate();
     const formRef = useRef<HTMLFormElement | null>(null);
     
     const handleNextClick = async (event: React.MouseEvent) => {
@@ -57,7 +59,7 @@ const Preferences = () => {
                 formRef.current.reportValidity(); // Validate form fields
                 await updateUserCalorieAndMacrosGoal(user.id, session.access_token, dailyCaloriesAndMacros); // Update user's macros in the database
                 await updateUserPet(user.id, session.access_token, pet); // Update user's pet data in the database
-                return;
+                navigate("/profile");;
             }
         }
         setPage(page + 1);
