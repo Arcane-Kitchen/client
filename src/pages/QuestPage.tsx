@@ -19,9 +19,23 @@ const QuestPage: React.FC = () => {
   const handleGetEnemy = async () => {
     const newEnemy = await fetchEnemyById("1");
     setEnemy(newEnemy);
+    console.log(user);
+    console.log(enemy);
   };
 
-  const handleFight = () => {};
+  const handleFight = () => {
+    if (
+      user.pet_calorie_exp >= enemy?.calorie_exp &&
+      user.pet_carb_exp >= enemy?.carb_exp &&
+      user.pet_fat_exp >= enemy?.fat_exp &&
+      user.pet_protein_exp >= enemy?.protein_exp &&
+      user.pet_wisdom_exp >= enemy?.wisdom_exp
+    ) {
+      console.log("you win!");
+    } else {
+      console.log("you lose :(");
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
@@ -29,7 +43,12 @@ const QuestPage: React.FC = () => {
         <div className="flex flex-col items-center">
           <h1 className="text-4xl">{enemy?.name}</h1>
           <img src={enemy?.img} alt="" />
-          <button onClick={handleFight} className="m-1 p-1 w-1/4 bg-blue-500">
+          <button
+            onClick={() => {
+              handleFight();
+            }}
+            className="m-1 p-1 w-1/4 bg-blue-500"
+          >
             Fight
           </button>
         </div>
