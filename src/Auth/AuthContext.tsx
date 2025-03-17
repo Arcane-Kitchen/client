@@ -34,12 +34,16 @@ interface UserProfile {
   id: string;
   username: string;
   updated_at: string;
+  daily_calorie_goal: number;
+  daily_carb_goal: number;
+  daily_fat_goal: number;
+  daily_protein_goal: number;
   pet_calorie_exp: number;
   pet_carb_exp: number;
   pet_fat_exp: number;
   pet_protein_exp: number;
-  pet_name: string;
   pet_wisdom_exp: number;
+  pet_name: string;
 }
 
 // Create the AuthContext with an initial undefined value

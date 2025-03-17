@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Login from "./Auth/Login";
 import Home from "./pages/Home";
 import SignUp from "./Auth/SignUp";
 import RecipesPage from "./pages/RecipesPage";
 import CalendarPage from "./pages/CalendarPage";
 import ProfilePage from "./pages/ProfilePage";
+import AchievementsPage from './pages/AchievementsPage';
 import Layout from "./pages/Layout";
 import NewRecipePage from "./components/NewRecipePage";
 import Preferences from "./pages/Preferences";
@@ -14,6 +17,7 @@ import { fetchFullUserMealPlan } from "./api/mealPlanApi";
 import { fetchAllRecipes, fetchARecipeById } from "./api/recipeApi";
 import { Recipe, Meal, MealRawData } from "./types";
 import { updateUserLastLoginById } from "./api/userApi";
+import AchievementSubscriptionProvider from "./components/AchievementSubscriptionProvider";
 
 function App() {
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
@@ -90,6 +94,7 @@ function App() {
   }, []);
 
   return (
+    <AchievementSubscriptionProvider>
     <Routes>
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<Login />} />
@@ -98,7 +103,11 @@ function App() {
         <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
         <Route path="new-recipe" element={<NewRecipePage />} />
         <Route path="recipes" element={<RecipesPage recipes={recipes} mealPlan={mealPlan} filteredRecipes={filteredRecipes} setFilteredRecipes={setFilteredRecipes}/>}/>
+<<<<<<< HEAD
         <Route path="preferences" element={<Preferences />} />
+=======
+        <Route path="/achievements" element={<AchievementsPage />} />
+>>>>>>> origin
         <Route
           path="meal-plan"
           element={
@@ -112,6 +121,8 @@ function App() {
       </Route>
       <Route path="*" element={<Home recipes={recipes} />} />
     </Routes>
+    <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+    </AchievementSubscriptionProvider>
   );
 }
 
