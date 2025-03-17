@@ -1,3 +1,5 @@
+import { DailyCaloriesAndMacros, Pet } from "../types";
+
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Make a POST request to create a new user profile
@@ -82,8 +84,8 @@ export const updateUserLastLoginById = async (
   }
 };
 
-// update user stat by chosen amount
-export const updateUserStat = async (
+// update user's pet stat by chosen amount
+export const updateUserPetStat = async (
   id: string | undefined,
   amount: number,
   stat: string,
@@ -102,12 +104,62 @@ export const updateUserStat = async (
     });
 
     if (!response.ok) {
-      throw new Error("An error occurred while updating stat");
+      throw new Error("An error occurred while updating pet stat");
     }
 
     return response.json();
   } catch (error) {
-    console.error("Error updating stat: ", error);
+    console.error("Error updating pet stat: ", error);
+    throw error;
+  }
+};
+
+// update user's calorie and macros goal
+export const updateUserCalorieAndMacrosGoal = async (id: string, token: string, userGoal: DailyCaloriesAndMacros | null) => {
+  try {
+    const response = await fetch(`${baseUrl}/users/${id}/goals`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "X-Supabase-Auth": token,
+      },
+      body: JSON.stringify(userGoal),
+    });
+
+    if (!response.ok) {
+      throw new Error("An error occurred while updating user goals");
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error updating user goals: ", error);
+    throw error;
+  }
+};
+
+// update user's calorie and macros goal
+export const updateUserPet = async (id: string, token: string, pet: Pet) => {
+  try {
+    const response = await fetch(`${baseUrl}/users/${id}/pet`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "X-Supabase-Auth": token,
+      },
+      body: JSON.stringify(pet),
+    });
+
+    if (!response.ok) {
+      throw new Error("An error occurred while updating pet");
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error updating pet: ", error);
     throw error;
   }
 };

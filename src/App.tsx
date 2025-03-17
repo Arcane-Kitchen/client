@@ -103,11 +103,8 @@ function App() {
         <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
         <Route path="new-recipe" element={<NewRecipePage />} />
         <Route path="recipes" element={<RecipesPage recipes={recipes} mealPlan={mealPlan} filteredRecipes={filteredRecipes} setFilteredRecipes={setFilteredRecipes}/>}/>
-<<<<<<< HEAD
         <Route path="preferences" element={<Preferences />} />
-=======
         <Route path="/achievements" element={<AchievementsPage />} />
->>>>>>> origin
         <Route
           path="meal-plan"
           element={

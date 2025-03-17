@@ -62,3 +62,31 @@ export interface UserProfile {
   activityLevel: string;
   goal: string;
 }
+
+export interface DailyCaloriesAndMacros {
+  calories: number,
+  carbs: {
+    grams: number,
+    inCalories: number,
+    percentage: number,
+  },
+  fats: {
+    grams: number,
+    inCalories: number,
+    percentage: number,
+  },
+  protein: {
+    grams: number,
+    inCalories: number,
+    percentage: number,
+  }
+}
+
+export interface Pet {
+  name: string,
+  imageUrl: {
+    happy: string,
+    neutral: string,
+    sad: string,
+  }
+}
