@@ -70,7 +70,6 @@ const QuestPage: React.FC = () => {
       user.pet_protein_exp >= enemy?.protein_exp &&
       user.pet_wisdom_exp >= enemy?.wisdom_exp
     ) {
-      //   console.log("you win!");
       await updateUserStat(
         user?.id,
         user?.enemies_defeated + 1,

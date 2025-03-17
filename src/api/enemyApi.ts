@@ -13,7 +13,7 @@ export const fetchEnemyById = async (id: string) => {
     }
     return response.json();
   } catch (error) {
-    console.error("Error fetching recipe: ", error);
+    console.error("Error fetching enemy: ", error);
     throw error;
   }
 };
