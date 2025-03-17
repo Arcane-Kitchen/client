@@ -53,10 +53,23 @@ export const calculateDailyCaloriesAndMacrosIntake = (userProfile: UserProfile) 
     const fatPercentage = (fatCalories / TDEE) * 100;
     const carbsPercentage = (remainingCalories / TDEE) * 100;
 
+    // Round each macro percentage to nearest integer
+    const roundedProtein = Math.round(proteinPercentage);
+    const roundedFats = Math.round(fatPercentage);
+    let roundedCarbs = Math.round(carbsPercentage);
+
+    // Calculate the sum of rounded percentages
+    let totalRounded = roundedProtein + roundedFats + roundedCarbs;
+
+    if (totalRounded !== 100) {
+        const difference = 100 - totalRounded;
+        roundedCarbs += difference;
+    }
+
     return {
-        calories: TDEE,
-        protein: { "grams": protein, "inCalories": proteinCalories, "percentage": proteinPercentage},
-        fats: { "grams": fats, "inCalories": fatCalories, "percentage": fatPercentage },
-        carbs: { "grams": carbs, "inCalories": remainingCalories, "percentage": carbsPercentage },
+        calories: Math.round(TDEE),
+        protein: { "grams": protein, "inCalories": proteinCalories, "percentage": roundedProtein},
+        fats: { "grams": fats, "inCalories": fatCalories, "percentage": roundedFats },
+        carbs: { "grams": carbs, "inCalories": remainingCalories, "percentage": roundedCarbs },
     }
 }

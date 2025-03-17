@@ -139,7 +139,7 @@ export const updateUserCalorieAndMacrosGoal = async (id: string, token: string, 
   }
 };
 
-// update user's calorie and macros goal
+// update user's pet
 export const updateUserPet = async (id: string, token: string, pet: Pet) => {
   try {
     const response = await fetch(`${baseUrl}/users/${id}/pet`, {
