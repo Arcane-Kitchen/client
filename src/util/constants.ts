@@ -8,7 +8,7 @@ export const activityLevels = [
 
 export const goals = ["Maintain weight", "Lose weight", "Gain muscles"];
 
-export const pets: ("orangeDragon" | "blackDragon" | "blueDragon" | "greenDragon" | "pinkDragon" | "redDragon" | "whiteDragon" | "yellowDragon")[] = ["orangeDragon", "blackDragon", "blueDragon", "greenDragon", "pinkDragon", "redDragon", "whiteDragon", "yellowDragon"];
+export const pets: ("orangeDragon" | "blackDragon" | "blueDragon" | "greenDragon" | "redDragon" | "whiteDragon" | "yellowDragon")[] = ["orangeDragon", "blackDragon", "blueDragon", "greenDragon", "redDragon", "whiteDragon", "yellowDragon"];
 
 export const petMoods = {
     orangeDragon: {
@@ -30,11 +30,6 @@ export const petMoods = {
         happy: "/Dragon_Green_Happy.png",
         neutral: "/Dragon_Green_Neutral.png",
         sad: "/Dragon_Green_Sad.png",
-    },
-    pinkDragon: {
-        happy: "/Dragon_Pink_Happy.png",
-        neutral: "/Dragon_Pink_Neutral.png",
-        sad: "/Dragon_Pink_Sad.png",
     },
     redDragon: {
         happy: "/Dragon_Red_Happy.png",
