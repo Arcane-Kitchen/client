@@ -76,17 +76,17 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
     // for simplicity and testing, for now, simply count number of meals eaten today
     //if user has eaten three meals today, will change to yellow
 
-    setStrengthColor(colorPicker(15));
-    setDefenseColor(colorPicker(33));
-    setDexterityColor(colorPicker(50));
-    setStaminaColor(colorPicker(67));
-    setWisdomColor(colorPicker(84));
+    // setStrengthColor(colorPicker(15));
+    // setDefenseColor(colorPicker(33));
+    // setDexterityColor(colorPicker(50));
+    // setStaminaColor(colorPicker(67));
+    // setWisdomColor(colorPicker(84));
 
-    // setStrengthColor(colorPicker(strRemainderExp));
-    // setDefenseColor(colorPicker(defRemainderExp));
-    // setDexterityColor(colorPicker(dexRemainderExp));
-    // setStaminaColor(colorPicker(staminaRemainderExp));
-    // setWisdomColor(colorPicker(wisRemainderExp));
+    setStrengthColor(colorPicker(strRemainderExp));
+    setDefenseColor(colorPicker(defRemainderExp));
+    setDexterityColor(colorPicker(dexRemainderExp));
+    setStaminaColor(colorPicker(staminaRemainderExp));
+    setWisdomColor(colorPicker(wisRemainderExp));
 
     // if (todayMeals.length >= 3) {
     //   setStrengthColor("[&::-webkit-progress-value]:bg-green-500");
