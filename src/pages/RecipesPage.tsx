@@ -22,20 +22,20 @@ interface RecipesPageProps {
   selectedMealType?: string;
   setSelectedMealType?: React.Dispatch<React.SetStateAction<string>>;
   startOfTheWeek?: moment.Moment;
+  filters: Filter
+  setFilters: React.Dispatch<React.SetStateAction<Filter>>;
 }
 
-const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRecipes, setFilteredRecipes, setMealPlan, finishAdding, selectedDay, setSelectedDay, selectedMealType, setSelectedMealType, startOfTheWeek }) => {
+const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRecipes, setFilteredRecipes, setMealPlan, finishAdding, selectedDay, setSelectedDay, selectedMealType, setSelectedMealType, startOfTheWeek, filters, setFilters }) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
-  const [filters, setFilters] = useState<Filter>({
-    mealType: [false, false, false, false],
-    cookingTime: [false, false, false],
-    calorieRange: [false, false, false],
-    difficultyLevel: [false, false, false],
-  })
 
   const { isLoading } = useAuth();
+
+  const filtersCount = Object.values(filters).reduce((count, array) => {
+    return count + array.filter(Boolean).length;
+  }, 0);
 
   // Open the modal and set the selected recipe
   const openModal = (recipe: Recipe) => {
@@ -56,8 +56,21 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
   const handleBackClick = () => {
     setSelectedDay!(moment().day());
     setSelectedMealType!("");
+    handleClearAll();
     finishAdding!();
   }
+
+  // Reset all filters
+  const handleClearAll = () => {
+    const newFilters = { ...filters };
+
+    // Reset each filter array to have all false values
+    Object.entries(newFilters).forEach(([key, value]) => {
+        newFilters[key as keyof Filter] = value.map(() => false);
+    }) 
+    setFilters(newFilters);
+    setFilteredRecipes(recipes);
+}
 
   return (
     <div className="flex flex-col h-dvh relative">
@@ -82,40 +95,51 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
                 className="text-[#19243e] hover:text-slate-600 hidden lg:block"
               />
             </button>
-            <div className="flex items-center">
+            <div className="flex items-center w-full justify-end">
               {/* Search input field */}
-              <div className="flex-1 relative lg:flex-0">
+              <div className="w-2/3 relative lg:flex-0">
                 <IoSearch
                   size={20}
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500"
                 />
                 <input
-                  className="pl-12 text-xl shadow appearance-none rounded-lg text-gray-700 focus:outline-none p-2 bg-[#e5e7e9] lg:w-sm lg:text-2xl"
+                  className="pl-12 text-xl shadow w-full appearance-none rounded-lg text-gray-700 focus:outline-none p-2 bg-[#e5e7e9] lg:w-sm lg:text-2xl"
                   placeholder="Search for recipes"
                 />
               </div>
               {/* Filter button */}
-              <button className="px-2 cursor-pointer" onClick={toggleFilter}>
+              <button className="px-2 cursor-pointer flex items-end" onClick={toggleFilter}>
                 <FaFilter size={30} className=" text-[#19243e]" />
+                {/* Display the number of filters applied */}
+                {filtersCount > 0 && (
+                  <span className=" bg-gray-300 text-xs px-1 h-fit rounded-full">
+                    {filtersCount}
+                  </span>
+                )}
               </button>
             </div>
           </div>
 
-          {/* Recipe grid display */}
-          <div className="grid grid-cols-2 gap-5 px-5 pb-5 justify-items-center lg:grid-cols-3 lg:px-15">
-            {/* Render recipe cards */}
-            {filteredRecipes &&
-              filteredRecipes.length > 0 &&
-              filteredRecipes.map((recipe, index) => (
-                <div
-                  key={index}
-                  onClick={() => openModal(recipe)}
-                  className="flex items-center w-full gap-5 hover:scale-105 hover:shadow-lg"
-                >
-                  <RecipeCard recipe={recipe} />
-                </div>
-              ))}
-          </div>
+          {filteredRecipes && filteredRecipes.length > 0 ? (
+            // Recipe grid display
+            <div className="w-full px-5 pb-5 lg:px-15">
+              <p className="mb-2">{`${filteredRecipes.length} ${filteredRecipes.length === 1 ? " result" : "results"} found`}</p>
+              <div className="grid grid-cols-2 gap-2 justify-items-center lg:grid-cols-3">
+                {/* Render recipe cards */}
+                {filteredRecipes.map((recipe, index) => (
+                  <div
+                    key={index}
+                    onClick={() => openModal(recipe)}
+                    className="flex items-center w-full gap-5 hover:scale-105 hover:shadow-lg"
+                  >
+                    <RecipeCard recipe={recipe} />
+                  </div>
+                ))}
+              </div> 
+            </div>
+          ) : (
+            <div className="text-center text-3xl mt-5">No Results Found</div>
+          )}
         </>
       )}
 
