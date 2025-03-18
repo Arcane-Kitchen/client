@@ -111,6 +111,7 @@ function App() {
               <RecipesPage
                 recipes={recipes}
                 mealPlan={mealPlan}
+                setMealPlan={setMealPlan}
                 filteredRecipes={filteredRecipes}
                 setFilteredRecipes={setFilteredRecipes}
               />
