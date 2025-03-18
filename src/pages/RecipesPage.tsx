@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import RecipeModal from "../components/RecipeModal";
 import FilterModal from "../components/FilterModal";
@@ -30,12 +30,18 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const { isLoading } = useAuth();
 
   const filtersCount = Object.values(filters).reduce((count, array) => {
     return count + array.filter(Boolean).length;
   }, 0);
+
+  useEffect(() => {
+    const newFilteredRecipes = filteredRecipes.filter((recipe) => recipe.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    setFilteredRecipes(newFilteredRecipes);
+  }, [searchQuery, filteredRecipes])
 
   // Open the modal and set the selected recipe
   const openModal = (recipe: Recipe) => {
@@ -70,7 +76,11 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
     }) 
     setFilters(newFilters);
     setFilteredRecipes(recipes);
-}
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  }
 
   return (
     <div className="flex flex-col h-dvh relative">
@@ -105,6 +115,8 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
                 <input
                   className="pl-12 text-xl shadow w-full appearance-none rounded-lg text-gray-700 focus:outline-none p-2 bg-[#e5e7e9] lg:w-sm lg:text-2xl"
                   placeholder="Search for recipes"
+                  value={searchQuery}
+                  onChange={handleChange}
                 />
               </div>
               {/* Filter button */}
@@ -122,7 +134,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
 
           {filteredRecipes && filteredRecipes.length > 0 ? (
             // Recipe grid display
-            <div className="w-full px-5 pb-5 lg:px-15">
+            <div className="w-full px-4 pb-5 lg:px-15">
               <p className="mb-2">{`${filteredRecipes.length} ${filteredRecipes.length === 1 ? " result" : "results"} found`}</p>
               <div className="grid grid-cols-2 gap-2 justify-items-center lg:grid-cols-3">
                 {/* Render recipe cards */}
