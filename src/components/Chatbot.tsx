@@ -5,6 +5,7 @@ const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
   const [input, setInput] = useState<string>('');
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const handleSendMessage = async () => {
     if (input.trim() === '') return;
@@ -14,30 +15,20 @@ const Chatbot: React.FC = () => {
     setInput('');
 
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
         },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: [
-            { role: 'system', content: 'You are a wise medieval wizard who helps with ingredient substitutions.' },
-            { role: 'user', content: input },
-          ],
-          max_tokens: 150,
-          n: 1,
-          stop: ['\n', 'User:', 'AI:'],
-        }),
+        body: JSON.stringify({ input }),
       });
 
       const data = await response.json();
-      if (data.choices && data.choices.length > 0) {
-        const aiMessage = { text: data.choices[0].message.content.trim(), isUser: false };
+      if (data.message) {
+        const aiMessage = { text: data.message, isUser: false };
         setMessages([...messages, userMessage, aiMessage]);
       } else {
-        console.error('No choices found in the response:', data);
+        console.error('No message found in the response:', data);
       }
     } catch (error) {
       console.error('Error fetching AI response:', error);
