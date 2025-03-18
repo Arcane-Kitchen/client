@@ -10,9 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { updateUserCalorieAndMacrosGoal, updateUserPet } from "../api/userApi"
 import { activityLevels, goals, pets, petMoods } from "../util/constants";
 import UserDetailsForm from "../components/UserDetailsForm";
-import { FaDumbbell } from "react-icons/fa6";
-import { PiSneakerMoveFill } from "react-icons/pi";
+import { PiSneakerMoveFill, PiSwordFill } from "react-icons/pi";
 import { FaShieldAlt } from "react-icons/fa";
+
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -154,7 +154,7 @@ const Preferences = () => {
                                         <p className="text-white">{`${(user.daily_calorie_goal*user.daily_fat_goal/100/9).toFixed()}g (${user.daily_fat_goal}%)`}</p>
                                     </div>
                                     <div className="flex justify-between">
-                                        <div className="text-white flex gap-2 items-center"><FaDumbbell color="#f0c046" />Protein</div>
+                                        <div className="text-white flex gap-2 items-center"><PiSwordFill color="#f0c046" />Protein</div>
                                         <p className="text-white">{`${(user.daily_calorie_goal*user.daily_protein_goal/100/4).toFixed()}g (${user.daily_protein_goal}%)`}</p>
                                     </div>
                                 </div>
@@ -190,7 +190,7 @@ const Preferences = () => {
                                             <p className="text-white">{`${dailyCaloriesAndMacros.fats.grams.toFixed()}g (${dailyCaloriesAndMacros.fats.percentage}%)`}</p>
                                         </div>
                                         <div className="flex justify-between">
-                                            <div className="text-white flex gap-2 items-center"><FaDumbbell color="#f0c046" />Protein</div>
+                                            <div className="text-white flex gap-2 items-center"><PiSwordFill color="#f0c046" />Protein</div>
                                             <p className="text-white">{`${dailyCaloriesAndMacros.protein.grams.toFixed()}g (${dailyCaloriesAndMacros.protein.percentage}%)`}</p>
                                         </div>
                                     </div>
