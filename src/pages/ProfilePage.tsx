@@ -15,7 +15,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [strengthColor, setStrengthColor] = useState<string>(
-    "[&::-webkit-progress-value]:bg-yellow-500"
+    "[&::-webkit-progress-value]:bg-green-500"
   );
   const [defenseColor, setDefenseColor] = useState<string>(
     "[&::-webkit-progress-value]:bg-yellow-500"
@@ -56,7 +56,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
       setDexterityColor("[&::-webkit-progress-value]:bg-green-500");
       setStaminaColor("[&::-webkit-progress-value]:bg-green-500");
     } else {
-      setStrengthColor("[&::-webkit-progress-value]:bg-yellow-500");
+      setStrengthColor("[&::-webkit-progress-value]:bg-gray-500");
       setDefenseColor("[&::-webkit-progress-value]:bg-yellow-500");
       setDexterityColor("[&::-webkit-progress-value]:bg-yellow-500");
       setStaminaColor("[&::-webkit-progress-value]:bg-yellow-500");
