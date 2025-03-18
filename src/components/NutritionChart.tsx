@@ -2,7 +2,6 @@ import React from 'react';
 import { Doughnut } from "react-chartjs-2"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title, } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { DailyCaloriesAndMacros } from '../types';
 
 ChartJS.register(ArcElement, Tooltip, Legend, Title, ChartDataLabels);
 
