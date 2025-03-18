@@ -13,7 +13,9 @@ import {
 import moment from "moment";
 import { updateUserPetStat } from "../api/userApi";
 import { fetchARecipeById } from "../api/recipeApi";
-import { addUserActivity } from "../api/activityApi"
+import { addUserActivity } from "../api/activityApi";
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 interface ModalProps {
   isOpen: boolean;
@@ -166,6 +168,7 @@ const RecipeModal: React.FC<ModalProps> = ({
   
         // Update the meal plan if a meal plan already exists for the selected date and meal type
         if (existingMealPlan && existingMealPlan.recipeId !== selectedRecipe.id) {
+          showMessage("Updating meal plan ...");
           const updatedMeal = await updateMealPlanById(
             user.id,
             existingMealPlan.id,
@@ -216,7 +219,7 @@ const RecipeModal: React.FC<ModalProps> = ({
         setIsLoading(false);
         setTimeout(() => {
           onClose();
-        }, 3000);
+        }, 1500);
       }
     }
   };
