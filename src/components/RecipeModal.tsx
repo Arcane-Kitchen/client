@@ -455,7 +455,7 @@ const RecipeModal: React.FC<ModalProps> = ({
                   ))}
                 </div>
               </div>
-              <button className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 hover:cursor-pointer ${isLoading && "cursor-not-allowed"}`} disabled={isLoading} onClick={handleAddClick}>
+              <button className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 ${isLoading ? "cursor-not-allowed" : "cursor-pointer"}`} onClick={isLoading ? (e) => e.preventDefault() : handleAddClick}>
                 <h1 className="text-white">
                   Add
                 </h1>
