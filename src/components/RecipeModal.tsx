@@ -11,7 +11,7 @@ import {
   removeMealFromMealPlan,
 } from "../api/mealPlanApi";
 import moment from "moment";
-import { updateUserStat } from "../api/userApi";
+import { updateUserPetStat } from "../api/userApi";
 import { fetchARecipeById } from "../api/recipeApi";
 
 interface ModalProps {
@@ -23,7 +23,7 @@ interface ModalProps {
   mealPlan?: Meal[];
   setMealPlan?: React.Dispatch<React.SetStateAction<Meal[]>>;
 }
-const baseUrl = import.meta.env.VITE_API_BASE_URL
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const RecipeModal: React.FC<ModalProps> = ({
   isOpen,
@@ -82,7 +82,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           let ratio = user.daily_carb_goal / eatenMacroValue;
           if (ratio > 1) ratio = 1 / ratio;
           const points = handlePointCalc(ratio);
-          await updateUserStat(
+          await updateUserPetStat(
             user.id,
             user.pet_carb_exp + points,
             "carb",
@@ -96,7 +96,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           let ratio = user.daily_fat_goal / eatenMacroValue;
           if (ratio > 1) ratio = 1 / ratio;
           const points = handlePointCalc(ratio);
-          await updateUserStat(
+          await updateUserPetStat(
             user.id,
             user.pet_fat_exp + points,
             "fat",
@@ -110,7 +110,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           let ratio = user.daily_protein_goal / eatenMacroValue;
           if (ratio > 1) ratio = 1 / ratio;
           const points = handlePointCalc(ratio);
-          await updateUserStat(
+          await updateUserPetStat(
             user.id,
             user.pet_protein_exp + points,
             "protein",
@@ -124,7 +124,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           let ratio = user.daily_calorie_goal / eatenMacroValue;
           if (ratio > 1) ratio = 1 / ratio;
           const points = handlePointCalc(ratio);
-          await updateUserStat(
+          await updateUserPetStat(
             user.id,
             user.pet_calorie_exp + points,
             "calorie",
@@ -191,32 +191,41 @@ const RecipeModal: React.FC<ModalProps> = ({
       );
 
       if (newMeal) {
-        await updateUserStat(
+        await updateUserPetStat(
           user.id,
-          user.pet_wisdom_exp + 10,
+          user.pet_wisdom_exp + 20,
           "wisdom",
           session.access_token
         );
-        showMessage(`Recipe added to meal plan: Wisdom +10`);
+        showMessage(`Recipe added to meal plan: Wisdom +20`);
       }
 
       try {
-        const activityResponse = await fetch(`${baseUrl}/activity/add-activity`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId: user.id, recipeId: selectedRecipe.id, activity_type: 'add_recipe' }),
-        });
-  
+        const activityResponse = await fetch(
+          `${baseUrl}/activity/add-activity`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: user.id,
+              recipeId: selectedRecipe.id,
+           , activity_type: 'add_recipe' }),
+          }
+        );
+
         const activityResult = await activityResponse.json();
-        if (activityResponse.ok && activityResult.message.includes('Achievement unlocked')) {
+        if (
+          activityResponse.ok &&
+          activityResult.message.includes("Achievement unlocked")
+        ) {
           // Display notification for achievement unlocked
           showMessage(activityResult.message);
         }
       } catch (error) {
-        console.error('Error adding activity:', error);
-        showMessage('Error adding activity');
+        console.error("Error adding activity:", error);
+        showMessage("Error adding activity");
       }
     }
   };

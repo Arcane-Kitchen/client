@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Login from "./Auth/Login";
 import Home from "./pages/Home";
 import SignUp from "./Auth/SignUp";
 import RecipesPage from "./pages/RecipesPage";
 import CalendarPage from "./pages/CalendarPage";
 import ProfilePage from "./pages/ProfilePage";
-import AchievementsPage from './pages/AchievementsPage';
+import AchievementsPage from "./pages/AchievementsPage";
 import Layout from "./pages/Layout";
 import NewRecipePage from "./components/NewRecipePage";
+import Preferences from "./pages/Preferences";
 import { useAuth } from "./Auth/AuthContext";
 import { fetchFullUserMealPlan } from "./api/mealPlanApi";
 import { fetchAllRecipes, fetchARecipeById } from "./api/recipeApi";
 import { Recipe, Meal, MealRawData } from "./types";
 import { updateUserLastLoginById } from "./api/userApi";
 import AchievementSubscriptionProvider from "./components/AchievementSubscriptionProvider";
+import QuestPage from "./pages/QuestPage";
 
 function App() {
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
@@ -94,29 +96,51 @@ function App() {
 
   return (
     <AchievementSubscriptionProvider>
-    <Routes>
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Home recipes={recipes} />}></Route>
-      <Route path="/" element={<Layout />}>
-        <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
-        <Route path="new-recipe" element={<NewRecipePage />} />
-        <Route path="recipes" element={<RecipesPage recipes={recipes} mealPlan={mealPlan} filteredRecipes={filteredRecipes} setFilteredRecipes={setFilteredRecipes}/>}/>
-        <Route path="/achievements" element={<AchievementsPage />} />
-        <Route
-          path="meal-plan"
-          element={
-            <CalendarPage
-              mealPlan={mealPlan}
-              setMealPlan={setMealPlan}
-              recipes={recipes}
-            />
-          }
-        />
-      </Route>
-      <Route path="*" element={<Home recipes={recipes} />} />
-    </Routes>
-    <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <Routes>
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Home recipes={recipes} />}></Route>
+        <Route path="/" element={<Layout />}>
+          <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
+          <Route path="quest" element={<QuestPage />} />
+          <Route path="preferences" element={<Preferences />} />
+          <Route path="new-recipe" element={<NewRecipePage />} />
+          <Route
+            path="recipes"
+            element={
+              <RecipesPage
+                recipes={recipes}
+                mealPlan={mealPlan}
+                filteredRecipes={filteredRecipes}
+                setFilteredRecipes={setFilteredRecipes}
+              />
+            }
+          />
+          <Route path="/achievements" element={<AchievementsPage />} />
+          <Route
+            path="meal-plan"
+            element={
+              <CalendarPage
+                mealPlan={mealPlan}
+                setMealPlan={setMealPlan}
+                recipes={recipes}
+              />
+            }
+          />
+        </Route>
+        <Route path="*" element={<Home recipes={recipes} />} />
+      </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </AchievementSubscriptionProvider>
   );
 }

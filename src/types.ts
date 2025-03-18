@@ -53,3 +53,51 @@ export interface Filter {
   calorieRange: boolean[];
   difficultyLevel: boolean[];
 }
+
+export interface UserProfile {
+  gender: string;
+  age: string;
+  weight: string;
+  height: string;
+  activityLevel: string;
+  goal: string;
+}
+
+export interface DailyCaloriesAndMacros {
+  calories: number,
+  carbs: {
+    grams: number,
+    inCalories: number,
+    percentage: number,
+  },
+  fats: {
+    grams: number,
+    inCalories: number,
+    percentage: number,
+  },
+  protein: {
+    grams: number,
+    inCalories: number,
+    percentage: number,
+  }
+}
+
+export interface Pet {
+  name: string,
+  imageUrl: {
+    happy: string,
+    neutral: string,
+    sad: string,
+  }
+}
+
+export interface Enemy {
+  id: string;
+  name: string;
+  img: string;
+  calorie_exp: number;
+  carb_exp: number;
+  protein_exp: number;
+  fat_exp: number;
+  wisdom_exp: number;
+}
