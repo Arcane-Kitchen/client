@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import wizardImage from '../assets/wizard.jpg';
+import wizardImage from '../assets/AI_Wizard.jpg';
 
 const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
