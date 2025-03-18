@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import happyDragon from "../assets/happy.png";
-// import neutralDragon from "../assets/neutral.png";
-// import sadDragon from "../assets/sad.png";
 import { useAuth } from "../Auth/AuthContext";
 import { Meal } from "../types";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +16,8 @@ interface ProfilePageProps {
 const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const dragonImage = user?.pet_img_normal;
+
   const [strengthColor, setStrengthColor] = useState<string>(
     "[&::-webkit-progress-value]:bg-yellow-500"
   );
@@ -59,54 +58,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   };
 
   const checkDailyStatColors = async () => {
-    // using last login date that has user time zone, calculate user's current date
-    // const currentDay = new Date(user?.updated_at);
-    // const currentDayLocal = currentDay.toLocaleDateString();
     const strRemainderExp = calcRemainderExp(user?.pet_protein_exp);
     const defRemainderExp = calcRemainderExp(user?.pet_fat_exp);
     const dexRemainderExp = calcRemainderExp(user?.pet_carb_exp);
     const staminaRemainderExp = calcRemainderExp(user?.pet_calorie_exp);
     const wisRemainderExp = calcRemainderExp(user?.pet_wisdom_exp);
 
-    // filter users meals that they have eaten today
-    // const todayMeals = mealPlan.filter((meal) => {
-    //   if (meal.hasBeenEaten && meal.date === currentDayLocal) {
-    //     return true;
-    //   }
-    //   return false;
-    // });
-
-    // we will use this conditional to determine the color change baseed on nutrition
-    // for simplicity and testing, for now, simply count number of meals eaten today
-    //if user has eaten three meals today, will change to yellow
-
-    // setStrengthColor(colorPicker(15));
-    // setDefenseColor(colorPicker(33));
-    // setDexterityColor(colorPicker(50));
-    // setStaminaColor(colorPicker(67));
-    // setWisdomColor(colorPicker(84));
-
     setStrengthColor(colorPicker(strRemainderExp));
     setDefenseColor(colorPicker(defRemainderExp));
     setDexterityColor(colorPicker(dexRemainderExp));
     setStaminaColor(colorPicker(staminaRemainderExp));
     setWisdomColor(colorPicker(wisRemainderExp));
-
-    // if (todayMeals.length >= 3) {
-    //   setStrengthColor("[&::-webkit-progress-value]:bg-green-500");
-    //   setDefenseColor("[&::-webkit-progress-value]:bg-green-500");
-    //   setDexterityColor("[&::-webkit-progress-value]:bg-green-500");
-    //   setStaminaColor("[&::-webkit-progress-value]:bg-green-500");
-    // } else {
-    //   setStrengthColor("[&::-webkit-progress-value]:bg-yellow-500");
-    //   setDefenseColor("[&::-webkit-progress-value]:bg-yellow-500");
-    //   setDexterityColor("[&::-webkit-progress-value]:bg-yellow-500");
-    //   setStaminaColor("[&::-webkit-progress-value]:bg-yellow-500");
-    // }
   };
-
-  // Select the appropriate dragon image based on the mean happiness
-  const dragonImage = user?.pet_img_normal;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
@@ -135,7 +98,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${strengthColor}`}
             id="protein"
             value={calcRemainderExp(user?.pet_protein_exp)}
-            // value={15}
             max={100}
           ></progress>
 
@@ -156,7 +118,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${defenseColor}`}
             id="fat"
             value={calcRemainderExp(user?.pet_fat_exp)}
-            // value={33}
             max={100}
           ></progress>
 
@@ -178,7 +139,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${dexterityColor}`}
             id="carbs"
             value={calcRemainderExp(user?.pet_carb_exp)}
-            // value={50}
             max={100}
           ></progress>
 
@@ -199,7 +159,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${staminaColor}`}
             id="calories"
             value={calcRemainderExp(user?.pet_calorie_exp)}
-            // value={67}
             max={100}
           ></progress>
 
@@ -221,35 +180,26 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             className={`w-full mb-7 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${wisdomColor}`}
             id="wisdom"
             value={calcRemainderExp(user?.pet_wisdom_exp)}
-            // value={84}
             max={100}
           ></progress>
           <button
             onClick={() => {
               navigate("/quest");
             }}
-            className="bg-blue-500 text-2xl hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-3 mb-3"
+            className="bg-[url('/button-box.svg')] bg-cover bg-center w-35 h-23"
           >
-            Go on a quest!
+            <p className="text-white text-2xl">Quest</p>
           </button>
-          <h1 className="text-2xl">Or to boost your stats: </h1>
+          {/* <h1 className="text-2xl">Or to boost your stats: </h1> */}
 
           <div className="m-2 p-2 w-full  flex justify-around">
-            {/* <button
-              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-3"
-              onClick={() => {
-                navigate("/recipes");
-              }}
-            >
-              Add Meals
-            </button> */}
             <button
-              className="text-2xl bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-3"
+              className="bg-[url('/button-box.svg')] bg-cover bg-center w-35 h-23"
               onClick={() => {
                 navigate("/meal-plan");
               }}
             >
-              Meal Plan
+              <p className="text-white text-2xl">Plan</p>
             </button>
           </div>
         </div>

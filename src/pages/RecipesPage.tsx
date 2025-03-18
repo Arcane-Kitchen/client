@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import RecipeModal from "../components/RecipeModal";
 import FilterModal from "../components/FilterModal";
 import { useAuth } from "../Auth/AuthContext";
 import { PacmanLoader } from "react-spinners";
 import { Recipe, Meal, Filter } from "../types";
-import { IoSearch } from "react-icons/io5";
+import { IoSearch, IoChevronBackCircle } from "react-icons/io5";
 import { FaFilter } from "react-icons/fa";
-
+import { FaCircleXmark } from "react-icons/fa6";
+import moment from "moment";
 
 interface RecipesPageProps {
   recipes: Recipe[];
@@ -15,9 +16,15 @@ interface RecipesPageProps {
   filteredRecipes: Recipe[];
   setFilteredRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
   setMealPlan: React.Dispatch<React.SetStateAction<Meal[]>>;
+  finishAdding?: () => void;
+  selectedDay?: number;
+  setSelectedDay?: React.Dispatch<React.SetStateAction<number>>;
+  selectedMealType?: string;
+  setSelectedMealType?: React.Dispatch<React.SetStateAction<string>>;
+  startOfTheWeek?: moment.Moment;
 }
 
-const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRecipes, setFilteredRecipes, setMealPlan }) => {
+const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRecipes, setFilteredRecipes, setMealPlan, finishAdding, selectedDay, setSelectedDay, selectedMealType, setSelectedMealType, startOfTheWeek }) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
@@ -27,17 +34,8 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
     calorieRange: [false, false, false],
     difficultyLevel: [false, false, false],
   })
-  
 
   const { isLoading } = useAuth();
-
-  useEffect(() => {
-    // testStatUpdate();
-  }, []);
-
-  // const statUpdate = async (statName: string, newAmount: number) => {
-  //   await updateUserStat(user?.id, newAmount, statName, session?.access_token);
-  // };
 
   // Open the modal and set the selected recipe
   const openModal = (recipe: Recipe) => {
@@ -55,6 +53,12 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
     setIsFilterModalOpen(!isFilterModalOpen);
   }
 
+  const handleBackClick = () => {
+    setSelectedDay!(moment().day());
+    setSelectedMealType!("");
+    finishAdding!();
+  }
+
   return (
     <div className="flex flex-col h-dvh relative">
       {/* Conditionally render a loading spinner or the recipes */}
@@ -62,23 +66,39 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
         <PacmanLoader className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
       ) : (
         <>
-          {/* Search bar and filter section */}
-          <div className="flex p-5 lg:px-15 lg:w-full">
-            {/* Search input field */}
-            <div className="flex-1 relative lg:flex-0">
-              <IoSearch
-                size={20}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500"
+          {/* Back button, search bar and filter section */}
+          <div className="flex items-center p-5 lg:px-15 lg:w-full">
+            {/* Back button */}
+            <button
+              className="flex-1 cursor-pointer lg:left-auto lg:right-2"
+              onClick={handleBackClick}
+            >
+              <IoChevronBackCircle
+                size={40}
+                className="text-[#19243e] hover:text-slate-600 lg:hidden"
               />
-              <input
-                className="pl-12 text-xl shadow appearance-none rounded-lg text-gray-700 focus:outline-none p-2 bg-[#e5e7e9] lg:w-sm lg:text-2xl"
-                placeholder="Search for recipes"
+              <FaCircleXmark
+                size={40}
+                className="text-[#19243e] hover:text-slate-600 hidden lg:block"
               />
-            </div>
-            {/* Filter button */}
-            <button className="px-2 cursor-pointer" onClick={toggleFilter}>
-              <FaFilter size={25} className=" text-neutral-700" />
             </button>
+            <div className="flex items-center">
+              {/* Search input field */}
+              <div className="flex-1 relative lg:flex-0">
+                <IoSearch
+                  size={20}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500"
+                />
+                <input
+                  className="pl-12 text-xl shadow appearance-none rounded-lg text-gray-700 focus:outline-none p-2 bg-[#e5e7e9] lg:w-sm lg:text-2xl"
+                  placeholder="Search for recipes"
+                />
+              </div>
+              {/* Filter button */}
+              <button className="px-2 cursor-pointer" onClick={toggleFilter}>
+                <FaFilter size={30} className=" text-[#19243e]" />
+              </button>
+            </div>
           </div>
 
           {/* Recipe grid display */}
@@ -107,6 +127,12 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
           selectedRecipe={selectedRecipe}
           mealPlan={mealPlan}
           setMealPlan={setMealPlan}
+          selectedDay={selectedDay!}
+          setSelectedDay={setSelectedDay!}
+          selectedMealType={selectedMealType!}
+          setSelectedMealType={setSelectedMealType!}
+          startOfTheWeek={startOfTheWeek!}
+          finishAdding={finishAdding!}
         />
       )}
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Recipe, Meal } from "../types";
 import { useAuth } from "../Auth/AuthContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { IoChevronBackCircle, IoRemove } from "react-icons/io5";
 import { FaCircleXmark } from "react-icons/fa6";
 import { FaCheckCircle } from "react-icons/fa";
@@ -25,6 +25,12 @@ interface ModalProps {
   setSelectedMeal?: React.Dispatch<React.SetStateAction<Meal | null>>;
   mealPlan: Meal[];
   setMealPlan: React.Dispatch<React.SetStateAction<Meal[]>>;
+  selectedDay: number;
+  setSelectedDay: React.Dispatch<React.SetStateAction<number>>;
+  selectedMealType: string;
+  setSelectedMealType: React.Dispatch<React.SetStateAction<string>>;
+  startOfTheWeek: moment.Moment;
+  finishAdding: () => void;
 }
 
 const RecipeModal: React.FC<ModalProps> = ({
@@ -35,16 +41,19 @@ const RecipeModal: React.FC<ModalProps> = ({
   setSelectedMeal,
   mealPlan,
   setMealPlan,
+  selectedDay,
+  setSelectedDay,
+  selectedMealType,
+  setSelectedMealType,
+  startOfTheWeek,
+  finishAdding,
 }) => {
   const daysOfTheWeek = ["S", "M", "T", "W", "TH", "F", "S"];
   const mealTypes = ["Breakfast", "Lunch", "Dinner"];
-  const [selectedDay, setSelectedDay] = useState<number>(moment().day());
-  const [selectedMealType, setSelectedMealType] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
   const { user, session, isLoading, setIsLoading } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Select a day for the meal plan
   const handleDayClick = (index: number) => {
@@ -59,30 +68,30 @@ const RecipeModal: React.FC<ModalProps> = ({
   // Handle point calc based on goal/actual ratio
   const handlePointCalc = (ratio: number) => {
     if (ratio > 0.9) {
-      return 20;
+      return 50;
     }
     if (ratio > 0.8) {
-      return 18;
+      return 45;
     }
     if (ratio > 0.7) {
-      return 16;
+      return 40;
     }
     if (ratio > 0.6) {
-      return 14;
+      return 35;
     }
     if (ratio > 0.5) {
-      return 12;
+      return 30;
     }
     if (ratio > 0.4) {
-      return 10;
+      return 25;
     }
     if (ratio > 0.3) {
-      return 8;
+      return 20;
     }
     if (ratio > 0.2) {
-      return 6;
+      return 15;
     }
-    return 4;
+    return 10;
   };
 
   // Handle updating stat
@@ -153,15 +162,11 @@ const RecipeModal: React.FC<ModalProps> = ({
   // Add recipe to the meal plan
   const handleAddClick = async () => {
     if (session && user) {
-      if (!selectedMealType) {
-        showMessage("Please select meal type");
-        return;
-      }
-
       const currentDate = moment();
+      const selectedDate = startOfTheWeek.clone().add(selectedDay, "days");
 
       // Prevent adding recipes to past days
-      if (selectedDay < currentDate.day()) {
+      if (selectedDate.isBefore(currentDate)) {
         showMessage("Cannot add meal plan to past days");
         return;
       }
@@ -169,13 +174,10 @@ const RecipeModal: React.FC<ModalProps> = ({
       try {
         setIsLoading(true);
 
-        const date = currentDate
-          .startOf("week")
-          .add(selectedDay, "days")
-          .format("M/DD/YYYY");
-
         const existingMealPlan = mealPlan?.find(
-          (meal) => meal.date === date && meal.mealType === selectedMealType
+          (meal) =>
+            meal.date === selectedDate.format("M/DD/YYYY") &&
+            meal.mealType.toLowerCase() === selectedMealType.toLowerCase()
         );
 
         // Update the meal plan if a meal plan already exists for the selected date and meal type
@@ -210,7 +212,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           user.id,
           session.access_token,
           selectedRecipe,
-          date,
+          selectedDate.format("M/DD/YYYY"),
           selectedMealType
         );
 
@@ -233,6 +235,7 @@ const RecipeModal: React.FC<ModalProps> = ({
       } finally {
         setIsLoading(false);
         setTimeout(() => {
+          finishAdding();
           onClose();
         }, 1500);
       }
@@ -441,7 +444,7 @@ const RecipeModal: React.FC<ModalProps> = ({
             !user ? "bg-amber-50 border-amber-50" : " border-gray-400"
           }`}
         >
-          {user && location.pathname === "/recipes" ? (
+          {user && selectedMealType ? (
             <>
               <div className="flex-1 flex flex-col gap-2 lg:items-center lg:flex-0">
                 <div className="flex-1 flex gap-2 items-center justify-around">
@@ -462,7 +465,7 @@ const RecipeModal: React.FC<ModalProps> = ({
                     <button
                       key={type}
                       className={`flex-1 hover:cursor-pointer text-white lg:py-2 ${
-                        selectedMealType === type
+                        selectedMealType.toLowerCase() === type.toLowerCase()
                           ? "bg-[#19243e]"
                           : "bg-gray-400"
                       }`}
@@ -482,7 +485,7 @@ const RecipeModal: React.FC<ModalProps> = ({
                 <h1 className="text-white">Add</h1>
               </button>
             </>
-          ) : user && location.pathname === "/meal-plan" ? (
+          ) : user && selectedMeal ? (
             <div className="flex-1 flex justify-center gap-4">
               <button
                 className={`py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 hover:shadow-lg ${

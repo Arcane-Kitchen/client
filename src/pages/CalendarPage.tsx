@@ -3,22 +3,28 @@ import moment from "moment";
 import { useAuth } from "../Auth/AuthContext";
 import { PacmanLoader } from "react-spinners";
 import { Meal, Recipe } from "../types";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle, FaPlus } from "react-icons/fa";
 import RecipeModal from "../components/RecipeModal";
+import RecipesPage from "./RecipesPage";
 
 interface CalendarPageProps {
-  mealPlan: Meal[];
-  setMealPlan: React.Dispatch<React.SetStateAction<Meal[]>>;
   recipes: Recipe[]
+  mealPlan: Meal[];
+  filteredRecipes: Recipe[];
+  setMealPlan: React.Dispatch<React.SetStateAction<Meal[]>>;
+  setFilteredRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
 }
 
-const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, recipes }) => {
+const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, recipes, filteredRecipes, setFilteredRecipes }) => {
   const { isLoading } = useAuth();
 
   const [currentStartOfWeek, setCurrentStartOfWeek] = useState<moment.Moment>(moment().startOf("week"));
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | undefined>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
+  const [selectedDay, setSelectedDay] = useState<number>(moment().day());
+  const [selectedMealType, setSelectedMealType] = useState<string>("");
+  const [isAdding, setIsAdding] = useState<boolean>(false);
 
   // Generate the days of the current week to display on the calendar
   const daysOfWeek = [];
@@ -38,11 +44,22 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
   // Close the modal and reset selected recipe
   const closeModal = () => {
     setSelectedRecipe(undefined);
+    setSelectedMeal(null);
     setIsModalOpen(false);
   };
 
+  const handleAddClick = (day: number, type: string) => {
+    setSelectedDay(day);
+    setSelectedMealType(type);
+    setIsAdding(true);
+  }
+
+  const finishAdding = () => {
+    setIsAdding(false);
+  }
+
   return (
-    <div className="h-fit flex flex-col items-center justify-center p-10 ">
+    !isAdding ? (<div className="h-fit flex flex-col items-center justify-center p-10 ">
       <div className="flex-1 bg-[url('/paper-box.jpg')] bg-cover bg-center w-full p-5 lg:p-15">
         {isLoading ? (
           // Show loading spinner while data is being fetched
@@ -55,7 +72,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
             <div className="flex items-center border-1 border-gray-300 divide-x-1 divide-gray-300 mb-5 w-full rounded-md lg:w-3/4">
               {/* Back button */}
               <button 
-                className="flex-1 py-1 rounded-tl-md rounded-bl-md hover:cursor-pointer hover:bg-[#19243e] hover:text-[#ebd6aa] hover:scale-105 hover:shadow-lg"
+                className="flex-1 py-1 rounded-tl-md rounded-bl-md cursor-pointer hover:bg-[#19243e] hover:text-[#ebd6aa] hover:scale-105 hover:shadow-lg"
                 onClick={() => setCurrentStartOfWeek(currentStartOfWeek.clone().subtract(7, "days").startOf("week"))}
               >
                 Back
@@ -77,9 +94,9 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
             </div>
 
             {/* Calendar display */}
-            <div className="flex flex-col lg:flex-row lg:border-l-1 lg:border-b-1 lg:border-gray-300">
+            <div className="flex flex-col border-l-1 border-r-1 border-gray-300 lg:flex-row lg:border-b-1 lg:border-r-0">
               {/* Meal type header (Breakfast, Lunch, Dinner) */}
-              <div className="flex w-full lg:flex-col lg:w-3xl divide-y-1 divide-gray-300">
+              <div className="flex w-full lg:flex-col lg:w-3xl lg:divide-x-1 lg:divide-y-1 lg:divide-gray-300">
                 <div className="w-1/4 bg-[#19243e] lg:w-full lg:h-1/13"></div>
                 {["Breakfast", "Lunch", "Dinner"].map((type) => (
                   <div key={type} className="w-1/4 bg-[#19243e] text-[#ebd6aa] text-center lg:w-full lg:flex-1 lg:text-left lg:px-2 lg:bg-transparent lg:text-[#19243e] lg:text-lg lg:flex lg:items-center">{type}</div>
@@ -89,9 +106,9 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
               {/* Day headers and meal cells */}
               {daysOfWeek.map((day, index) => {
                 return (
-                  <div key={day} className="flex w-full lg:flex-col border-l-1 border-gray-300 divide-y-1 divide-gray-300">
+                  <div key={day} className="flex w-full lg:flex-col border-b-1 border-gray-300 divide-x-1 divide-gray-300 lg:divide-y-1 lg:border-b-0">
                     {/* Day header (e.g., Mon 01) */}
-                    <div className="w-1/4 flex items-center p-2 border-r-1 border-gray-300 lg:w-full lg:text-center lg:bg-[#19243e] lg:text-[#ebd6aa]">
+                    <div className="w-1/4 flex items-center p-2 lg:w-full lg:text-center lg:bg-[#19243e] lg:text-[#ebd6aa]">
                       <p className="flex-1">{day}</p>
                     </div>
 
@@ -104,13 +121,13 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
                       // If there are no meals for the day and meal type, show an empty space
                       if (weeklyMeals.length === 0) {
                         return (
-                          <div key={`${day}-${type}`} className="border-r-1 border-gray-300 w-1/4 h-20 lg:w-full lg:h-40"></div>
+                          <div key={`${day}-${type}`} className="w-1/4 h-20 flex items-center justify-center text-gray-400 cursor-pointer lg:w-full lg:h-40" onClick={() => handleAddClick(index, type)}><FaPlus /></div>
                         );
                       }
 
                       // Display the image of the meal
                       return weeklyMeals.map((meal) => (
-                        <div key={`${day}-${type}-${meal.id}`} className="border-r-1 border-gray-300 w-1/4 h-20 p-1 relative lg:w-full lg:h-40">
+                        <div key={`${day}-${type}-${meal.id}`} className="w-1/4 h-20 p-1 relative lg:w-full lg:h-40">
                           <div 
                             className="w-full h-full text-center bg-cover bg-center hover:cursor-pointer" 
                             style={{ backgroundImage: `url(${meal.imageUrl})` }}
@@ -129,12 +146,46 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
             </div>
             
             {/* Display the modal if a recipe is selected */}
-            {selectedRecipe && <RecipeModal isOpen={isModalOpen} onClose={closeModal} selectedRecipe={selectedRecipe} selectedMeal={selectedMeal} setSelectedMeal={setSelectedMeal} mealPlan={mealPlan} setMealPlan={setMealPlan}/> }
+            {selectedRecipe && <RecipeModal 
+              isOpen={isModalOpen} 
+              onClose={closeModal} 
+              selectedRecipe={selectedRecipe} 
+              selectedMeal={selectedMeal} 
+              setSelectedMeal={setSelectedMeal} 
+              mealPlan={mealPlan} 
+              setMealPlan={setMealPlan}
+              selectedDay={selectedDay}
+              setSelectedDay={setSelectedDay}
+              selectedMealType={selectedMealType}
+              setSelectedMealType={setSelectedMealType}
+              startOfTheWeek={currentStartOfWeek}
+              finishAdding={finishAdding}
+            /> }
           </div>
         )}
       </div>
     </div>
-  );
+  
+    ) : (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 w-vh h-vh lg:flex lg:justify-center lg:items-center">
+        <div className="bg-[url('/background.jpg')] bg-cover bg-center h-full w-full relative lg:rounded-lg lg:h-2/3 lg:w-1/2 lg:p-5 overflow-y-auto">          
+          <RecipesPage
+            recipes={recipes}
+            mealPlan={mealPlan}
+            setMealPlan={setMealPlan}
+            filteredRecipes={filteredRecipes}
+            setFilteredRecipes={setFilteredRecipes}
+            finishAdding={finishAdding}
+            selectedDay={selectedDay}
+            setSelectedDay={setSelectedDay}
+            selectedMealType={selectedMealType}
+            setSelectedMealType={setSelectedMealType}
+            startOfTheWeek={currentStartOfWeek}
+          />
+        </div>
+      </div>
+    )
+  )
 };
 
 export default CalendarPage;

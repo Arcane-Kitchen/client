@@ -122,9 +122,11 @@ function App() {
             path="meal-plan"
             element={
               <CalendarPage
+                recipes={recipes}
                 mealPlan={mealPlan}
                 setMealPlan={setMealPlan}
-                recipes={recipes}
+                filteredRecipes={filteredRecipes}
+                setFilteredRecipes={setFilteredRecipes}
               />
             }
           />

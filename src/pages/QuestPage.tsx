@@ -12,6 +12,7 @@ import { PiSwordFill } from "react-icons/pi";
 import { FaBookOpen } from "react-icons/fa6";
 import { MdEnergySavingsLeaf } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import buttonImg from "../../public";
 
 const QuestPage: React.FC = () => {
   const [enemy, setEnemy] = useState<Enemy | null>(null);
@@ -20,6 +21,7 @@ const QuestPage: React.FC = () => {
 
   const [message, setMessage] = useState<string>("");
   const [fightResult, setFightResult] = useState<string>("");
+  const [questTitle, setQuestTitle] = useState<string>("");
   const [enemyRotation, setEnemyRotation] = useState<string>("w-2/3 h-auto");
   const happyPet = user?.pet_img_happy;
   const sadPet = user?.pet_img_sad;
@@ -34,7 +36,6 @@ const QuestPage: React.FC = () => {
     setMessage(msg);
     setTimeout(() => {
       setMessage("");
-      // window.location.reload();
     }, 3000);
   };
 
@@ -43,10 +44,12 @@ const QuestPage: React.FC = () => {
       const newEnemyId = user.enemies_defeated + 1;
       const newEnemyIdToString = newEnemyId.toString();
       const newEnemy = await fetchEnemyById(newEnemyIdToString);
+      setQuestTitle(`Fight a ${enemy?.name}!`);
       setEnemy(newEnemy);
     }
   };
 
+  // function that tells the user which stats were too low
   const handleFightLossMessage = () => {
     let lowStats = "";
     if (
@@ -91,11 +94,12 @@ const QuestPage: React.FC = () => {
       );
       setEnemyRotation("w-2/3 h-auto -rotate-90");
       setFightResult("win");
-      showMessage("You won!");
+      setQuestTitle("You won!");
     } else {
+      setQuestTitle("You lost!");
       setFightResult("lose");
       showMessage(
-        `You lost! The following stats are too low:${handleFightLossMessage()}`
+        `The following stats are too low:${handleFightLossMessage()}`
       );
     }
   };
@@ -105,7 +109,7 @@ const QuestPage: React.FC = () => {
       <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[80vh] flex justify-around p-4">
         <div className="flex flex-col items-center">
           <h1 className="font-bold text-4xl m-1 p-1">Current Quest</h1>
-          <h1 className="text-4xl m-1 p-1">Defeat a {enemy?.name}!</h1>
+          <h1 className="text-4xl m-1 p-1">{questTitle}</h1>
           <img className={enemyRotation} src={enemy?.img} alt="" />
           <div className="flex text-2xl mb-4">
             <h1 className="flex font-bold m-1 p-1">
@@ -138,9 +142,9 @@ const QuestPage: React.FC = () => {
 
           <button
             onClick={handleFight}
-            className="m-1 p-1 w-1/4 text-2xl bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
+            className="bg-[url('/button-box.svg')] bg-cover bg-center h-21 w-30"
           >
-            Fight
+            <p className="text-white text-2xl">Fight</p>
           </button>
 
           {/* before fight */}
@@ -153,15 +157,14 @@ const QuestPage: React.FC = () => {
           {/* lose message */}
           {fightResult === "lose" && (
             <div className="flex flex-col items-center text-2xl">
-              <h1>You lose!</h1>
               <img className="w-3/4 h-auto" src={sadPet} alt="happy pet" />
               <button
                 onClick={() => {
                   navigate("/meal-plan");
                 }}
-                className="m-1 p-1 bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
+                className="bg-[url('/button-box.svg')] bg-cover bg-center w-35 h-23 "
               >
-                Go Lvl Up
+                <p className="text-30 text-white">Lvl Up</p>
               </button>
             </div>
           )}
@@ -169,15 +172,14 @@ const QuestPage: React.FC = () => {
           {/* win message */}
           {fightResult === "win" && (
             <div className="flex flex-col items-center text-2xl">
-              <h1>You win!</h1>
               <img className="w-3/4 h-auto" src={happyPet} alt="happy pet" />
               <button
                 onClick={() => {
                   window.location.reload();
                 }}
-                className="m-1 p-1 bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
+                className="bg-[url('/button-box.svg')] bg-cover bg-center w-35 h-23"
               >
-                Next Quest
+                <p className="text-white">Next</p>
               </button>
             </div>
           )}
