@@ -3,39 +3,98 @@ import { toast } from 'react-toastify';
 
 export const checkForAchievements = async (userId: string) => {
   try {
-    // Example logic to check for a specific achievement
-    const { data: activityCount, error: countError } = await supabase
+    // Check for "First Recipe Added" achievement
+    const { data: addRecipeActivityCount, error: addRecipeCountError } = await supabase
       .from('User_Activity')
       .select('*', { count: 'exact' })
-      .eq('user_id', userId);
+      .eq('user_id', userId)
+      .eq('activity_type', 'add_recipe');
 
-    if (countError) {
-      throw countError;
+    if (addRecipeCountError) {
+      throw addRecipeCountError;
     }
 
-    if (activityCount.length === 1) {
-      // Get the reward_id for the achievement
-      const { data: achievementData, error: achievementError } = await supabase
+    if (addRecipeActivityCount.length === 1) {
+      const { data: addRecipeAchievementData, error: addRecipeAchievementError } = await supabase
         .from('Achievement')
         .select('id')
         .eq('name', 'First Recipe Added')
         .single();
 
-      if (achievementError) {
-        throw achievementError;
+      if (addRecipeAchievementError) {
+        throw addRecipeAchievementError;
       }
 
-      // Save achievement to user_achievement table
-      const { data: userAchievementData, error: userAchievementError } = await supabase
+      // Check if the achievement already exists for the user
+      const { data: existingAchievement, error: existingAchievementError } = await supabase
         .from('User_Achievement')
-        .insert([{ user_id: userId, reward_id: achievementData.id, date_earned: new Date().toISOString() }]);
+        .select('*')
+        .eq('user_id', userId)
+        .eq('reward_id', addRecipeAchievementData.id)
+        .single();
 
-      if (userAchievementError) {
-        throw userAchievementError;
+      if (existingAchievementError && existingAchievementError.code !== 'PGRST116') {
+        throw existingAchievementError;
       }
 
-      // Display toast notification
-      toast.success('Achievement unlocked: First Recipe Added');
+      if (!existingAchievement) {
+        const { data: userAddRecipeAchievementData, error: userAddRecipeAchievementError } = await supabase
+          .from('User_Achievement')
+          .insert([{ user_id: userId, reward_id: addRecipeAchievementData.id, date_earned: new Date().toISOString() }]);
+
+        if (userAddRecipeAchievementError) {
+          throw userAddRecipeAchievementError;
+        }
+
+        toast.success('Achievement unlocked: First Recipe Added');
+      }
+    }
+
+    // Check for "First Meal Cooked" achievement
+    const { data: cookMealActivityCount, error: cookMealCountError } = await supabase
+      .from('User_Activity')
+      .select('*', { count: 'exact' })
+      .eq('user_id', userId)
+      .eq('activity_type', 'cook_meal');
+
+    if (cookMealCountError) {
+      throw cookMealCountError;
+    }
+
+    if (cookMealActivityCount.length === 1) {
+      const { data: cookMealAchievementData, error: cookMealAchievementError } = await supabase
+        .from('Achievement')
+        .select('id')
+        .eq('name', 'First Meal Cooked')
+        .single();
+
+      if (cookMealAchievementError) {
+        throw cookMealAchievementError;
+      }
+
+      // Check if the achievement already exists for the user
+      const { data: existingCookMealAchievement, error: existingCookMealAchievementError } = await supabase
+        .from('User_Achievement')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('reward_id', cookMealAchievementData.id)
+        .single();
+
+      if (existingCookMealAchievementError && existingCookMealAchievementError.code !== 'PGRST116') {
+        throw existingCookMealAchievementError;
+      }
+
+      if (!existingCookMealAchievement) {
+        const { data: userCookMealAchievementData, error: userCookMealAchievementError } = await supabase
+          .from('User_Achievement')
+          .insert([{ user_id: userId, reward_id: cookMealAchievementData.id, date_earned: new Date().toISOString() }]);
+
+        if (userCookMealAchievementError) {
+          throw userCookMealAchievementError;
+        }
+
+        toast.success('Achievement unlocked: First Meal Cooked');
+      }
     }
   } catch (error) {
     console.error('Error checking for achievements:', error);

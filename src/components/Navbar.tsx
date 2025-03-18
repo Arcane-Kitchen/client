@@ -106,6 +106,9 @@ const Navbar: React.FC = () => {
               >
                 <Link to="/preferences">Preferences</Link>
               </li>
+                <li className={"w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl"} onClick={toggleNavbar}>
+                  <Link to='/Achievements'>Achievements</Link>
+                </li>
               <li
                 className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
                   session ? "block" : "hidden"
