@@ -13,6 +13,9 @@ import {
 import moment from "moment";
 import { updateUserPetStat } from "../api/userApi";
 import { fetchARecipeById } from "../api/recipeApi";
+import { addUserActivity } from "../api/activityApi";
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 interface ModalProps {
   isOpen: boolean;
@@ -20,10 +23,9 @@ interface ModalProps {
   selectedRecipe: Recipe;
   selectedMeal?: Meal | null;
   setSelectedMeal?: React.Dispatch<React.SetStateAction<Meal | null>>;
-  mealPlan?: Meal[];
-  setMealPlan?: React.Dispatch<React.SetStateAction<Meal[]>>;
+  mealPlan: Meal[];
+  setMealPlan: React.Dispatch<React.SetStateAction<Meal[]>>;
 }
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const RecipeModal: React.FC<ModalProps> = ({
   isOpen,
@@ -40,7 +42,7 @@ const RecipeModal: React.FC<ModalProps> = ({
   const [selectedMealType, setSelectedMealType] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
-  const { user, session } = useAuth();
+  const { user, session, isLoading, setIsLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -152,81 +154,72 @@ const RecipeModal: React.FC<ModalProps> = ({
         return;
       }
 
-      const date = currentDate
-        .startOf("week")
-        .add(selectedDay, "days")
-        .format("M/DD/YYYY");
-
-      const existingMealPlan = mealPlan?.find(
-        (meal) => meal.date === date && meal.mealType === selectedMealType
-      );
-
-      // Update the meal plan if a meal plan already exists for the selected date and meal type
-      if (existingMealPlan && existingMealPlan.recipeId !== selectedRecipe.id) {
-        const updatedMeal = await updateMealPlanById(
-          user.id,
-          existingMealPlan.id,
-          session.access_token,
-          { recipeId: selectedRecipe.id }
-        );
-        if (updatedMeal) {
-          showMessage(
-            `${moment()
-              .day(selectedDay)
-              .format(
-                "dddd"
-              )} ${selectedMealType.toLowerCase()} meal plan updated successfully`
-          );
-        }
-        return;
-      }
-
-      // Add new recipe to meal plan
-      const newMeal = await addRecipeToMealPlan(
-        user.id,
-        session.access_token,
-        selectedRecipe,
-        date,
-        selectedMealType
-      );
-
-      if (newMeal) {
-        await updateUserPetStat(
-          user.id,
-          user.pet_wisdom_exp + 20,
-          "wisdom",
-          session.access_token
-        );
-        showMessage(`Recipe added to meal plan: Wisdom +20`);
-      }
-
       try {
-        const activityResponse = await fetch(
-          `${baseUrl}/activity/add-activity`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userId: user.id,
-              recipeId: selectedRecipe.id,
-              activity_type: "add_recipe",
-            }),
-          }
+        setIsLoading(true);
+        
+        const date = currentDate
+          .startOf("week")
+          .add(selectedDay, "days")
+          .format("M/DD/YYYY");
+  
+        const existingMealPlan = mealPlan?.find(
+          (meal) => meal.date === date && meal.mealType === selectedMealType
         );
-
-        const activityResult = await activityResponse.json();
-        if (
-          activityResponse.ok &&
-          activityResult.message.includes("Achievement unlocked")
-        ) {
-          // Display notification for achievement unlocked
-          showMessage(activityResult.message);
+  
+        // Update the meal plan if a meal plan already exists for the selected date and meal type
+        if (existingMealPlan && existingMealPlan.recipeId !== selectedRecipe.id) {
+          showMessage("Updating meal plan ...");
+          const updatedMeal = await updateMealPlanById(
+            user.id,
+            existingMealPlan.id,
+            session.access_token,
+            { recipeId: selectedRecipe.id }
+          );
+          if (updatedMeal) {
+            showMessage(
+              `${moment()
+                .day(selectedDay)
+                .format(
+                  "dddd"
+                )} ${selectedMealType.toLowerCase()} meal plan updated successfully`
+            );
+          } else {
+            showMessage("Error updating meal plan, try again");
+          }
+          return;
         }
-      } catch (error) {
-        console.error("Error adding activity:", error);
-        showMessage("Error adding activity");
+  
+        // Add new recipe to meal plan
+        showMessage("Adding recipe to meal plan ...");
+        const newMeal = await addRecipeToMealPlan(
+          user.id,
+          session.access_token,
+          selectedRecipe,
+          date,
+          selectedMealType
+        );
+  
+        if (newMeal) {
+          await updateUserPetStat(
+            user.id,
+            user.pet_wisdom_exp + 20,
+            "wisdom",
+            session.access_token
+          );
+          showMessage(`Recipe added to meal plan: Wisdom +20`);
+          setMealPlan([ ...mealPlan, newMeal.mealPlan]);
+        } else {
+          showMessage("Error adding recipe to meal plan, try again");
+        }
+        
+        await addUserActivity(user.id, selectedRecipe.id);
+      } catch (error: any) {
+        console.error("Error adding/updating meal plan:", error);
+      } finally {
+        setIsLoading(false);
+        setTimeout(() => {
+          onClose();
+        }, 1500);
       }
     }
   };
@@ -465,8 +458,8 @@ const RecipeModal: React.FC<ModalProps> = ({
                   ))}
                 </div>
               </div>
-              <button className="bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 hover:cursor-pointer">
-                <h1 className="text-white" onClick={handleAddClick}>
+              <button className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 ${isLoading ? "cursor-not-allowed" : "cursor-pointer"}`} onClick={isLoading ? (e) => e.preventDefault() : handleAddClick}>
+                <h1 className="text-white">
                   Add
                 </h1>
               </button>
@@ -474,7 +467,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           ) : user && location.pathname === "/meal-plan" ? (
             <div className="flex-1 flex justify-center gap-4">
               <button
-                className={` py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 hover:shadow-lg ${
+                className={`py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 hover:shadow-lg ${
                   selectedMeal && selectedMeal.hasBeenEaten
                     ? "bg-[#19243e] text-[#ebd6aa]"
                     : "bg-gray-400 text-gray-300"

@@ -216,7 +216,7 @@ const Preferences = () => {
                                         return (
                                             <SwiperSlide key={pet}>
                                                 <div className="flex items-center h-50">
-                                                    <img src={petMoods[pet].happy} alt={`happy ${pet}`} className="w-full h-full object-contain"/>
+                                                    <img src={petMoods[pet].neutral} alt={`neutral ${pet}`} className="w-full h-full object-contain"/>
                                                 </div>
                                             </SwiperSlide>
                                         )

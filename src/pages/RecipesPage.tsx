@@ -14,9 +14,10 @@ interface RecipesPageProps {
   mealPlan: Meal[];
   filteredRecipes: Recipe[];
   setFilteredRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
+  setMealPlan: React.Dispatch<React.SetStateAction<Meal[]>>;
 }
 
-const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRecipes, setFilteredRecipes }) => {
+const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRecipes, setFilteredRecipes, setMealPlan }) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
@@ -105,6 +106,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
           onClose={closeModal}
           selectedRecipe={selectedRecipe}
           mealPlan={mealPlan}
+          setMealPlan={setMealPlan}
         />
       )}
 
