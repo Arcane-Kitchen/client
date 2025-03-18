@@ -22,6 +22,7 @@ interface AuthContextType {
   ) => Promise<SupabaseResponse>;
   signIn: (email: string, password: string) => Promise<SupabaseResponse>;
   signOut: () => Promise<SupabaseResponse>;
+  setUser: React.Dispatch<React.SetStateAction<UserProfile | null>>;
 }
 
 interface SupabaseResponse {
@@ -172,6 +173,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
         signUp,
         signIn,
         signOut,
+        setUser,
       }}
     >
       {children}

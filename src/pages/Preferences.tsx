@@ -14,7 +14,6 @@ import { FaDumbbell } from "react-icons/fa6";
 import { PiSneakerMoveFill } from "react-icons/pi";
 import { FaShieldAlt } from "react-icons/fa";
 
-
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -39,8 +38,9 @@ const Preferences = () => {
             sad: petMoods.orangeDragon.sad
         }
     });
+    const [isEditing, setIsEditing] = useState<boolean>(false);
 
-    const { user, session } = useAuth();
+    const { user, session, setUser } = useAuth();
     const navigate = useNavigate();
     const formRef = useRef<HTMLFormElement | null>(null);
     
@@ -52,7 +52,23 @@ const Preferences = () => {
                 formRef.current.reportValidity(); // Validate form fields
                 const recommendedCaloriesAndMacros = calculateDailyCaloriesAndMacrosIntake(userProfile);
                 setDailyCaloriesAndMacros(recommendedCaloriesAndMacros);
+
+                if (session && user && user.pet_name) {
+                    await updateUserCalorieAndMacrosGoal(user.id, session.access_token, recommendedCaloriesAndMacros);
+
+                    const updatedUser = { ...user };
+                    updatedUser.daily_calorie_goal = recommendedCaloriesAndMacros.calories;
+                    updatedUser.daily_carb_goal = recommendedCaloriesAndMacros.carbs.percentage;
+                    updatedUser.daily_fat_goal = recommendedCaloriesAndMacros.fats.percentage;
+                    updatedUser.daily_protein_goal = recommendedCaloriesAndMacros.protein.percentage;
+                    setUser(updatedUser);
+                    
+                    setIsEditing(false);
+                    setPage(1);
+                    return;
+                }
             }
+
         } else if (page === 3) {
             event.preventDefault();
 
@@ -75,6 +91,10 @@ const Preferences = () => {
 
     const handleBackClick = () => {
         setPage(page - 1);
+    }
+
+    const handleEditClick = () => {
+        setIsEditing(true);
     }
 
     // Handle changes in the user profile form fields
@@ -111,17 +131,43 @@ const Preferences = () => {
 
     return (
         <div className="flex-1 flex flex-col items-center px-2 py-10">
-            <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-3/5 aspect-square lg:p-15">
-            </div>
+            <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-3/5 aspect-square lg:p-15"></div>
             <div className="h-65 w-full p-4 flex flex-col items-center justify-center relative">
                 <img src="/sign-up-box.svg" className="w-full transform scale-y-210 lg:w-4/5 lg:scale-y-110" />
                 <div className="absolute top-6/11 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full flex flex-col items-center justify-center lg:w-4/5">
+                    {user && user.pet_name && !isEditing && (
+                        <div className="px-6 w-4/5 pb-5">
+                            <h1 className="text-white text-center text-2xl mb-3">Your goals to prepare for the challenges ahead</h1>
+                            <div className="flex flex-col w-full items-center gap-3">
+                                {/* Macros Chart */}
+                                <div className="w-full relative">
+                                    <h1 className="text-white text-center text-3xl/5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">{user.daily_calorie_goal}<br /><span className="text-lg/0">kcal</span></h1>
+                                    <NutritionChart dataValues={[user.daily_carb_goal, user.daily_fat_goal, user.daily_protein_goal]} labels={["carbs", "fats", "protein"]}/>
+                                </div>
+                                <div className="w-3/4">
+                                    <div className="flex justify-between">
+                                        <div className="text-white flex gap-2 items-center"><PiSneakerMoveFill color="#d14b3a" />Carbs</div>
+                                        <p className="text-white">{`${(user.daily_calorie_goal*user.daily_carb_goal/100/4).toFixed()}g (${user.daily_carb_goal}%)`}</p>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <div className="text-white flex gap-2 items-center"><FaShieldAlt color="#4a6e37" />Fat</div>
+                                        <p className="text-white">{`${(user.daily_calorie_goal*user.daily_fat_goal/100/9).toFixed()}g (${user.daily_fat_goal}%)`}</p>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <div className="text-white flex gap-2 items-center"><FaDumbbell color="#f0c046" />Protein</div>
+                                        <p className="text-white">{`${(user.daily_calorie_goal*user.daily_protein_goal/100/4).toFixed()}g (${user.daily_protein_goal}%)`}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     {/* Page 1: Personal details form */}
-                    {page === 1 ? (
+                    {(user && !user.pet_name || isEditing) && page === 1 ? (
                         <UserDetailsForm
                             formRef={formRef}
                             userProfile={userProfile}
                             handleUserProfileChange={handleUserProfileChange}
+                            isEditing={isEditing}
                         />
                     ) : page === 2 ? (
                         // Page 2: Display recommended calories and macros
@@ -132,7 +178,7 @@ const Preferences = () => {
                                     {/* Macros Chart */}
                                     <div className="w-full relative">
                                         <h1 className="text-white text-center text-3xl/5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">{dailyCaloriesAndMacros.calories}<br /><span className="text-lg/0">kcal</span></h1>
-                                        <NutritionChart dataValues={dailyCaloriesAndMacros} labels={["carbs", "fats", "protein"]}/>
+                                        <NutritionChart dataValues={[dailyCaloriesAndMacros?.carbs.inCalories, dailyCaloriesAndMacros?.fats.inCalories, dailyCaloriesAndMacros?.protein.inCalories]} labels={["carbs", "fats", "protein"]}/>
                                     </div>
                                     <div className="w-3/4">
                                         <div className="flex justify-between">
@@ -151,7 +197,7 @@ const Preferences = () => {
                                 </div>
                             )}
                         </div>
-                    ) : (
+                    ) : page === 3 ? (
                         // Page 3: Pet selection and naming
                         <div className="px-6 w-4/5 flex flex-col gap-3">
                             <h1 className="text-white text-center text-2xl">Pick your loyal pet companion to aid you in your journey!</h1>
@@ -199,7 +245,7 @@ const Preferences = () => {
                                 </div>
                             </form>
                         </div>
-                    )}
+                    ) : null }
                 </div>
             </div>
 
@@ -208,9 +254,13 @@ const Preferences = () => {
                 <button className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 cursor-pointer ${page === 1 ? "hidden" : "block"}`} onClick={handleBackClick}>
                     <h1 className="text-white">Back</h1>
                 </button>
-                <button className="bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 cursor-pointer" onClick={handleNextClick}>
+                <button className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 cursor-pointer ${user && !user.pet_name || isEditing ? "block" : "hidden"}`} onClick={handleNextClick}>
                     <h1 className="text-white">Next</h1>
                 </button>
+                <button className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 cursor-pointer ${!isEditing && user && user.pet_name ? "block" : "hidden"}`} onClick={handleEditClick}>
+                    <h1 className="text-white">Edit</h1>
+                </button>
+                
             </div>
         
         </div>

@@ -7,12 +7,13 @@ interface UserDetailsFormProps {
     userProfile: UserProfile;
     handleUserProfileChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     formRef: React.RefObject<HTMLFormElement | null>;
+    isEditing: boolean;
 }
 
-const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ userProfile, handleUserProfileChange, formRef }) => {
+const UserDetailsForm: React.FC<UserDetailsFormProps> = ({ userProfile, handleUserProfileChange, formRef, isEditing }) => {
   return (
     <form ref={formRef} className="px-6 w-4/5 lg:w-3/5">
-        <h1 className="text-white text-center text-2xl mb-3">Enter your details to begin your adventure!</h1>
+        <h1 className="text-white text-center text-2xl mb-3">{isEditing ? "Update your details to continue your adventure!" : "Enter your details to begin your adventure!"}</h1>
 
         {/* Gender Input */}
         <div className="flex gap-2 items-center">

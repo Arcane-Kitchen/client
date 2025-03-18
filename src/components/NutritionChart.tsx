@@ -7,7 +7,7 @@ import { DailyCaloriesAndMacros } from '../types';
 ChartJS.register(ArcElement, Tooltip, Legend, Title, ChartDataLabels);
 
 interface NutritionChartProps {
-    dataValues: DailyCaloriesAndMacros | null;
+    dataValues: number[];
     labels: string[]
 }
 
@@ -16,7 +16,7 @@ const NutritionChart: React.FC<NutritionChartProps> = ({ dataValues, labels}) =>
     const data = {
         labels,
         datasets: [{
-          data: [dataValues?.carbs.inCalories, dataValues?.fats.inCalories, dataValues?.protein.inCalories],
+          data: dataValues,
           backgroundColor: [
             "#d14b3a",
             "#4a6e37",
