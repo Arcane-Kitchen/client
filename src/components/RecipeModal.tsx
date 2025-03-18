@@ -211,7 +211,8 @@ const RecipeModal: React.FC<ModalProps> = ({
             body: JSON.stringify({
               userId: user.id,
               recipeId: selectedRecipe.id,
-              activity_type: 'add_recipe' }),
+              activity_type: "add_recipe",
+            }),
           }
         );
 
@@ -286,16 +287,26 @@ const RecipeModal: React.FC<ModalProps> = ({
           );
 
           // Add activity for cooking a meal
-          const activityResponse = await fetch(`${baseUrl}/activity/add-activity`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId: user.id, recipeId: selectedRecipe.id, activity_type: 'cook_meal' }),
-          });
+          const activityResponse = await fetch(
+            `${baseUrl}/activity/add-activity`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userId: user.id,
+                recipeId: selectedRecipe.id,
+                activity_type: "cook_meal",
+              }),
+            }
+          );
 
           const activityResult = await activityResponse.json();
-          if (activityResponse.ok && activityResult.message.includes('Achievement unlocked')) {
+          if (
+            activityResponse.ok &&
+            activityResult.message.includes("Achievement unlocked")
+          ) {
             // Display notification for achievement unlocked
             showMessage(activityResult.message);
           }
