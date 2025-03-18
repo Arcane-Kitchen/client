@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./Auth/Login";
@@ -21,11 +21,15 @@ import QuestPage from "./pages/QuestPage";
 import Chatbot from './components/Chatbot';
 
 
+
 function App() {
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
   const { user, session, setIsLoading } = useAuth();
+  const location = useLocation();
+  const showChatbot = location.pathname === '/recipes' || location.pathname === '/meal-plan';
+  
 
   useEffect(() => {
     if (user && session) {
@@ -142,8 +146,8 @@ function App() {
         draggable
         pauseOnHover
       />      
-      <Chatbot />
-    </AchievementSubscriptionProvider>
+        {showChatbot && <Chatbot />}
+        </AchievementSubscriptionProvider>
   );
 }
 
