@@ -18,6 +18,8 @@ import { Recipe, Meal, MealRawData } from "./types";
 import { updateUserLastLoginById } from "./api/userApi";
 import AchievementSubscriptionProvider from "./components/AchievementSubscriptionProvider";
 import QuestPage from "./pages/QuestPage";
+import Chatbot from './components/Chatbot';
+
 
 function App() {
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
@@ -139,7 +141,8 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-      />
+      />      
+      <Chatbot />
     </AchievementSubscriptionProvider>
   );
 }
