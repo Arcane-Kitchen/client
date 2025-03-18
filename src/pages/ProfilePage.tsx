@@ -6,6 +6,12 @@ import { useAuth } from "../Auth/AuthContext";
 import { Meal } from "../types";
 import { useNavigate } from "react-router-dom";
 import { calcLevel, calcRemainderExp } from "../util/statCalc";
+import { FaDumbbell } from "react-icons/fa6";
+import { PiSneakerMoveFill } from "react-icons/pi";
+import { FaShieldAlt } from "react-icons/fa";
+import { PiSwordFill } from "react-icons/pi";
+import { FaBookOpen } from "react-icons/fa6";
+import { MdEnergySavingsLeaf } from "react-icons/md";
 
 interface ProfilePageProps {
   mealPlan: Meal[];
@@ -132,9 +138,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           </div>
 
           <div className="flex w-full justify-between">
-            <label htmlFor="protein">
-              <span className="font-bold">Strength</span> (protein)
-            </label>
+            <div className="flex">
+              <PiSwordFill className="m-1" />
+              <label htmlFor="fat">
+                <span className="font-bold">Str</span> (protein)
+              </label>
+            </div>
             <p>
               <span className="font-bold">
                 Lvl {calcLevel(user?.pet_protein_exp)}
@@ -144,15 +153,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <progress
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${strengthColor}`}
             id="protein"
-            // value={calcRemainderExp(user?.pet_protein_exp)}
-            value={15}
+            value={calcRemainderExp(user?.pet_protein_exp)}
+            // value={15}
             max={100}
           ></progress>
 
           <div className="flex w-full justify-between">
-            <label htmlFor="fat">
-              <span className="font-bold">Defense</span> (fat)
-            </label>
+            <div className="flex">
+              <FaShieldAlt className="m-1" />
+              <label htmlFor="fat">
+                <span className="font-bold">Def</span> (fat)
+              </label>
+            </div>
             <p>
               <span className="font-bold">
                 Lvl {calcLevel(user?.pet_fat_exp)}
@@ -162,15 +174,19 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <progress
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${defenseColor}`}
             id="fat"
-            // value={calcRemainderExp(user?.pet_fat_exp)}
-            value={33}
+            value={calcRemainderExp(user?.pet_fat_exp)}
+            // value={33}
             max={100}
           ></progress>
 
           <div className="flex w-full justify-between">
-            <label htmlFor="carbs">
-              <span className="font-bold">Dexterity</span> (carbs)
-            </label>
+            <div className="flex">
+              <PiSneakerMoveFill className="m-1" />
+              <label htmlFor="carbs">
+                <span className="font-bold">Dex</span> (carbs)
+              </label>
+            </div>
+
             <p>
               <span className="font-bold">
                 Lvl {calcLevel(user?.pet_carb_exp)}
@@ -180,15 +196,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <progress
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${dexterityColor}`}
             id="carbs"
-            // value={calcRemainderExp(user?.pet_carb_exp)}
-            value={50}
+            value={calcRemainderExp(user?.pet_carb_exp)}
+            // value={50}
             max={100}
           ></progress>
 
           <div className="flex w-full justify-between">
-            <label htmlFor="calories">
-              <span className="font-bold">Stamina</span> (calories)
-            </label>
+            <div className="flex">
+              <MdEnergySavingsLeaf className="m-1" />
+              <label htmlFor="fat">
+                <span className="font-bold">Stamina</span> (calories)
+              </label>
+            </div>
             <p>
               <span className="font-bold">
                 Lvl {calcLevel(user?.pet_calorie_exp)}
@@ -198,15 +217,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <progress
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${staminaColor}`}
             id="calories"
-            // value={calcRemainderExp(user?.pet_calorie_exp)}
-            value={67}
+            value={calcRemainderExp(user?.pet_calorie_exp)}
+            // value={67}
             max={100}
           ></progress>
 
           <div className="flex w-full justify-between">
-            <label htmlFor="wisdom">
-              <span className="font-bold">Wisdom</span> (meal planning)
-            </label>
+            <div className="flex">
+              <FaBookOpen className="m-1" />
+              <label htmlFor="fat">
+                <span className="font-bold">Wis</span> (planning)
+              </label>
+            </div>
             <p>
               <span className="font-bold">
                 Lvl {calcLevel(user?.pet_wisdom_exp)}
@@ -217,15 +239,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <progress
             className={`w-full mb-7 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${wisdomColor}`}
             id="wisdom"
-            // value={calcRemainderExp(user?.pet_wisdom_exp)}
-            value={84}
+            value={calcRemainderExp(user?.pet_wisdom_exp)}
+            // value={84}
             max={100}
           ></progress>
-          <h1 className="">To boost your stats: </h1>
+          <button className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-3 mb-3">
+            Go on a quest!
+          </button>
+          <h1 className="text-2xl">Or to boost your stats: </h1>
 
           <div className="m-2 p-2 w-full  flex justify-around">
             <button
-              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-1"
+              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-3"
               onClick={() => {
                 navigate("/recipes");
               }}
@@ -233,7 +258,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
               Add Meals
             </button>
             <button
-              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-1"
+              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-3"
               onClick={() => {
                 navigate("/meal-plan");
               }}
