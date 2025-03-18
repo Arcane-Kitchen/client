@@ -211,7 +211,7 @@ const RecipeModal: React.FC<ModalProps> = ({
             body: JSON.stringify({
               userId: user.id,
               recipeId: selectedRecipe.id,
-           , activity_type: 'add_recipe' }),
+              activity_type: 'add_recipe' }),
           }
         );
 
