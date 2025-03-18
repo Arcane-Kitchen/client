@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-// import happyDragon from "../assets/happy.png";
-// import neutralDragon from "../assets/neutral.png";
-// import sadDragon from "../assets/sad.png";
 import { useAuth } from "../Auth/AuthContext";
 import { Meal } from "../types";
 import { useNavigate } from "react-router-dom";
 import { calcLevel, calcRemainderExp } from "../util/statCalc";
+import { PiSneakerMoveFill } from "react-icons/pi";
+import { FaShieldAlt } from "react-icons/fa";
+import { PiSwordFill } from "react-icons/pi";
+import { FaBookOpen } from "react-icons/fa6";
+import { MdEnergySavingsLeaf } from "react-icons/md";
 
 interface ProfilePageProps {
   mealPlan: Meal[];
@@ -14,8 +16,10 @@ interface ProfilePageProps {
 const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const dragonImage = user?.pet_img_normal;
+
   const [strengthColor, setStrengthColor] = useState<string>(
-    "[&::-webkit-progress-value]:bg-green-500"
+    "[&::-webkit-progress-value]:bg-yellow-500"
   );
   const [defenseColor, setDefenseColor] = useState<string>(
     "[&::-webkit-progress-value]:bg-yellow-500"
@@ -32,46 +36,40 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
 
   useEffect(() => {
     checkDailyStatColors();
-  }, []);
+  }, [user]);
 
-  const checkDailyStatColors = async () => {
-    // using last login date that has user time zone, calculate user's current date
-    const currentDay = new Date(user?.updated_at);
-    const currentDayLocal = currentDay.toLocaleDateString();
-
-    // filter users meals that they have eaten today
-    const todayMeals = mealPlan.filter((meal) => {
-      if (meal.hasBeenEaten && meal.date === currentDayLocal) {
-        return true;
-      }
-      return false;
-    });
-
-    // we will use this conditional to determine the color change baseed on nutrition
-    // for simplicity and testing, for now, simply count number of meals eaten today
-    //if user has eaten three meals today, will change to yellow
-    if (todayMeals.length >= 3) {
-      setStrengthColor("[&::-webkit-progress-value]:bg-green-500");
-      setDefenseColor("[&::-webkit-progress-value]:bg-green-500");
-      setDexterityColor("[&::-webkit-progress-value]:bg-green-500");
-      setStaminaColor("[&::-webkit-progress-value]:bg-green-500");
-    } else {
-      setStrengthColor("[&::-webkit-progress-value]:bg-gray-500");
-      setDefenseColor("[&::-webkit-progress-value]:bg-yellow-500");
-      setDexterityColor("[&::-webkit-progress-value]:bg-yellow-500");
-      setStaminaColor("[&::-webkit-progress-value]:bg-yellow-500");
+  const colorPicker = (exp: number) => {
+    if (exp < 17) {
+      return "[&::-webkit-progress-value]:bg-red-500";
     }
+    if (exp < 34) {
+      return "[&::-webkit-progress-value]:bg-orange-500";
+    }
+    if (exp < 51) {
+      return "[&::-webkit-progress-value]:bg-amber-500";
+    }
+    if (exp < 68) {
+      return "[&::-webkit-progress-value]:bg-yellow-500";
+    }
+    if (exp < 85) {
+      return "[&::-webkit-progress-value]:bg-lime-500";
+    }
+    return "[&::-webkit-progress-value]:bg-green-500";
   };
 
-  // Select the appropriate dragon image based on the mean happiness
-  const dragonImage = user?.pet_img_happy;
-  // if (meanHappiness >= 75) {
-  //   dragonImage = happyDragon;
-  // } else if (meanHappiness >= 50) {
-  //   dragonImage = neutralDragon;
-  // } else {
-  //   dragonImage = sadDragon;
-  // }
+  const checkDailyStatColors = async () => {
+    const strRemainderExp = calcRemainderExp(user?.pet_protein_exp);
+    const defRemainderExp = calcRemainderExp(user?.pet_fat_exp);
+    const dexRemainderExp = calcRemainderExp(user?.pet_carb_exp);
+    const staminaRemainderExp = calcRemainderExp(user?.pet_calorie_exp);
+    const wisRemainderExp = calcRemainderExp(user?.pet_wisdom_exp);
+
+    setStrengthColor(colorPicker(strRemainderExp));
+    setDefenseColor(colorPicker(defRemainderExp));
+    setDexterityColor(colorPicker(dexRemainderExp));
+    setStaminaColor(colorPicker(staminaRemainderExp));
+    setWisdomColor(colorPicker(wisRemainderExp));
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
@@ -81,22 +79,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <h2 className="text-2xl">{user?.pet_name}</h2>
           <div className="flex">
             <img className="size-40" src={dragonImage} alt="dragon" />
-            <div className="m-1 p-1 flex flex-col items center">
-              <div className="flex">
-                <div className="bg-yellow-500 w-[20px] h-[20px] m-1"></div>
-                <p>Go eat / plan!</p>
-              </div>
-              <div className="flex">
-                <div className="bg-green-500 w-[20px] h-[20px] m-1"></div>
-                <p>Done for today!</p>
-              </div>
-            </div>
           </div>
 
           <div className="flex w-full justify-between">
-            <label htmlFor="protein">
-              <span className="font-bold">Strength</span> (protein)
-            </label>
+            <div className="flex">
+              <PiSwordFill className="m-1" />
+              <label htmlFor="fat">
+                <span className="font-bold">Str</span> (protein)
+              </label>
+            </div>
             <p>
               <span className="font-bold">
                 Lvl {calcLevel(user?.pet_protein_exp)}
@@ -111,9 +102,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           ></progress>
 
           <div className="flex w-full justify-between">
-            <label htmlFor="fat">
-              <span className="font-bold">Defense</span> (fat)
-            </label>
+            <div className="flex">
+              <FaShieldAlt className="m-1" />
+              <label htmlFor="fat">
+                <span className="font-bold">Def</span> (fat)
+              </label>
+            </div>
             <p>
               <span className="font-bold">
                 Lvl {calcLevel(user?.pet_fat_exp)}
@@ -128,9 +122,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           ></progress>
 
           <div className="flex w-full justify-between">
-            <label htmlFor="carbs">
-              <span className="font-bold">Dexterity</span> (carbs)
-            </label>
+            <div className="flex">
+              <PiSneakerMoveFill className="m-1" />
+              <label htmlFor="carbs">
+                <span className="font-bold">Dex</span> (carbs)
+              </label>
+            </div>
+
             <p>
               <span className="font-bold">
                 Lvl {calcLevel(user?.pet_carb_exp)}
@@ -145,9 +143,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           ></progress>
 
           <div className="flex w-full justify-between">
-            <label htmlFor="calories">
-              <span className="font-bold">Stamina</span> (calories)
-            </label>
+            <div className="flex">
+              <MdEnergySavingsLeaf className="m-1" />
+              <label htmlFor="fat">
+                <span className="font-bold">Stamina</span> (calories)
+              </label>
+            </div>
             <p>
               <span className="font-bold">
                 Lvl {calcLevel(user?.pet_calorie_exp)}
@@ -162,9 +163,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           ></progress>
 
           <div className="flex w-full justify-between">
-            <label htmlFor="wisdom">
-              <span className="font-bold">Wisdom</span> (meal planning)
-            </label>
+            <div className="flex">
+              <FaBookOpen className="m-1" />
+              <label htmlFor="fat">
+                <span className="font-bold">Wis</span> (planning)
+              </label>
+            </div>
             <p>
               <span className="font-bold">
                 Lvl {calcLevel(user?.pet_wisdom_exp)}
@@ -178,24 +182,24 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             value={calcRemainderExp(user?.pet_wisdom_exp)}
             max={100}
           ></progress>
-          <h1 className="">To boost your stats: </h1>
+          <button
+            onClick={() => {
+              navigate("/quest");
+            }}
+            className="bg-[url('/button-box.svg')] bg-cover bg-center w-35 h-23"
+          >
+            <p className="text-white text-2xl">Quest</p>
+          </button>
+          {/* <h1 className="text-2xl">Or to boost your stats: </h1> */}
 
           <div className="m-2 p-2 w-full  flex justify-around">
             <button
-              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-1"
-              onClick={() => {
-                navigate("/recipes");
-              }}
-            >
-              Add Meals
-            </button>
-            <button
-              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-1"
+              className="bg-[url('/button-box.svg')] bg-cover bg-center w-35 h-23"
               onClick={() => {
                 navigate("/meal-plan");
               }}
             >
-              Eat Meals
+              <p className="text-white text-2xl">Plan</p>
             </button>
           </div>
         </div>

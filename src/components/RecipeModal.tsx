@@ -46,9 +46,8 @@ const RecipeModal: React.FC<ModalProps> = ({
   selectedMealType,
   setSelectedMealType,
   startOfTheWeek,
-  finishAdding
+  finishAdding,
 }) => {
-
   const daysOfTheWeek = ["S", "M", "T", "W", "TH", "F", "S"];
   const mealTypes = ["Breakfast", "Lunch", "Dinner"];
   const [message, setMessage] = useState<string>("");
@@ -69,18 +68,30 @@ const RecipeModal: React.FC<ModalProps> = ({
   // Handle point calc based on goal/actual ratio
   const handlePointCalc = (ratio: number) => {
     if (ratio > 0.9) {
-      return 10;
+      return 50;
     }
     if (ratio > 0.8) {
-      return 8;
+      return 45;
     }
     if (ratio > 0.7) {
-      return 6;
+      return 40;
     }
     if (ratio > 0.6) {
-      return 4;
+      return 35;
     }
-    return 2;
+    if (ratio > 0.5) {
+      return 30;
+    }
+    if (ratio > 0.4) {
+      return 25;
+    }
+    if (ratio > 0.3) {
+      return 20;
+    }
+    if (ratio > 0.2) {
+      return 15;
+    }
+    return 10;
   };
 
   // Handle updating stat
@@ -151,9 +162,8 @@ const RecipeModal: React.FC<ModalProps> = ({
   // Add recipe to the meal plan
   const handleAddClick = async () => {
     if (session && user) {
-
       const currentDate = moment();
-      const selectedDate = startOfTheWeek.clone().add(selectedDay, "days"); 
+      const selectedDate = startOfTheWeek.clone().add(selectedDay, "days");
 
       // Prevent adding recipes to past days
       if (selectedDate.isBefore(currentDate)) {
@@ -163,13 +173,18 @@ const RecipeModal: React.FC<ModalProps> = ({
 
       try {
         setIsLoading(true);
-  
+
         const existingMealPlan = mealPlan?.find(
-          (meal) => meal.date === selectedDate.format("M/DD/YYYY") && meal.mealType.toLowerCase() === selectedMealType.toLowerCase()
+          (meal) =>
+            meal.date === selectedDate.format("M/DD/YYYY") &&
+            meal.mealType.toLowerCase() === selectedMealType.toLowerCase()
         );
-  
+
         // Update the meal plan if a meal plan already exists for the selected date and meal type
-        if (existingMealPlan && existingMealPlan.recipeId !== selectedRecipe.id) {
+        if (
+          existingMealPlan &&
+          existingMealPlan.recipeId !== selectedRecipe.id
+        ) {
           showMessage("Updating meal plan ...");
           const updatedMeal = await updateMealPlanById(
             user.id,
@@ -190,7 +205,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           }
           return;
         }
-  
+
         // Add new recipe to meal plan
         showMessage("Adding recipe to meal plan ...");
         const newMeal = await addRecipeToMealPlan(
@@ -200,7 +215,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           selectedDate.format("M/DD/YYYY"),
           selectedMealType
         );
-  
+
         if (newMeal) {
           await updateUserPetStat(
             user.id,
@@ -209,11 +224,11 @@ const RecipeModal: React.FC<ModalProps> = ({
             session.access_token
           );
           showMessage(`Recipe added to meal plan: Wisdom +20`);
-          setMealPlan([ ...mealPlan, newMeal.mealPlan]);
+          setMealPlan([...mealPlan, newMeal.mealPlan]);
         } else {
           showMessage("Error adding recipe to meal plan, try again");
         }
-        
+
         await addUserActivity(user.id, selectedRecipe.id);
       } catch (error: any) {
         console.error("Error adding/updating meal plan:", error);
@@ -461,10 +476,13 @@ const RecipeModal: React.FC<ModalProps> = ({
                   ))}
                 </div>
               </div>
-              <button className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 ${isLoading ? "cursor-not-allowed" : "cursor-pointer"}`} onClick={isLoading ? (e) => e.preventDefault() : handleAddClick}>
-                <h1 className="text-white">
-                  Add
-                </h1>
+              <button
+                className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 ${
+                  isLoading ? "cursor-not-allowed" : "cursor-pointer"
+                }`}
+                onClick={isLoading ? (e) => e.preventDefault() : handleAddClick}
+              >
+                <h1 className="text-white">Add</h1>
               </button>
             </>
           ) : user && selectedMeal ? (
