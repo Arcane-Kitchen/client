@@ -72,7 +72,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
             <div className="flex items-center border-1 border-gray-300 divide-x-1 divide-gray-300 mb-5 w-full rounded-md lg:w-3/4">
               {/* Back button */}
               <button 
-                className="flex-1 py-1 rounded-tl-md rounded-bl-md hover:cursor-pointer hover:bg-[#19243e] hover:text-[#ebd6aa] hover:scale-105 hover:shadow-lg"
+                className="flex-1 py-1 rounded-tl-md rounded-bl-md cursor-pointer hover:bg-[#19243e] hover:text-[#ebd6aa] hover:scale-105 hover:shadow-lg"
                 onClick={() => setCurrentStartOfWeek(currentStartOfWeek.clone().subtract(7, "days").startOf("week"))}
               >
                 Back
@@ -94,9 +94,9 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
             </div>
 
             {/* Calendar display */}
-            <div className="flex flex-col border-l-1 border-r-1 border-gray-300 lg:flex-row ">
+            <div className="flex flex-col border-l-1 border-r-1 border-gray-300 lg:flex-row lg:border-b-1 lg:border-r-0">
               {/* Meal type header (Breakfast, Lunch, Dinner) */}
-              <div className="flex w-full lg:flex-col lg:w-3xl">
+              <div className="flex w-full lg:flex-col lg:w-3xl lg:divide-x-1 lg:divide-y-1 lg:divide-gray-300">
                 <div className="w-1/4 bg-[#19243e] lg:w-full lg:h-1/13"></div>
                 {["Breakfast", "Lunch", "Dinner"].map((type) => (
                   <div key={type} className="w-1/4 bg-[#19243e] text-[#ebd6aa] text-center lg:w-full lg:flex-1 lg:text-left lg:px-2 lg:bg-transparent lg:text-[#19243e] lg:text-lg lg:flex lg:items-center">{type}</div>
@@ -106,7 +106,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
               {/* Day headers and meal cells */}
               {daysOfWeek.map((day, index) => {
                 return (
-                  <div key={day} className="flex w-full lg:flex-col border-b-1 border-gray-300 divide-x-1 divide-gray-300">
+                  <div key={day} className="flex w-full lg:flex-col border-b-1 border-gray-300 divide-x-1 divide-gray-300 lg:divide-y-1 lg:border-b-0">
                     {/* Day header (e.g., Mon 01) */}
                     <div className="w-1/4 flex items-center p-2 lg:w-full lg:text-center lg:bg-[#19243e] lg:text-[#ebd6aa]">
                       <p className="flex-1">{day}</p>
@@ -167,7 +167,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
     </div>
   
     ) : (
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 w-vh h-vh lg:flex lg:justify-center lg:items-cente ">
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 w-vh h-vh lg:flex lg:justify-center lg:items-center">
         <div className="bg-[url('/background.jpg')] bg-cover bg-center h-full w-full relative lg:rounded-lg lg:h-2/3 lg:w-1/2 lg:p-5 overflow-y-auto">          
           <RecipesPage
             recipes={recipes}
