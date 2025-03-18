@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Recipe, Meal } from "../types";
 import { useAuth } from "../Auth/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
