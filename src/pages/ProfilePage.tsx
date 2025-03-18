@@ -15,7 +15,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [strengthColor, setStrengthColor] = useState<string>(
-    "[&::-webkit-progress-value]:bg-green-500"
+    "[&::-webkit-progress-value]:bg-yellow-500"
   );
   const [defenseColor, setDefenseColor] = useState<string>(
     "[&::-webkit-progress-value]:bg-yellow-500"
@@ -34,10 +34,35 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
     checkDailyStatColors();
   }, []);
 
+  const colorPicker = (exp: number) => {
+    if (exp < 17) {
+      return "[&::-webkit-progress-value]:bg-red-500";
+    }
+    if (exp < 34) {
+      return "[&::-webkit-progress-value]:bg-orange-500";
+    }
+    if (exp < 51) {
+      return "[&::-webkit-progress-value]:bg-amber-500";
+    }
+    if (exp < 68) {
+      return "[&::-webkit-progress-value]:bg-yellow-500";
+    }
+    if (exp < 85) {
+      return "[&::-webkit-progress-value]:bg-lime-500";
+    }
+    return "[&::-webkit-progress-value]:bg-green-500";
+    // return "red";
+  };
+
   const checkDailyStatColors = async () => {
     // using last login date that has user time zone, calculate user's current date
     const currentDay = new Date(user?.updated_at);
     const currentDayLocal = currentDay.toLocaleDateString();
+    const strRemainderExp = calcRemainderExp(user?.pet_protein_exp);
+    const defRemainderExp = calcRemainderExp(user?.pet_fat_exp);
+    const dexRemainderExp = calcRemainderExp(user?.pet_carb_exp);
+    const staminaRemainderExp = calcRemainderExp(user?.pet_calorie_exp);
+    const wisRemainderExp = calcRemainderExp(user?.pet_wisdom_exp);
 
     // filter users meals that they have eaten today
     const todayMeals = mealPlan.filter((meal) => {
@@ -50,17 +75,30 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
     // we will use this conditional to determine the color change baseed on nutrition
     // for simplicity and testing, for now, simply count number of meals eaten today
     //if user has eaten three meals today, will change to yellow
-    if (todayMeals.length >= 3) {
-      setStrengthColor("[&::-webkit-progress-value]:bg-green-500");
-      setDefenseColor("[&::-webkit-progress-value]:bg-green-500");
-      setDexterityColor("[&::-webkit-progress-value]:bg-green-500");
-      setStaminaColor("[&::-webkit-progress-value]:bg-green-500");
-    } else {
-      setStrengthColor("[&::-webkit-progress-value]:bg-gray-500");
-      setDefenseColor("[&::-webkit-progress-value]:bg-yellow-500");
-      setDexterityColor("[&::-webkit-progress-value]:bg-yellow-500");
-      setStaminaColor("[&::-webkit-progress-value]:bg-yellow-500");
-    }
+
+    setStrengthColor(colorPicker(15));
+    setDefenseColor(colorPicker(33));
+    setDexterityColor(colorPicker(50));
+    setStaminaColor(colorPicker(67));
+    setWisdomColor(colorPicker(84));
+
+    // setStrengthColor(colorPicker(strRemainderExp));
+    // setDefenseColor(colorPicker(defRemainderExp));
+    // setDexterityColor(colorPicker(dexRemainderExp));
+    // setStaminaColor(colorPicker(staminaRemainderExp));
+    // setWisdomColor(colorPicker(wisRemainderExp));
+
+    // if (todayMeals.length >= 3) {
+    //   setStrengthColor("[&::-webkit-progress-value]:bg-green-500");
+    //   setDefenseColor("[&::-webkit-progress-value]:bg-green-500");
+    //   setDexterityColor("[&::-webkit-progress-value]:bg-green-500");
+    //   setStaminaColor("[&::-webkit-progress-value]:bg-green-500");
+    // } else {
+    //   setStrengthColor("[&::-webkit-progress-value]:bg-yellow-500");
+    //   setDefenseColor("[&::-webkit-progress-value]:bg-yellow-500");
+    //   setDexterityColor("[&::-webkit-progress-value]:bg-yellow-500");
+    //   setStaminaColor("[&::-webkit-progress-value]:bg-yellow-500");
+    // }
   };
 
   // Select the appropriate dragon image based on the mean happiness
@@ -81,7 +119,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <h2 className="text-2xl">{user?.pet_name}</h2>
           <div className="flex">
             <img className="size-40" src={dragonImage} alt="dragon" />
-            <div className="m-1 p-1 flex flex-col items center">
+            {/* <div className="m-1 p-1 flex flex-col items center">
               <div className="flex">
                 <div className="bg-yellow-500 w-[20px] h-[20px] m-1"></div>
                 <p>Go eat / plan!</p>
@@ -90,7 +128,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
                 <div className="bg-green-500 w-[20px] h-[20px] m-1"></div>
                 <p>Done for today!</p>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="flex w-full justify-between">
@@ -106,7 +144,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <progress
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${strengthColor}`}
             id="protein"
-            value={calcRemainderExp(user?.pet_protein_exp)}
+            // value={calcRemainderExp(user?.pet_protein_exp)}
+            value={15}
             max={100}
           ></progress>
 
@@ -123,7 +162,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <progress
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${defenseColor}`}
             id="fat"
-            value={calcRemainderExp(user?.pet_fat_exp)}
+            // value={calcRemainderExp(user?.pet_fat_exp)}
+            value={33}
             max={100}
           ></progress>
 
@@ -140,7 +180,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <progress
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${dexterityColor}`}
             id="carbs"
-            value={calcRemainderExp(user?.pet_carb_exp)}
+            // value={calcRemainderExp(user?.pet_carb_exp)}
+            value={50}
             max={100}
           ></progress>
 
@@ -157,7 +198,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <progress
             className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${staminaColor}`}
             id="calories"
-            value={calcRemainderExp(user?.pet_calorie_exp)}
+            // value={calcRemainderExp(user?.pet_calorie_exp)}
+            value={67}
             max={100}
           ></progress>
 
@@ -175,7 +217,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <progress
             className={`w-full mb-7 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${wisdomColor}`}
             id="wisdom"
-            value={calcRemainderExp(user?.pet_wisdom_exp)}
+            // value={calcRemainderExp(user?.pet_wisdom_exp)}
+            value={84}
             max={100}
           ></progress>
           <h1 className="">To boost your stats: </h1>
