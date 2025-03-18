@@ -11,7 +11,7 @@ import {
   removeMealFromMealPlan,
 } from "../api/mealPlanApi";
 import moment from "moment";
-import { updateUserStat } from "../api/userApi";
+import { updateUserPetStat } from "../api/userApi";
 import { fetchARecipeById } from "../api/recipeApi";
 
 interface ModalProps {
@@ -82,7 +82,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           let ratio = user.daily_carb_goal / eatenMacroValue;
           if (ratio > 1) ratio = 1 / ratio;
           const points = handlePointCalc(ratio);
-          await updateUserStat(
+          await updateUserPetStat(
             user.id,
             user.pet_carb_exp + points,
             "carb",
@@ -96,7 +96,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           let ratio = user.daily_fat_goal / eatenMacroValue;
           if (ratio > 1) ratio = 1 / ratio;
           const points = handlePointCalc(ratio);
-          await updateUserStat(
+          await updateUserPetStat(
             user.id,
             user.pet_fat_exp + points,
             "fat",
@@ -110,7 +110,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           let ratio = user.daily_protein_goal / eatenMacroValue;
           if (ratio > 1) ratio = 1 / ratio;
           const points = handlePointCalc(ratio);
-          await updateUserStat(
+          await updateUserPetStat(
             user.id,
             user.pet_protein_exp + points,
             "protein",
@@ -124,7 +124,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           let ratio = user.daily_calorie_goal / eatenMacroValue;
           if (ratio > 1) ratio = 1 / ratio;
           const points = handlePointCalc(ratio);
-          await updateUserStat(
+          await updateUserPetStat(
             user.id,
             user.pet_calorie_exp + points,
             "calorie",
@@ -191,7 +191,7 @@ const RecipeModal: React.FC<ModalProps> = ({
       );
 
       if (newMeal) {
-        await updateUserStat(
+        await updateUserPetStat(
           user.id,
           user.pet_wisdom_exp + 20,
           "wisdom",

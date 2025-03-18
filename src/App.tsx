@@ -11,6 +11,7 @@ import ProfilePage from "./pages/ProfilePage";
 import AchievementsPage from "./pages/AchievementsPage";
 import Layout from "./pages/Layout";
 import NewRecipePage from "./components/NewRecipePage";
+import Preferences from "./pages/Preferences";
 import { useAuth } from "./Auth/AuthContext";
 import { fetchFullUserMealPlan } from "./api/mealPlanApi";
 import { fetchAllRecipes, fetchARecipeById } from "./api/recipeApi";
@@ -102,7 +103,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
           <Route path="quest" element={<QuestPage />} />
-
+          <Route path="preferences" element={<Preferences />} />
           <Route path="new-recipe" element={<NewRecipePage />} />
           <Route
             path="recipes"

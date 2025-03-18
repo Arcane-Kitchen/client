@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../Auth/AuthContext";
 import { fetchEnemyById } from "../api/enemyApi";
 import { Enemy } from "../types";
-import { updateUserStat } from "../api/userApi";
+import { updateUserPetStat } from "../api/userApi";
 import { calcLevel } from "../util/statCalc";
 
 const QuestPage: React.FC = () => {
@@ -70,7 +70,7 @@ const QuestPage: React.FC = () => {
       user.pet_protein_exp >= enemy?.protein_exp &&
       user.pet_wisdom_exp >= enemy?.wisdom_exp
     ) {
-      await updateUserStat(
+      await updateUserPetStat(
         user?.id,
         user?.enemies_defeated + 1,
         "enemies_defeated",

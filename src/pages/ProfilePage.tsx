@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import happyDragon from "../assets/happy.png";
+// import happyDragon from "../assets/happy.png";
 // import neutralDragon from "../assets/neutral.png";
 // import sadDragon from "../assets/sad.png";
 import { useAuth } from "../Auth/AuthContext";
@@ -64,7 +64,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   };
 
   // Select the appropriate dragon image based on the mean happiness
-  const dragonImage = happyDragon;
+  const dragonImage = user?.pet_img_happy;
   // if (meanHappiness >= 75) {
   //   dragonImage = happyDragon;
   // } else if (meanHappiness >= 50) {

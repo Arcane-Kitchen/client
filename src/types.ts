@@ -54,6 +54,43 @@ export interface Filter {
   difficultyLevel: boolean[];
 }
 
+export interface UserProfile {
+  gender: string;
+  age: string;
+  weight: string;
+  height: string;
+  activityLevel: string;
+  goal: string;
+}
+
+export interface DailyCaloriesAndMacros {
+  calories: number,
+  carbs: {
+    grams: number,
+    inCalories: number,
+    percentage: number,
+  },
+  fats: {
+    grams: number,
+    inCalories: number,
+    percentage: number,
+  },
+  protein: {
+    grams: number,
+    inCalories: number,
+    percentage: number,
+  }
+}
+
+export interface Pet {
+  name: string,
+  imageUrl: {
+    happy: string,
+    neutral: string,
+    sad: string,
+  }
+}
+
 export interface Enemy {
   id: string;
   name: string;
