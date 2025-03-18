@@ -46,6 +46,8 @@ interface UserProfile {
   pet_wisdom_exp: number;
   pet_name: string;
   pet_img_happy: string;
+  pet_img_normal: string;
+  pet_img_sad: string;
   enemies_defeated: number;
 }
 

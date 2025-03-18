@@ -6,7 +6,6 @@ import { useAuth } from "../Auth/AuthContext";
 import { Meal } from "../types";
 import { useNavigate } from "react-router-dom";
 import { calcLevel, calcRemainderExp } from "../util/statCalc";
-import { FaDumbbell } from "react-icons/fa6";
 import { PiSneakerMoveFill } from "react-icons/pi";
 import { FaShieldAlt } from "react-icons/fa";
 import { PiSwordFill } from "react-icons/pi";
@@ -38,7 +37,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
 
   useEffect(() => {
     checkDailyStatColors();
-  }, []);
+  }, [user]);
 
   const colorPicker = (exp: number) => {
     if (exp < 17) {
@@ -57,13 +56,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
       return "[&::-webkit-progress-value]:bg-lime-500";
     }
     return "[&::-webkit-progress-value]:bg-green-500";
-    // return "red";
   };
 
   const checkDailyStatColors = async () => {
     // using last login date that has user time zone, calculate user's current date
-    const currentDay = new Date(user?.updated_at);
-    const currentDayLocal = currentDay.toLocaleDateString();
+    // const currentDay = new Date(user?.updated_at);
+    // const currentDayLocal = currentDay.toLocaleDateString();
     const strRemainderExp = calcRemainderExp(user?.pet_protein_exp);
     const defRemainderExp = calcRemainderExp(user?.pet_fat_exp);
     const dexRemainderExp = calcRemainderExp(user?.pet_carb_exp);
@@ -71,12 +69,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
     const wisRemainderExp = calcRemainderExp(user?.pet_wisdom_exp);
 
     // filter users meals that they have eaten today
-    const todayMeals = mealPlan.filter((meal) => {
-      if (meal.hasBeenEaten && meal.date === currentDayLocal) {
-        return true;
-      }
-      return false;
-    });
+    // const todayMeals = mealPlan.filter((meal) => {
+    //   if (meal.hasBeenEaten && meal.date === currentDayLocal) {
+    //     return true;
+    //   }
+    //   return false;
+    // });
 
     // we will use this conditional to determine the color change baseed on nutrition
     // for simplicity and testing, for now, simply count number of meals eaten today
@@ -108,14 +106,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
   };
 
   // Select the appropriate dragon image based on the mean happiness
-  const dragonImage = user?.pet_img_happy;
-  // if (meanHappiness >= 75) {
-  //   dragonImage = happyDragon;
-  // } else if (meanHappiness >= 50) {
-  //   dragonImage = neutralDragon;
-  // } else {
-  //   dragonImage = sadDragon;
-  // }
+  const dragonImage = user?.pet_img_normal;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
@@ -125,16 +116,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
           <h2 className="text-2xl">{user?.pet_name}</h2>
           <div className="flex">
             <img className="size-40" src={dragonImage} alt="dragon" />
-            {/* <div className="m-1 p-1 flex flex-col items center">
-              <div className="flex">
-                <div className="bg-yellow-500 w-[20px] h-[20px] m-1"></div>
-                <p>Go eat / plan!</p>
-              </div>
-              <div className="flex">
-                <div className="bg-green-500 w-[20px] h-[20px] m-1"></div>
-                <p>Done for today!</p>
-              </div>
-            </div> */}
           </div>
 
           <div className="flex w-full justify-between">
@@ -243,27 +224,32 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ mealPlan }) => {
             // value={84}
             max={100}
           ></progress>
-          <button className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-3 mb-3">
+          <button
+            onClick={() => {
+              navigate("/quest");
+            }}
+            className="bg-blue-500 text-2xl hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-3 mb-3"
+          >
             Go on a quest!
           </button>
           <h1 className="text-2xl">Or to boost your stats: </h1>
 
           <div className="m-2 p-2 w-full  flex justify-around">
-            <button
+            {/* <button
               className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-3"
               onClick={() => {
                 navigate("/recipes");
               }}
             >
               Add Meals
-            </button>
+            </button> */}
             <button
-              className="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-3"
+              className="text-2xl bg-blue-500 hover:bg-blue-700 active:bg-blue-800 cursor-pointer p-3"
               onClick={() => {
                 navigate("/meal-plan");
               }}
             >
-              Eat Meals
+              Meal Plan
             </button>
           </div>
         </div>
