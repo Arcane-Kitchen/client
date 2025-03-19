@@ -12,9 +12,10 @@ interface FilterProps {
     recipes: Recipe[];
     setFilteredRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
     handleClearAll: () => void;
+    searchQuery: string;
   }
 
-const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, recipes, setFilteredRecipes, handleClearAll }) => {
+const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, recipes, setFilteredRecipes, handleClearAll, searchQuery }) => {
 
     // Toggle the value for a specific filter
     const handleFilterClick = (filterType: keyof Filter, index: number) => {
@@ -29,7 +30,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
 
     // Filter the recipes based on the selected filters
     const handleApply = () => {
-        const filteredRecipes = filterRecipes(recipes, filters);
+        const filteredRecipes = filterRecipes(recipes, filters, searchQuery);
         setFilteredRecipes(filteredRecipes);
         onClose();
     }

@@ -65,7 +65,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
     newFilters.mealType[index] = !newFilters.mealType[index]; // Toggle the selected index to true
     setFilters(newFilters);
 
-    const filteredRecipes = filterRecipes(recipes, filters);
+    const filteredRecipes = filterRecipes(recipes, filters, "");
     setFilteredRecipes(filteredRecipes);
 
     setIsAdding(true);

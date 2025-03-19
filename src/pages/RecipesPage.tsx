@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import RecipeModal from "../components/RecipeModal";
 import FilterModal from "../components/FilterModal";
@@ -9,6 +9,7 @@ import { IoSearch, IoChevronBackCircle } from "react-icons/io5";
 import { FaFilter } from "react-icons/fa";
 import { FaCircleXmark } from "react-icons/fa6";
 import moment from "moment";
+import { filterRecipes } from "../util/filterRecipes";
 
 interface RecipesPageProps {
   recipes: Recipe[];
@@ -37,11 +38,6 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
   const filtersCount = Object.values(filters).reduce((count, array) => {
     return count + array.filter(Boolean).length;
   }, 0);
-
-  useEffect(() => {
-    const newFilteredRecipes = filteredRecipes.filter((recipe) => recipe.name.toLowerCase().includes(searchQuery.toLowerCase()));
-    setFilteredRecipes(newFilteredRecipes);
-  }, [searchQuery, filteredRecipes])
 
   // Open the modal and set the selected recipe
   const openModal = (recipe: Recipe) => {
@@ -79,7 +75,11 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    const newFilteredRecipes = filterRecipes(recipes, filters, query);
+    setFilteredRecipes(newFilteredRecipes);
   }
 
   return (
@@ -174,7 +174,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
 
       {/* Display filter modal when filter button is clicked */}
       {isFilterModalOpen && (
-        <FilterModal onClose={toggleFilter} filters={filters} setFilters={setFilters} recipes={recipes} setFilteredRecipes={setFilteredRecipes} handleClearAll={handleClearAll}/>
+        <FilterModal onClose={toggleFilter} filters={filters} setFilters={setFilters} recipes={recipes} setFilteredRecipes={setFilteredRecipes} handleClearAll={handleClearAll} searchQuery={searchQuery}/>
       )}
     </div>
   );

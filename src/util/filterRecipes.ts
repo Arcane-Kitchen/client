@@ -91,15 +91,18 @@ const filterByDifficultyLevel = (recipe: Recipe, difficultyLevelFilters: boolean
 }
 
 // Filter recipes based on selected filters
-export const filterRecipes = (recipes: Recipe[], filters: Filter) => {
+export const filterRecipes = (recipes: Recipe[], filters: Filter, searchQuery: string) => {
 
     return recipes.filter((recipe) => {
         const isMealTypeMatch = filterByMealType(recipe, filters.mealType);
         const isCookingTimeMatch = filterByCookingTime(recipe, filters.cookingTime);
         const isCalorieRangeMatch = filterByCalorieRange(recipe, filters.calorieRange);
         const isDifficultyLevelMatch = filterByDifficultyLevel(recipe, filters.difficultyLevel);
+
+        // Check if the recipe matches the search query
+        const isSearchMatch = recipe.name.toLowerCase().includes(searchQuery.toLowerCase());
         
         // return the recipe if it passes all selected filters
-        return isMealTypeMatch && isCookingTimeMatch && isCalorieRangeMatch && isDifficultyLevelMatch;
+        return isMealTypeMatch && isCookingTimeMatch && isCalorieRangeMatch && isDifficultyLevelMatch && isSearchMatch;
     })
 }
