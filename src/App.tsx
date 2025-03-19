@@ -113,7 +113,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home recipes={recipes} />}></Route>
         <Route path="/" element={<Layout />}>
-          <Route path="profile" element={<ProfilePage mealPlan={mealPlan} />} />
+          <Route path="profile" element={<ProfilePage />} />
           <Route path="quest" element={<QuestPage />} />
           <Route path="preferences" element={<Preferences />} />
           <Route path="new-recipe" element={<NewRecipePage />} />
