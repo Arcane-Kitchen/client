@@ -162,8 +162,10 @@ const RecipeModal: React.FC<ModalProps> = ({
   // Add recipe to the meal plan
   const handleAddClick = async () => {
     if (session && user) {
-      const currentDate = moment();
+      const currentDate = moment().startOf("day");
+      console.log(currentDate)
       const selectedDate = startOfTheWeek.clone().add(selectedDay, "days");
+      console.log(selectedDate)
 
       // Prevent adding recipes to past days
       if (selectedDate.isBefore(currentDate)) {
