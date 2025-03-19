@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import neutralDragon from "../assets/neutral.png";
-// import sadDragon from "../assets/sad.png";
 import { useAuth } from "../Auth/AuthContext";
 import { fetchEnemyById } from "../api/enemyApi";
 import { Enemy } from "../types";
@@ -12,10 +10,11 @@ import { PiSwordFill } from "react-icons/pi";
 import { FaBookOpen } from "react-icons/fa6";
 import { MdEnergySavingsLeaf } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { PacmanLoader } from "react-spinners";
 
 const QuestPage: React.FC = () => {
   const [enemy, setEnemy] = useState<Enemy | null>(null);
-  const { user, session } = useAuth();
+  const { user, session, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const [message, setMessage] = useState<string>("");
@@ -80,7 +79,7 @@ const QuestPage: React.FC = () => {
   };
 
   const handleFight = async () => {
-    if (
+    if (session && user && enemy && 
       user.pet_calorie_exp >= enemy?.calorie_exp &&
       user.pet_carb_exp >= enemy?.carb_exp &&
       user.pet_fat_exp >= enemy?.fat_exp &&
@@ -107,37 +106,41 @@ const QuestPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[80vh] flex justify-around p-4">
-        <div className="flex flex-col items-center">
+      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[80vh] flex items-center justify-around p-4">
+      {isLoading ? (
+          // Show loading spinner while data is being fetched
+          <PacmanLoader />
+          ) : user && enemy ?  (
+        <div className="w-full flex flex-col items-center">
           <h1 className="font-bold text-4xl m-1 p-1">Current Quest</h1>
           <h1 className="text-4xl m-1 p-1">{questTitle}</h1>
-          <img className={enemyRotation} src={enemy?.img} alt="" />
+          <img className={enemyRotation} src={enemy.img} alt="" />
           <div className="flex text-2xl mb-4 m-1">
             <h1 className="flex font-bold m-1 p-1">
               <PiSwordFill className="m-1" />
-              {calcLevel(enemy?.protein_exp)}
+              {calcLevel(enemy.protein_exp)}
             </h1>
             <h1 className="flex font-bold m-1 p-1">
               <FaShieldAlt className="m-1" />
 
-              {calcLevel(enemy?.fat_exp)}
+              {calcLevel(enemy.fat_exp)}
             </h1>
 
             <h1 className="flex font-bold m-1 p-1">
               <PiSneakerMoveFill className="m-1" />
 
-              {calcLevel(enemy?.carb_exp)}
+              {calcLevel(enemy.carb_exp)}
             </h1>
 
             <h1 className="flex font-bold m-1 p-1">
               <MdEnergySavingsLeaf className="m-1" />
-              {calcLevel(enemy?.calorie_exp)}
+              {calcLevel(enemy.calorie_exp)}
             </h1>
 
             <h1 className="flex font-bold m-1 p-1">
               <FaBookOpen className="m-1" />
 
-              {calcLevel(enemy?.wisdom_exp)}
+              {calcLevel(enemy.wisdom_exp)}
             </h1>
           </div>
 
@@ -192,6 +195,10 @@ const QuestPage: React.FC = () => {
             </div>
           )}
         </div>
+        ) : (
+          <div>Set up your profile to begin your adventure!</div>
+        )
+      }
       </div>
     </div>
   );
