@@ -12,9 +12,9 @@ export const pets: ("orangeDragon" | "blackDragon" | "blueDragon" | "greenDragon
 
 export const petMoods = {
     orangeDragon: {
-        happy: "/Dragon_Orange_Happy.png",
-        neutral: "/Dragon_Orange_Neutral.png",
-        sad: "/Dragon_Orange_Sad.png",
+        happy: "/dragon_orange_happy.png",
+        neutral: "/dragon_orange_neutral.png",
+        sad: "/dragon_orange_sad.png",
     },
     blackDragon: {
         happy: "/Dragon_Black_Happy.png",
