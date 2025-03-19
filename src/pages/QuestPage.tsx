@@ -12,7 +12,6 @@ import { PiSwordFill } from "react-icons/pi";
 import { FaBookOpen } from "react-icons/fa6";
 import { MdEnergySavingsLeaf } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import buttonImg from "../../public";
 
 const QuestPage: React.FC = () => {
   const [enemy, setEnemy] = useState<Enemy | null>(null);
@@ -22,7 +21,8 @@ const QuestPage: React.FC = () => {
   const [message, setMessage] = useState<string>("");
   const [fightResult, setFightResult] = useState<string>("");
   const [questTitle, setQuestTitle] = useState<string>("");
-  const [enemyRotation, setEnemyRotation] = useState<string>("w-2/3 h-auto");
+  const [enemyRotation, setEnemyRotation] =
+    useState<string>(" w-1/2 h-auto m-3");
   const happyPet = user?.pet_img_happy;
   const sadPet = user?.pet_img_sad;
   const normalPet = user?.pet_img_normal;
@@ -42,6 +42,7 @@ const QuestPage: React.FC = () => {
   const handleGetEnemy = async () => {
     if (user) {
       const newEnemyId = user.enemies_defeated + 1;
+
       const newEnemyIdToString = newEnemyId.toString();
       const newEnemy = await fetchEnemyById(newEnemyIdToString);
       setQuestTitle(`Fight a ${enemy?.name}!`);
@@ -92,7 +93,7 @@ const QuestPage: React.FC = () => {
         "enemies_defeated",
         session?.access_token
       );
-      setEnemyRotation("w-2/3 h-auto -rotate-90");
+      setEnemyRotation("w-1/2 h-auto m-3 -rotate-90");
       setFightResult("win");
       setQuestTitle("You won!");
     } else {
@@ -111,7 +112,7 @@ const QuestPage: React.FC = () => {
           <h1 className="font-bold text-4xl m-1 p-1">Current Quest</h1>
           <h1 className="text-4xl m-1 p-1">{questTitle}</h1>
           <img className={enemyRotation} src={enemy?.img} alt="" />
-          <div className="flex text-2xl mb-4">
+          <div className="flex text-2xl mb-4 m-1">
             <h1 className="flex font-bold m-1 p-1">
               <PiSwordFill className="m-1" />
               {calcLevel(enemy?.protein_exp)}
