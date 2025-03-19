@@ -144,7 +144,7 @@ const RecipeModal: React.FC<ModalProps> = ({
         break;
       case "calorie":
         if (user?.daily_calorie_goal) {
-          let ratio = user.daily_calorie_goal / eatenMacroValue;
+          let ratio = user.daily_calorie_goal / 3 / eatenMacroValue;
           if (ratio > 1) ratio = 1 / ratio;
           const points = handlePointCalc(ratio);
           await updateUserPetStat(
