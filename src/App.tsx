@@ -15,7 +15,7 @@ import Preferences from "./pages/Preferences";
 import { useAuth } from "./Auth/AuthContext";
 import { fetchFullUserMealPlan } from "./api/mealPlanApi";
 import { fetchAllRecipes, fetchARecipeById } from "./api/recipeApi";
-import { Recipe, Meal, MealRawData } from "./types";
+import { Recipe, Meal, MealRawData, Filter } from "./types";
 import { updateUserLastLoginById } from "./api/userApi";
 import AchievementSubscriptionProvider from "./components/AchievementSubscriptionProvider";
 import QuestPage from "./pages/QuestPage";
@@ -27,6 +27,12 @@ function App() {
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
+  const [filters, setFilters] = useState<Filter>({
+    mealType: [false, false, false, false],
+    cookingTime: [false, false, false],
+    calorieRange: [false, false, false],
+    difficultyLevel: [false, false, false],
+  });
   const { user, session, setIsLoading } = useAuth();
   const location = useLocation();
   const showChatbot = location.pathname === '/recipes' || location.pathname === '/meal-plan';
@@ -120,6 +126,8 @@ function App() {
                 setMealPlan={setMealPlan}
                 filteredRecipes={filteredRecipes}
                 setFilteredRecipes={setFilteredRecipes}
+                filters={filters}
+                setFilters={setFilters}
               />
             }
           />
@@ -150,8 +158,8 @@ function App() {
         draggable
         pauseOnHover
       />      
-        {showChatbot && <Chatbot />}
-        </AchievementSubscriptionProvider>
+      {showChatbot && <Chatbot />}
+    </AchievementSubscriptionProvider>
   );
 }
 

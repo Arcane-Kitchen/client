@@ -2,10 +2,12 @@ import { useState } from "react";
 import moment from "moment";
 import { useAuth } from "../Auth/AuthContext";
 import { PacmanLoader } from "react-spinners";
-import { Meal, Recipe } from "../types";
+import { Meal, Recipe, Filter } from "../types";
+import { mealTypes } from "../util/constants";
 import { FaCheckCircle, FaPlus } from "react-icons/fa";
 import RecipeModal from "../components/RecipeModal";
 import RecipesPage from "./RecipesPage";
+import { filterRecipes } from '../util/filterRecipes';
 
 interface CalendarPageProps {
   recipes: Recipe[]
@@ -25,6 +27,12 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
   const [selectedDay, setSelectedDay] = useState<number>(moment().day());
   const [selectedMealType, setSelectedMealType] = useState<string>("");
   const [isAdding, setIsAdding] = useState<boolean>(false);
+  const [filters, setFilters] = useState<Filter>({
+    mealType: [false, false, false, false],
+    cookingTime: [false, false, false],
+    calorieRange: [false, false, false],
+    difficultyLevel: [false, false, false],
+  })
 
   // Generate the days of the current week to display on the calendar
   const daysOfWeek = [];
@@ -51,6 +59,15 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
   const handleAddClick = (day: number, type: string) => {
     setSelectedDay(day);
     setSelectedMealType(type);
+
+    const index = mealTypes.indexOf(type);
+    const newFilters = { ...filters };
+    newFilters.mealType[index] = !newFilters.mealType[index]; // Toggle the selected index to true
+    setFilters(newFilters);
+
+    const filteredRecipes = filterRecipes(recipes, filters, "");
+    setFilteredRecipes(filteredRecipes);
+
     setIsAdding(true);
   }
 
@@ -79,7 +96,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
               </button>
               {/* Current Week button */}
               <button 
-                className={`flex-1 py-1 ${currentStartOfWeek.isSame(moment().startOf("week")) ? "bg-[#19243e] text-[#ebd6aa]" : "hover:scale-105 hover:cursor-pointer hover:bg-[#19243e] hover:text-[#ebd6aa] hover:shadow-lg"}`}
+                className={`flex-2 py-1 ${currentStartOfWeek.isSame(moment().startOf("week")) ? "bg-[#19243e] text-[#ebd6aa]" : "hover:scale-105 hover:cursor-pointer hover:bg-[#19243e] hover:text-[#ebd6aa] hover:shadow-lg"}`}
                 onClick={() => setCurrentStartOfWeek(moment().startOf("week"))}
               >
                 Current Week
@@ -113,9 +130,9 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
                     </div>
 
                     {/* Meal types (Breakfast, Lunch, Dinner) for each day */}
-                    {["breakfast", "lunch", "dinner"].map((type) => {
+                    {mealTypes.slice(0, 3).map((type) => {
                       const weeklyMeals = mealPlan.filter((meal) => {
-                        return meal.date === currentStartOfWeek.clone().add(index, "days").format("M/DD/YYYY") && meal.mealType.toLowerCase() === type;
+                        return meal.date === currentStartOfWeek.clone().add(index, "days").format("M/DD/YYYY") && meal.mealType.toLowerCase() === type.toLowerCase();
                       })
                       
                       // If there are no meals for the day and meal type, show an empty space
@@ -181,6 +198,8 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
             selectedMealType={selectedMealType}
             setSelectedMealType={setSelectedMealType}
             startOfTheWeek={currentStartOfWeek}
+            filters={filters}
+            setFilters={setFilters}
           />
         </div>
       </div>
