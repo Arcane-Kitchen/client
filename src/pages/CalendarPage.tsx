@@ -72,6 +72,8 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
   }
 
   const finishAdding = () => {
+    setSelectedRecipe(undefined);
+    setSelectedMeal(null);
     setIsAdding(false);
   }
 

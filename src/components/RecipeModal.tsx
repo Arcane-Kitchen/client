@@ -444,7 +444,44 @@ const RecipeModal: React.FC<ModalProps> = ({
             !user ? "bg-amber-50 border-amber-50" : " border-gray-400"
           }`}
         >
-          {user && selectedMealType ? (
+          {user && selectedMeal ? (
+            <div className="flex-1 flex justify-center gap-4">
+              <button
+                className={`py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 hover:shadow-lg ${
+                  selectedMeal && selectedMeal.hasBeenEaten
+                    ? "bg-[#19243e] text-[#ebd6aa]"
+                    : "bg-gray-400 text-gray-300"
+                }`}
+                onClick={handleCookedClick}
+              >
+                <FaCheckCircle />
+                <h1
+                  className={`${
+                    selectedMeal && selectedMeal.hasBeenEaten
+                      ? "text-[#ebd6aa]"
+                      : "text-gray-700"
+                  }`}
+                >
+                  {selectedMeal && selectedMeal.hasBeenEaten
+                    ? "Cooked"
+                    : "Cooked ?"}
+                </h1>
+              </button>
+              {selectedMeal &&
+                moment(selectedMeal.date, "M/DD/YYYY").isSameOrAfter(
+                  moment(),
+                  "day"
+                ) && (
+                  <button
+                    className={` py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 cursor-pointer bg-gray-300 text-gray-700 hover:scale-105 hover:shadow-lg"}`}
+                    onClick={handleDelete}
+                  >
+                    <IoRemove />
+                    <h1>Remove</h1>
+                  </button>
+                )}
+            </div>
+          ) : user && selectedMealType ? (
             <>
               <div className="flex-1 flex flex-col gap-2 lg:items-center lg:flex-0">
                 <div className="flex-1 flex gap-2 items-center justify-around">
@@ -485,43 +522,6 @@ const RecipeModal: React.FC<ModalProps> = ({
                 <h1 className="text-white">Add</h1>
               </button>
             </>
-          ) : user && selectedMeal ? (
-            <div className="flex-1 flex justify-center gap-4">
-              <button
-                className={`py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 hover:shadow-lg ${
-                  selectedMeal && selectedMeal.hasBeenEaten
-                    ? "bg-[#19243e] text-[#ebd6aa]"
-                    : "bg-gray-400 text-gray-300"
-                }`}
-                onClick={handleCookedClick}
-              >
-                <FaCheckCircle />
-                <h1
-                  className={`${
-                    selectedMeal && selectedMeal.hasBeenEaten
-                      ? "text-[#ebd6aa]"
-                      : "text-gray-700"
-                  }`}
-                >
-                  {selectedMeal && selectedMeal.hasBeenEaten
-                    ? "Cooked"
-                    : "Cooked ?"}
-                </h1>
-              </button>
-              {selectedMeal &&
-                moment(selectedMeal.date, "M/DD/YYYY").isSameOrAfter(
-                  moment(),
-                  "day"
-                ) && (
-                  <button
-                    className={` py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 cursor-pointer bg-gray-300 text-gray-700 hover:scale-105 hover:shadow-lg"}`}
-                    onClick={handleDelete}
-                  >
-                    <IoRemove />
-                    <h1>Remove</h1>
-                  </button>
-                )}
-            </div>
           ) : (
             <div className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full">
               <p className="text-center text-[#19243e]">
