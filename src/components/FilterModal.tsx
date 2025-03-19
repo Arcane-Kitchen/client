@@ -11,9 +11,10 @@ interface FilterProps {
     setFilters: React.Dispatch<React.SetStateAction<Filter>>;
     recipes: Recipe[];
     setFilteredRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
+    handleClearAll: () => void;
   }
 
-const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, recipes, setFilteredRecipes }) => {
+const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, recipes, setFilteredRecipes, handleClearAll }) => {
 
     // Toggle the value for a specific filter
     const handleFilterClick = (filterType: keyof Filter, index: number) => {
@@ -31,18 +32,6 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
         const filteredRecipes = filterRecipes(recipes, filters);
         setFilteredRecipes(filteredRecipes);
         onClose();
-    }
-
-    // Reset all filters
-    const handleClearAll = () => {
-        const newFilters = { ...filters };
-
-        // Reset each filter array to have all false values
-        Object.entries(newFilters).forEach(([key, value]) => {
-            newFilters[key as keyof Filter] = value.map(() => false);
-        }) 
-        setFilters(newFilters);
-        setFilteredRecipes(recipes);
     }
 
     return (

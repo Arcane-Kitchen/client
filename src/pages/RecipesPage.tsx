@@ -174,7 +174,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
 
       {/* Display filter modal when filter button is clicked */}
       {isFilterModalOpen && (
-        <FilterModal onClose={toggleFilter} filters={filters} setFilters={setFilters} recipes={recipes} setFilteredRecipes={setFilteredRecipes}/>
+        <FilterModal onClose={toggleFilter} filters={filters} setFilters={setFilters} recipes={recipes} setFilteredRecipes={setFilteredRecipes} handleClearAll={handleClearAll}/>
       )}
     </div>
   );
