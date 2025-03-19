@@ -109,7 +109,7 @@ const RecipeModal: React.FC<ModalProps> = ({
             user.id,
             user.pet_carb_exp + points,
             "carb",
-            session.access_token
+            session!.access_token
           );
           return points;
         }
@@ -123,7 +123,7 @@ const RecipeModal: React.FC<ModalProps> = ({
             user.id,
             user.pet_fat_exp + points,
             "fat",
-            session.access_token
+            session!.access_token
           );
           return points;
         }
@@ -137,7 +137,7 @@ const RecipeModal: React.FC<ModalProps> = ({
             user.id,
             user.pet_protein_exp + points,
             "protein",
-            session.access_token
+            session!.access_token
           );
           return points;
         }
@@ -151,7 +151,7 @@ const RecipeModal: React.FC<ModalProps> = ({
             user.id,
             user.pet_calorie_exp + points,
             "calorie",
-            session.access_token
+            session!.access_token
           );
           return points;
         }

@@ -3,6 +3,7 @@ import { FaFilter } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 import { Filter, Recipe } from '../types';
 import { filterRecipes } from '../util/filterRecipes';
+import { mealTypes } from '../util/constants';
 
 interface FilterProps {
     onClose: () => void;
@@ -10,9 +11,11 @@ interface FilterProps {
     setFilters: React.Dispatch<React.SetStateAction<Filter>>;
     recipes: Recipe[];
     setFilteredRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
+    handleClearAll: () => void;
+    searchQuery: string;
   }
 
-const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, recipes, setFilteredRecipes }) => {
+const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, recipes, setFilteredRecipes, handleClearAll, searchQuery }) => {
 
     // Toggle the value for a specific filter
     const handleFilterClick = (filterType: keyof Filter, index: number) => {
@@ -27,21 +30,9 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
 
     // Filter the recipes based on the selected filters
     const handleApply = () => {
-        const filteredRecipes = filterRecipes(recipes, filters);
+        const filteredRecipes = filterRecipes(recipes, filters, searchQuery);
         setFilteredRecipes(filteredRecipes);
         onClose();
-    }
-
-    // Reset all filters
-    const handleClearAll = () => {
-        const newFilters = { ...filters };
-
-        // Reset each filter array to have all false values
-        Object.entries(newFilters).forEach(([key, value]) => {
-            newFilters[key as keyof Filter] = value.map(() => false);
-        }) 
-        setFilters(newFilters);
-        setFilteredRecipes(recipes);
     }
 
     return (
@@ -63,8 +54,9 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                     <div className="flex flex-col gap-2">
                         <h1>Meal Type</h1>
                         <div className="flex gap-2">
-                            {["Breakfast", "Lunch", "Dinner", "Snack"].map((mealType, index) => (
+                            {mealTypes.map((mealType, index) => (
                                 <button 
+                                    key={mealType}
                                     className={`cursor-pointer rounded-full py-1 px-2 flex-1 ${filters.mealType[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
                                     onClick={() => handleFilterClick("mealType", index)}
                                 >{mealType}</button>
@@ -79,6 +71,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                         <div className="flex gap-2">
                             {["< 30 mins", "30 - 60 mins", "> 60 mins"].map((time, index) => (
                                 <button 
+                                    key={time}
                                     className={`cursor-pointer rounded-full py-1 px-2 flex-1 ${filters.cookingTime[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
                                     onClick={() => handleFilterClick("cookingTime", index)}
                                 >{time}</button>
@@ -92,7 +85,8 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                         <h1>Calorie Range</h1>
                         <div className="flex gap-2">
                             {["< 300 kcal", "300 - 600 kcal", "> 600 kcal"].map((calories, index) => (
-                                <button 
+                                <button
+                                    key={calories}
                                     className={`cursor-pointer rounded-full py-1 px-2 flex-1 ${filters.calorieRange[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
                                     onClick={() => handleFilterClick("calorieRange", index)}
                                 >{calories}</button>
@@ -106,7 +100,8 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                         <h1>Difficulty Level</h1>
                         <div className="flex gap-2">
                             {["Easy", "Intermediate", "Difficult"].map((level, index) => (
-                                <button 
+                                <button
+                                    key={level}
                                     className={`cursor-pointer rounded-full py-1 px-2 flex-1 ${filters.difficultyLevel[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
                                     onClick={() => handleFilterClick("difficultyLevel", index)}
                                 >{level}</button>

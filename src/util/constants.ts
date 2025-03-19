@@ -47,3 +47,5 @@ export const petMoods = {
         sad: "/Dragon_Yellow_Sad.png",
     },
 };
+
+export const mealTypes = ["Breakfast", "Lunch", "Dinner", "Snack"];
