@@ -96,6 +96,53 @@ export const checkForAchievements = async (userId: string) => {
         toast.success('Achievement unlocked: First Meal Cooked');
       }
     }
+
+    // Check for "First Enemy Defeated" achievement
+    const { data: defeatEnemyActivityCount, error: defeatEnemyCountError } = await supabase
+      .from('User_Activity')
+      .select('*', { count: 'exact' })
+      .eq('user_id', userId)
+      .eq('activity_type', 'fight_win');
+
+    if (defeatEnemyCountError) {
+      throw defeatEnemyCountError;
+    }
+
+    if (defeatEnemyActivityCount.length === 1) {
+      const { data: defeatEnemyAchievementData, error: defeatEnemyAchievementError } = await supabase
+        .from('Achievement')
+        .select('id')
+        .eq('name', 'First Enemy Defeated')
+        .single();
+
+      if (defeatEnemyAchievementError) {
+        throw defeatEnemyAchievementError;
+      }
+
+      // Check if the achievement already exists for the user
+      const { data: existingDefeatEnemyAchievement, error: existingDefeatEnemyAchievementError } = await supabase
+        .from('User_Achievement')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('reward_id', defeatEnemyAchievementData.id)
+        .single();
+
+      if (existingDefeatEnemyAchievementError && existingDefeatEnemyAchievementError.code !== 'PGRST116') {
+        throw existingDefeatEnemyAchievementError;
+      }
+
+      if (!existingDefeatEnemyAchievement) {
+        const { data: userDefeatEnemyAchievementData, error: userDefeatEnemyAchievementError } = await supabase
+          .from('User_Achievement')
+          .insert([{ user_id: userId, reward_id: defeatEnemyAchievementData.id, date_earned: new Date().toISOString() }]);
+
+        if (userDefeatEnemyAchievementError) {
+          throw userDefeatEnemyAchievementError;
+        }
+
+        toast.success('Achievement unlocked: First Enemy Defeated');
+      }
+    }
   } catch (error) {
     console.error('Error checking for achievements:', error);
   }

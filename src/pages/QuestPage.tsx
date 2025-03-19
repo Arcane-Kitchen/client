@@ -25,6 +25,8 @@ const QuestPage: React.FC = () => {
   const happyPet = user?.pet_img_happy;
   const sadPet = user?.pet_img_sad;
   const normalPet = user?.pet_img_normal;
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 
   useEffect(() => {
     handleGetEnemy();
@@ -95,6 +97,29 @@ const QuestPage: React.FC = () => {
       setEnemyRotation("w-1/2 h-auto m-3 -rotate-90");
       setFightResult("win");
       setQuestTitle("You won!");
+        // Add activity to User_Activity table
+        try {
+          const response = await fetch(
+            `${baseUrl}/activity/add-activity`,
+            {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session?.access_token}`,
+            },
+            body: JSON.stringify({
+              userId: user?.id,
+              recipeId: 2,
+              activity_type: 'fight_win',
+            }),
+          });
+  
+          if (!response.ok) {
+            throw new Error('Failed to add activity');
+          }
+        } catch (error) {
+          console.error('Error adding activity:', error);
+        }
     } else {
       setQuestTitle("You lost!");
       setFightResult("lose");
