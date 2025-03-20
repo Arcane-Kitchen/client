@@ -74,6 +74,17 @@ const ProfilePage: React.FC = () => {
         {isLoading ? (
           // Show loading spinner while data is being fetched
           <FadeLoader />
+          ) : user && !user.pet_name ? (
+            <div className="flex-1 flex flex-col items-center gap-2 p-2">
+              <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-2/5 aspect-square"></div>
+              <h1 className="text-2xl text-center mb-5">Ah, brave traveler! Almost there—finish setting up your profile, and you’ll be ready to embark on your journey!</h1>
+              <button
+                className="bg-[url('/button-box.svg')] bg-center bg-cover h-20 w-30"
+                onClick={() => navigate("/preferences")}
+              >
+                <h1 className="text-white text-base/5">Set <br /> Preferences</h1>
+              </button>
+            </div>
           ) : user && (
           <div className="flex flex-col items-center">
             <h1 className="font-bold text-2xl">Pet Name: </h1>

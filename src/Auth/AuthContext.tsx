@@ -84,7 +84,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
       setIsLoading(false);
     };
 
-    loadSession();
+    if (!user) loadSession();
 
     // Listen for authentication state changes
     const {
@@ -106,7 +106,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     });
 
     return () => subscription.unsubscribe();
-  }, [location.pathname]);
+  }, []);
 
   // Signing up with email and password
   const signUp = async (

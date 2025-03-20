@@ -8,6 +8,7 @@ import { FaCheckCircle, FaPlus } from "react-icons/fa";
 import RecipeModal from "../components/RecipeModal";
 import RecipesPage from "./RecipesPage";
 import { filterRecipes } from '../util/filterRecipes';
+import { useNavigate } from "react-router-dom";
 
 interface CalendarPageProps {
   recipes: Recipe[]
@@ -18,7 +19,8 @@ interface CalendarPageProps {
 }
 
 const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, recipes, filteredRecipes, setFilteredRecipes }) => {
-  const { isLoading } = useAuth();
+  const { isLoading, user } = useAuth();
+  const navigate = useNavigate();
 
   const [currentStartOfWeek, setCurrentStartOfWeek] = useState<moment.Moment>(moment().startOf("week"));
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | undefined>();
@@ -83,8 +85,19 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
         {isLoading ? (
           // Show loading spinner while data is being fetched
           <FadeLoader />
-        ) : (
-          <div className="flex flex-col">
+        ) : user && !user.pet_name ? (
+          <div className="flex-1 flex flex-col items-center gap-2 p-2">
+            <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-2/5 aspect-square"></div>
+            <h1 className="text-2xl text-center mb-5">Ah, brave traveler! Almost there—finish setting up your profile, and you’ll be ready to embark on your journey!</h1>
+            <button
+              className="bg-[url('/button-box.svg')] bg-center bg-cover h-20 w-30"
+              onClick={() => navigate("/preferences")}
+            >
+              <h1 className="text-white text-base/5">Set <br /> Preferences</h1>
+            </button>
+          </div>
+        ) : mealPlan && (
+          <div className="flex-1 flex flex-col">
             <h3 className="text-2xl mb-2">{`${currentStartOfWeek.format("MMMM DD")} - ${currentStartOfWeek.clone().add(6, "days").format("DD")}`}</h3>
 
             {/* Navigation buttons for changing the week */}
