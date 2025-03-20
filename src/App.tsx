@@ -22,8 +22,6 @@ import QuestPage from "./pages/QuestPage";
 import Chatbot from './components/Chatbot';
 import ProtectedRoute from "./Auth/ProtectedRoute";
 
-
-
 function App() {
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -36,8 +34,7 @@ function App() {
   });
   const { user, session, setIsLoading } = useAuth();
   const location = useLocation();
-  const showChatbot = location.pathname === '/recipes' || location.pathname === '/meal-plan';
-  
+  const showChatbot = location.pathname === '/recipes' || location.pathname === '/meal-plan';  
 
   useEffect(() => {
     if (user && session) {

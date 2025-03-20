@@ -135,21 +135,32 @@ const QuestPage: React.FC = () => {
   return (
     <div className="h-full flex flex-col items-center justify-center pb-16">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-4">
-        {isLoading ? (
-          // Show loading spinner while data is being fetched
-          <FadeLoader />
-        ) : user && enemy ? (
-          <div className="w-full flex flex-col items-center">
-            <h1 className="font-bold text-4xl m-1 p-1">Battle</h1>
-            <h1 className="text-4xl m-1 p-1">{questTitle}</h1>
-            <img className={enemyRotation} src={enemy.img} alt="" />
-            <div className="flex text-2xl mb-4 m-1">
-              <h1 className="flex font-bold m-1 p-1">
-                <PiSwordFill className="m-1" />
-                {calcLevel(enemy.protein_exp)}
-              </h1>
-              <h1 className="flex font-bold m-1 p-1">
-                <FaShieldAlt className="m-1" />
+      {isLoading ? (
+        // Show loading spinner while data is being fetched
+        <FadeLoader />
+        ) : user && !user.pet_name ? (
+          <div className="flex-1 flex flex-col items-center gap-2 p-2">
+            <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-2/5 aspect-square"></div>
+            <h1 className="text-2xl text-center mb-5">Ah, brave traveler! Almost there—finish setting up your profile, and you’ll be ready to embark on your journey!</h1>
+            <button
+              className="bg-[url('/button-box.svg')] bg-center bg-cover h-20 w-30"
+              onClick={() => navigate("/preferences")}
+            >
+              <h1 className="text-white text-base/5">Set <br /> Preferences</h1>
+            </button>
+          </div>
+        ) : user && enemy &&  (
+        <div className="w-full flex flex-col items-center">
+          <h1 className="font-bold text-4xl m-1 p-1">Current Quest</h1>
+          <h1 className="text-4xl m-1 p-1">{questTitle}</h1>
+          <img className={enemyRotation} src={enemy.img} alt="" />
+          <div className="flex text-2xl mb-4 m-1">
+            <h1 className="flex font-bold m-1 p-1">
+              <PiSwordFill className="m-1" />
+              {calcLevel(enemy.protein_exp)}
+            </h1>
+            <h1 className="flex font-bold m-1 p-1">
+              <FaShieldAlt className="m-1" />
 
                 {calcLevel(enemy.fat_exp)}
               </h1>

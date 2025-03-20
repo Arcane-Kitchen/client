@@ -131,7 +131,7 @@ const Preferences = () => {
 
     return (
         <div className="flex-1 flex flex-col items-center px-2 py-10">
-            <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-3/5 aspect-square lg:p-15"></div>
+            <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-2/5 aspect-square lg:p-15"></div>
             <div className="h-65 w-full p-4 flex flex-col items-center justify-center relative">
                 <img src="/sign-up-box.svg" className="w-full transform scale-y-210 lg:w-4/5 lg:scale-y-110" />
                 <div className="absolute top-6/11 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full flex flex-col items-center justify-center lg:w-4/5">
