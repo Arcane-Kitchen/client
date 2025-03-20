@@ -14,7 +14,7 @@ import { FadeLoader } from "react-spinners";
 
 const QuestPage: React.FC = () => {
   const [enemy, setEnemy] = useState<Enemy | null>(null);
-  const { user, session, isLoading } = useAuth();
+  const { user, session, isLoading, setIsLoading } = useAuth();
   const navigate = useNavigate();
 
   const [message, setMessage] = useState<string>("");
@@ -42,12 +42,14 @@ const QuestPage: React.FC = () => {
 
   const handleGetEnemy = async () => {
     if (user) {
+      setIsLoading(true);
       const newEnemyId = user.enemies_defeated + 1;
 
       const newEnemyIdToString = newEnemyId.toString();
       const newEnemy = await fetchEnemyById(newEnemyIdToString);
       setQuestTitle(`Fight a ${enemy?.name}!`);
       setEnemy(newEnemy);
+      setIsLoading(false);
     }
   };
 
