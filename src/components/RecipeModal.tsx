@@ -15,6 +15,13 @@ import { updateUserPetStat } from "../api/userApi";
 import { fetchARecipeById } from "../api/recipeApi";
 import { addUserActivity } from "../api/activityApi";
 
+import { PiSneakerMoveFill } from "react-icons/pi";
+import { FaShieldAlt } from "react-icons/fa";
+import { PiSwordFill } from "react-icons/pi";
+import { FaBookOpen } from "react-icons/fa6";
+import { MdEnergySavingsLeaf } from "react-icons/md";
+import { handlePointCalc, handleRatioCalc } from "../util/statCalc";
+
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 interface ModalProps {
@@ -66,33 +73,41 @@ const RecipeModal: React.FC<ModalProps> = ({
   };
 
   // Handle point calc based on goal/actual ratio
-  const handlePointCalc = (ratio: number) => {
-    if (ratio > 0.9) {
-      return 50;
-    }
-    if (ratio > 0.8) {
-      return 45;
-    }
-    if (ratio > 0.7) {
-      return 40;
-    }
-    if (ratio > 0.6) {
-      return 35;
-    }
-    if (ratio > 0.5) {
-      return 30;
-    }
-    if (ratio > 0.4) {
-      return 25;
-    }
-    if (ratio > 0.3) {
-      return 20;
-    }
-    if (ratio > 0.2) {
-      return 15;
-    }
-    return 10;
-  };
+  // const handlePointCalc = (ratio: number) => {
+  //   if (ratio > 0.9) {
+  //     return 50;
+  //   }
+  //   if (ratio > 0.8) {
+  //     return 45;
+  //   }
+  //   if (ratio > 0.7) {
+  //     return 40;
+  //   }
+  //   if (ratio > 0.6) {
+  //     return 35;
+  //   }
+  //   if (ratio > 0.5) {
+  //     return 30;
+  //   }
+  //   if (ratio > 0.4) {
+  //     return 25;
+  //   }
+  //   if (ratio > 0.3) {
+  //     return 20;
+  //   }
+  //   if (ratio > 0.2) {
+  //     return 15;
+  //   }
+  //   return 10;
+  // };
+
+  // const handleRatioCalc = (goal: number, actual: number) => {
+  //   let ratio = goal / actual;
+  //   if (ratio > 1) {
+  //     ratio = 1 / ratio;
+  //   }
+  //   return ratio;
+  // };
 
   // Handle updating stat
   const handleUpdateStat = async (
@@ -102,8 +117,7 @@ const RecipeModal: React.FC<ModalProps> = ({
     switch (statName) {
       case "carb":
         if (user?.daily_carb_goal) {
-          let ratio = user.daily_carb_goal / eatenMacroValue;
-          if (ratio > 1) ratio = 1 / ratio;
+          const ratio = handleRatioCalc(user.daily_carb_goal, eatenMacroValue);
           const points = handlePointCalc(ratio);
           await updateUserPetStat(
             user.id,
@@ -116,8 +130,7 @@ const RecipeModal: React.FC<ModalProps> = ({
         break;
       case "fat":
         if (user?.daily_fat_goal) {
-          let ratio = user.daily_fat_goal / eatenMacroValue;
-          if (ratio > 1) ratio = 1 / ratio;
+          const ratio = handleRatioCalc(user.daily_fat_goal, eatenMacroValue);
           const points = handlePointCalc(ratio);
           await updateUserPetStat(
             user.id,
@@ -130,8 +143,10 @@ const RecipeModal: React.FC<ModalProps> = ({
         break;
       case "protein":
         if (user?.daily_protein_goal) {
-          let ratio = user.daily_protein_goal / eatenMacroValue;
-          if (ratio > 1) ratio = 1 / ratio;
+          const ratio = handleRatioCalc(
+            user.daily_protein_goal,
+            eatenMacroValue
+          );
           const points = handlePointCalc(ratio);
           await updateUserPetStat(
             user.id,
@@ -144,8 +159,10 @@ const RecipeModal: React.FC<ModalProps> = ({
         break;
       case "calorie":
         if (user?.daily_calorie_goal) {
-          let ratio = user.daily_calorie_goal / 3 / eatenMacroValue;
-          if (ratio > 1) ratio = 1 / ratio;
+          const ratio = handleRatioCalc(
+            user.daily_calorie_goal / 3,
+            eatenMacroValue
+          );
           const points = handlePointCalc(ratio);
           await updateUserPetStat(
             user.id,
@@ -382,7 +399,15 @@ const RecipeModal: React.FC<ModalProps> = ({
               />
             )}
             <div className="px-5">
-              <h2 className="text-3xl font-bold">{selectedRecipe.name}</h2>
+              <div className="flex items-center">
+                <h2 className="text-3xl font-bold mr-3">
+                  {selectedRecipe.name}
+                </h2>
+                <div className="flex items-center">
+                  <FaBookOpen className="mr-2" />
+                  <p>+20</p>
+                </div>
+              </div>
 
               {/* Nutritional Information Section */}
               <div className="flex gap-2 mb-4">
@@ -391,24 +416,74 @@ const RecipeModal: React.FC<ModalProps> = ({
                     <span className="font-bold">Calories: </span>
                     {`${selectedRecipe.nutrition.calories} kcal`}
                   </p>
+                  <div className="flex">
+                    <MdEnergySavingsLeaf />
+                    <p>
+                      +{" "}
+                      {handlePointCalc(
+                        handleRatioCalc(
+                          user.daily_calorie_goal / 3,
+                          selectedRecipe.nutrition.calories
+                        )
+                      )}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex flex-col items-center border-l-1 border-gray-400 text-xs pl-2 lg:text-sm">
                   <p className="font-bold">
                     <span className="font-bold">Fat: </span>
                     {`${selectedRecipe.nutrition.macronutrients.fat.amount} g`}
                   </p>
+                  <div className="flex">
+                    <FaShieldAlt />
+                    <p>
+                      +{" "}
+                      {handlePointCalc(
+                        handleRatioCalc(
+                          user?.daily_fat_goal,
+                          selectedRecipe.nutrition.macronutrients.fat.percentage
+                        )
+                      )}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex flex-col items-center border-l-1 border-gray-400 text-xs pl-2 lg:text-sm">
                   <p className="font-bold">
                     <span className="font-bold">Carbs: </span>
                     {`${selectedRecipe.nutrition.macronutrients.carbs.amount} g`}
                   </p>
+                  <div className="flex">
+                    <PiSneakerMoveFill />
+                    <p>
+                      +{" "}
+                      {handlePointCalc(
+                        handleRatioCalc(
+                          user?.daily_carb_goal,
+                          selectedRecipe.nutrition.macronutrients.carbs
+                            .percentage
+                        )
+                      )}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex flex-col items-center border-l-1 border-gray-400 text-xs pl-2 lg:text-sm">
                   <p className="font-bold">
                     <span className="font-bold">Protein: </span>
                     {`${selectedRecipe.nutrition.macronutrients.protein.amount} g`}
                   </p>
+                  <div className="flex">
+                    <PiSwordFill />
+                    <p className="">
+                      +{" "}
+                      {handlePointCalc(
+                        handleRatioCalc(
+                          user?.daily_protein_goal,
+                          selectedRecipe.nutrition.macronutrients.protein
+                            .percentage
+                        )
+                      )}
+                    </p>
+                  </div>
                 </div>
               </div>
 
