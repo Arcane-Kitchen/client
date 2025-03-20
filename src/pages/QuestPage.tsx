@@ -22,10 +22,29 @@ const QuestPage: React.FC = () => {
   const [questTitle, setQuestTitle] = useState<string>("");
   const [enemyRotation, setEnemyRotation] =
     useState<string>(" w-1/2 h-auto m-3");
+
+  const [petStrColor, setPetStrColor] = useState<string>(
+    "flex font-bold m-1 p-1"
+  );
+  const [petDefColor, setPetDefColor] = useState<string>(
+    "flex font-bold m-1 p-1"
+  );
+  const [petDexColor, setPetDexColor] = useState<string>(
+    "flex font-bold m-1 p-1"
+  );
+  const [petStaminaColor, setPetStaminaColor] = useState<string>(
+    "flex font-bold m-1 p-1"
+  );
+  const [petWisColor, setPetWisColor] = useState<string>(
+    "flex font-bold m-1 p-1"
+  );
+
   const happyPet = user?.pet_img_happy;
   const sadPet = user?.pet_img_sad;
   const normalPet = user?.pet_img_normal;
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  // const normalStatColor = "flex font-bold m-1 p-1";
+  // const lowStatColor = "flex font-bold m-1 p-1 text-red-500";
 
   useEffect(() => {
     handleGetEnemy();
@@ -65,23 +84,28 @@ const QuestPage: React.FC = () => {
       user &&
       user.pet_calorie_exp < enemy?.calorie_exp
     ) {
-      lowStats += " calorie";
+      // lowStats += " calorie";
+      setPetStaminaColor("flex font-bold m-1 p-1 text-red-500");
     }
     if (enemy?.carb_exp && user && user.pet_carb_exp < enemy?.carb_exp) {
-      lowStats += "  carb";
+      // lowStats += "  carb";
+      setPetDexColor("flex font-bold m-1 p-1 text-red-500");
     }
     if (enemy?.fat_exp && user && user.pet_fat_exp < enemy?.fat_exp) {
-      lowStats += " fat";
+      // lowStats += " fat";
+      setPetDefColor("flex font-bold m-1 p-1 text-red-500");
     }
     if (
       enemy?.protein_exp &&
       user &&
       user.pet_protein_exp < enemy?.protein_exp
     ) {
-      lowStats += " protein";
+      // lowStats += " protein";
+      setPetStrColor("flex font-bold m-1 p-1 text-red-500");
     }
     if (enemy?.wisdom_exp && user && user.pet_wisdom_exp < enemy?.wisdom_exp) {
-      lowStats += " wisdom";
+      // lowStats += " wisdom";
+      setPetWisColor("flex font-bold m-1 p-1 text-red-500");
     }
     return lowStats;
   };
@@ -234,7 +258,7 @@ const QuestPage: React.FC = () => {
                 </button>
                 <img className="w-3/4 h-auto" src={sadPet} alt="happy pet" />
                 <div className="flex text-2xl mb-4 m-1">
-                  <h1 className="flex font-bold m-1 p-1">
+                  <h1 className="flex font-bold m-1 p-1 ">
                     <PiSwordFill className="m-1" />
                     {calcLevel(user.pet_protein_exp)}
                   </h1>
