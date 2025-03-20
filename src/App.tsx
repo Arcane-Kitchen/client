@@ -20,6 +20,7 @@ import { updateUserLastLoginById } from "./api/userApi";
 import AchievementSubscriptionProvider from "./components/AchievementSubscriptionProvider";
 import QuestPage from "./pages/QuestPage";
 import Chatbot from './components/Chatbot';
+import ProtectedRoute from "./Auth/ProtectedRoute";
 
 
 
@@ -113,10 +114,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home recipes={recipes} />}></Route>
         <Route path="/" element={<Layout />}>
-          <Route path="profile" element={<ProfilePage />} />
-          <Route path="quest" element={<QuestPage />} />
-          <Route path="preferences" element={<Preferences />} />
-          <Route path="new-recipe" element={<NewRecipePage />} />
+          <Route path="profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="quest" element={<ProtectedRoute><QuestPage /></ProtectedRoute>} />
+          <Route path="preferences" element={<ProtectedRoute><Preferences /></ProtectedRoute>} />
+          <Route path="new-recipe" element={<ProtectedRoute><NewRecipePage /></ProtectedRoute>} />
           <Route
             path="recipes"
             element={
@@ -131,10 +132,11 @@ function App() {
               />
             }
           />
-          <Route path="/achievements" element={<AchievementsPage />} />
+          <Route path="achievements" element={<ProtectedRoute><AchievementsPage /></ProtectedRoute>} />
           <Route
             path="meal-plan"
             element={
+              <ProtectedRoute>
               <CalendarPage
                 recipes={recipes}
                 mealPlan={mealPlan}
@@ -142,6 +144,7 @@ function App() {
                 filteredRecipes={filteredRecipes}
                 setFilteredRecipes={setFilteredRecipes}
               />
+              </ProtectedRoute>
             }
           />
         </Route>
