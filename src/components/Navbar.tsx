@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
           className="h-16 transform scale-y-150 relative top-0 left-0 lg:w-full lg:h-full lg:scale-y-100 lg:scale-x-145"
         />
         <div className="absolute top-0 left-0 z-20 h-full w-full flex items-center justify-between px-10 lg:px-25">
-          <div className="text-[#ebd6aa] text-2xl font-bold lg:text-4xl">
+          <div className="text-[#ebd6aa] text-2xl font-bold cursor-pointer lg:text-4xl" onClick={() => navigate("/")}>
             Arcane Kitchen
           </div>
           <button
