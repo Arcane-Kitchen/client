@@ -64,7 +64,9 @@ const Navbar: React.FC = () => {
                 }`}
                 onClick={toggleNavbar}
               >
-                <Link to="/" className="block w-full h-full">Home</Link>
+                <Link to="/" className="block w-full h-full">
+                  Home
+                </Link>
               </li>
               <li
                 className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
@@ -72,7 +74,9 @@ const Navbar: React.FC = () => {
                 }`}
                 onClick={toggleNavbar}
               >
-                <Link to="/profile" className="block w-full h-full">Profile</Link>
+                <Link to="/profile" className="block w-full h-full">
+                  Profile
+                </Link>
               </li>
               <li
                 className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
@@ -80,7 +84,9 @@ const Navbar: React.FC = () => {
                 }`}
                 onClick={toggleNavbar}
               >
-                <Link to="/meal-plan" className="block w-full h-full">Meal Plan</Link>
+                <Link to="/meal-plan" className="block w-full h-full">
+                  Meal Plan
+                </Link>
               </li>
               <li
                 className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
@@ -88,7 +94,9 @@ const Navbar: React.FC = () => {
                 }`}
                 onClick={toggleNavbar}
               >
-                <Link to="/quest" className="block w-full h-full">Quests</Link>
+                <Link to="/quest" className="block w-full h-full">
+                  Battle
+                </Link>
               </li>
               <li
                 className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
@@ -96,12 +104,9 @@ const Navbar: React.FC = () => {
                 }`}
                 onClick={toggleNavbar}
               >
-                <Link to="/recipes" className="block w-full h-full">Recipes</Link>
-              </li>
-              <li className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
-                session ? "block" : "hidden"
-              }`} onClick={toggleNavbar}>
-                <Link to="/Achievements" className="block w-full h-full">Achievements</Link>
+                <Link to="/recipes" className="block w-full h-full">
+                  Recipes
+                </Link>
               </li>
               <li
                 className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
@@ -109,7 +114,19 @@ const Navbar: React.FC = () => {
                 }`}
                 onClick={toggleNavbar}
               >
-                <Link to="/preferences" className="block w-full h-full">Preferences</Link>
+                <Link to="/Achievements" className="block w-full h-full">
+                  Achievements
+                </Link>
+              </li>
+              <li
+                className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
+                  session ? "block" : "hidden"
+                }`}
+                onClick={toggleNavbar}
+              >
+                <Link to="/preferences" className="block w-full h-full">
+                  Preferences
+                </Link>
               </li>
               <li
                 className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
@@ -125,7 +142,9 @@ const Navbar: React.FC = () => {
                 }`}
                 onClick={toggleNavbar}
               >
-                <Link to="/signup" className="block w-full h-full">Sign Up</Link>
+                <Link to="/signup" className="block w-full h-full">
+                  Sign Up
+                </Link>
               </li>
               <li
                 className={`w-4/5 py-2 px-4 rounded-lg cursor-pointer hover:bg-[#264D77] hover:text-white lg:text-2xl ${
@@ -133,7 +152,9 @@ const Navbar: React.FC = () => {
                 }`}
                 onClick={toggleNavbar}
               >
-                <Link to="/login" className="block w-full h-full">Login</Link>
+                <Link to="/login" className="block w-full h-full">
+                  Login
+                </Link>
               </li>
             </ul>
           </nav>

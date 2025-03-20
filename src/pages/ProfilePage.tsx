@@ -59,7 +59,7 @@ const ProfilePage: React.FC = () => {
       const dexRemainderExp = calcRemainderExp(user.pet_carb_exp);
       const staminaRemainderExp = calcRemainderExp(user.pet_calorie_exp);
       const wisRemainderExp = calcRemainderExp(user.pet_wisdom_exp);
-  
+
       setStrengthColor(colorPicker(strRemainderExp));
       setDefenseColor(colorPicker(defRemainderExp));
       setDexterityColor(colorPicker(dexRemainderExp));
@@ -74,14 +74,14 @@ const ProfilePage: React.FC = () => {
         {isLoading ? (
           // Show loading spinner while data is being fetched
           <PacmanLoader />
-          ) : (
+        ) : (
           <div className="flex flex-col items-center">
             <h1 className="font-bold text-2xl">Pet Name: </h1>
             <h2 className="text-2xl">{user?.pet_name}</h2>
             <div className="flex">
               <img className="size-50" src={dragonImage} alt="dragon" />
             </div>
-            
+
             {/* Pet stats */}
             <div className="w-4/5">
               {/* Strength progress bar */}
@@ -200,9 +200,9 @@ const ProfilePage: React.FC = () => {
                 }}
                 className="bg-[url('/button-box.svg')] bg-cover bg-center w-35 h-23"
               >
-                <p className="text-white text-2xl">Quest</p>
+                <p className="text-white text-2xl">Battle</p>
               </button>
-              
+
               {/* Plan button */}
               <button
                 className="bg-[url('/button-box.svg')] bg-cover bg-center w-35 h-23"
@@ -213,10 +213,8 @@ const ProfilePage: React.FC = () => {
                 <p className="text-white text-2xl">Plan</p>
               </button>
             </div>
-            
           </div>
-          )
-        }
+        )}
       </div>
     </div>
   );
