@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { Recipe } from "../types";
+import { useAuth } from "../Auth/AuthContext";
 import 'swiper/css';
 import 'swiper/css/navigation';
 
@@ -15,6 +16,24 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
 
   const navigate = useNavigate();
   const isDesktop = window.innerWidth >= 1024;
+
+  const { session } = useAuth();
+
+  const handleAuthRedirect = () => {
+    if (session) {
+      navigate("/profile");
+    } else {
+      navigate("/signup");
+    }
+  }
+
+  const handleRecipesRedirect = () => {
+    if (session) {
+      navigate("/meal-plan");
+    } else {
+      navigate("/recipes");
+    }
+  }
 
   return (
     <div className="bg-[url('/background.jpg')] bg-cover bg-center min-h-screen max-h-screen flex flex-col p-8 gap-10 overflow-y-auto lg:px-15 lg:gap-5">
@@ -101,9 +120,9 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
           <p className="text-amber-50 text-2xl lg:text-4xl">Join the adventure and watch your pet grow stronger as you make healthier food choices!</p>
           <button 
             className="text-amber-50 text-xl bg-[#19243e] opacity-80 p-2 w-full rounded-lg cursor-pointer hover:scale-105 hover:shadow-lg hover:text-[#ebd6aa] hover:opacity-100 lg:w-2/3 lg:text-2xl lg:p-4"
-            onClick={() => navigate("/signup")}
+            onClick={handleAuthRedirect}
           >
-            Start Your Journey
+            {session ? "Continue Your Journey" : "Start Your Journey"}
           </button>
         </div>
       </div>
@@ -153,7 +172,7 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
         </div>
         <button 
           className="text-amber-50 text-xl bg-[#19243e] opacity-80 p-2 w-full rounded-lg cursor-pointer hover:scale-105 hover:shadow-lg hover:text-[#ebd6aa] hover:opacity-100 mt-2 lg:hidden"
-          onClick={() => navigate("/recipes")}
+          onClick={handleRecipesRedirect}
         >
           Explore Healthy Recipes
         </button>
