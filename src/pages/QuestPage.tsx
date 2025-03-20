@@ -140,7 +140,7 @@ const QuestPage: React.FC = () => {
           <FadeLoader />
         ) : user && enemy ? (
           <div className="w-full flex flex-col items-center">
-            <h1 className="font-bold text-4xl m-1 p-1">Current Quest</h1>
+            <h1 className="font-bold text-4xl m-1 p-1">Battle</h1>
             <h1 className="text-4xl m-1 p-1">{questTitle}</h1>
             <img className={enemyRotation} src={enemy.img} alt="" />
             <div className="flex text-2xl mb-4 m-1">
@@ -265,7 +265,7 @@ const QuestPage: React.FC = () => {
               <div className="flex flex-col items-center text-2xl">
                 <button
                   onClick={() => {
-                    handleGetEnemy();
+                    window.location.reload();
                   }}
                   className="bg-[url('/button-box.svg')] bg-cover bg-center w-35 h-23"
                 >
