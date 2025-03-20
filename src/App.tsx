@@ -132,7 +132,7 @@ function App() {
               />
             }
           />
-          <Route path="/achievements" element={<ProtectedRoute><AchievementsPage /></ProtectedRoute>} />
+          <Route path="achievements" element={<ProtectedRoute><AchievementsPage /></ProtectedRoute>} />
           <Route
             path="meal-plan"
             element={
