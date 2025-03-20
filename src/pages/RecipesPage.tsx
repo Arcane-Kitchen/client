@@ -23,17 +23,31 @@ interface RecipesPageProps {
   selectedMealType?: string;
   setSelectedMealType?: React.Dispatch<React.SetStateAction<string>>;
   startOfTheWeek?: moment.Moment;
-  filters: Filter
+  filters: Filter;
   setFilters: React.Dispatch<React.SetStateAction<Filter>>;
 }
 
-const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRecipes, setFilteredRecipes, setMealPlan, finishAdding, selectedDay, setSelectedDay, selectedMealType, setSelectedMealType, startOfTheWeek, filters, setFilters }) => {
+const RecipesPage: React.FC<RecipesPageProps> = ({
+  recipes,
+  mealPlan,
+  filteredRecipes,
+  setFilteredRecipes,
+  setMealPlan,
+  finishAdding,
+  selectedDay,
+  setSelectedDay,
+  selectedMealType,
+  setSelectedMealType,
+  startOfTheWeek,
+  filters,
+  setFilters,
+}) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const { isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
 
   const filtersCount = Object.values(filters).reduce((count, array) => {
     return count + array.filter(Boolean).length;
@@ -53,14 +67,14 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
 
   const toggleFilter = () => {
     setIsFilterModalOpen(!isFilterModalOpen);
-  }
+  };
 
   const handleBackClick = () => {
     setSelectedDay!(moment().day());
     setSelectedMealType!("");
     handleClearAll();
     finishAdding!();
-  }
+  };
 
   // Reset all filters
   const handleClearAll = () => {
@@ -68,11 +82,11 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
 
     // Reset each filter array to have all false values
     Object.entries(newFilters).forEach(([key, value]) => {
-        newFilters[key as keyof Filter] = value.map(() => false);
-    }) 
+      newFilters[key as keyof Filter] = value.map(() => false);
+    });
     setFilters(newFilters);
     setFilteredRecipes(recipes);
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -80,7 +94,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
 
     const newFilteredRecipes = filterRecipes(recipes, filters, query);
     setFilteredRecipes(newFilteredRecipes);
-  }
+  };
 
   return (
     <div className="flex flex-col h-dvh relative">
@@ -120,7 +134,10 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
                 />
               </div>
               {/* Filter button */}
-              <button className="px-2 cursor-pointer flex items-end" onClick={toggleFilter}>
+              <button
+                className="px-2 cursor-pointer flex items-end"
+                onClick={toggleFilter}
+              >
                 <FaFilter size={30} className=" text-[#19243e]" />
                 {/* Display the number of filters applied */}
                 {filtersCount > 0 && (
@@ -135,7 +152,9 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
           {filteredRecipes && filteredRecipes.length > 0 ? (
             // Recipe grid display
             <div className="w-full px-4 pb-5 lg:px-15">
-              <p className="mb-2">{`${filteredRecipes.length} ${filteredRecipes.length === 1 ? " result" : "results"} found`}</p>
+              <p className="mb-2">{`${filteredRecipes.length} ${
+                filteredRecipes.length === 1 ? " result" : "results"
+              } found`}</p>
               <div className="grid grid-cols-2 gap-2 justify-items-center lg:grid-cols-3">
                 {/* Render recipe cards */}
                 {filteredRecipes.map((recipe, index) => (
@@ -147,7 +166,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
                     <RecipeCard recipe={recipe} />
                   </div>
                 ))}
-              </div> 
+              </div>
             </div>
           ) : (
             <div className="text-center text-3xl mt-5">No Results Found</div>
@@ -174,7 +193,15 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
 
       {/* Display filter modal when filter button is clicked */}
       {isFilterModalOpen && (
-        <FilterModal onClose={toggleFilter} filters={filters} setFilters={setFilters} recipes={recipes} setFilteredRecipes={setFilteredRecipes} handleClearAll={handleClearAll} searchQuery={searchQuery}/>
+        <FilterModal
+          onClose={toggleFilter}
+          filters={filters}
+          setFilters={setFilters}
+          recipes={recipes}
+          setFilteredRecipes={setFilteredRecipes}
+          handleClearAll={handleClearAll}
+          searchQuery={searchQuery}
+        />
       )}
     </div>
   );
