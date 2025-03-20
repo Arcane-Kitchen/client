@@ -69,15 +69,26 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[80vh] flex items-center justify-around p-4">
+    <div className="h-full flex flex-col items-center justify-center pb-16">
+      <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-4 py-6">
         {isLoading ? (
           // Show loading spinner while data is being fetched
           <FadeLoader />
-        ) : (
+        ) : user && !user.pet_name ? (
+          <div className="flex-1 flex flex-col items-center gap-2 p-2">
+            <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-2/5 aspect-square"></div>
+            <h1 className="text-2xl text-center mb-5">Ah, brave traveler! Almost there—finish setting up your profile, and you’ll be ready to embark on your journey!</h1>
+            <button
+              className="bg-[url('/button-box.svg')] bg-center bg-cover h-20 w-30"
+              onClick={() => navigate("/preferences")}
+            >
+              <h1 className="text-white text-base/5">Set <br /> Preferences</h1>
+            </button>
+          </div>
+        ) : user && (
           <div className="flex flex-col items-center">
             <h1 className="font-bold text-2xl">Pet Name: </h1>
-            <h2 className="text-2xl">{user?.pet_name}</h2>
+            <h2 className="text-2xl">{user.pet_name}</h2>
             <div className="flex">
               <img className="size-50" src={dragonImage} alt="dragon" />
             </div>
@@ -94,14 +105,14 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <p>
                   <span className="font-bold">
-                    Lvl {calcLevel(user!.pet_protein_exp)}
+                    Lvl {calcLevel(user.pet_protein_exp)}
                   </span>
                 </p>
               </div>
               <progress
                 className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${strengthColor}`}
                 id="protein"
-                value={calcRemainderExp(user!.pet_protein_exp)}
+                value={calcRemainderExp(user.pet_protein_exp)}
                 max={100}
               ></progress>
 
@@ -115,14 +126,14 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <p>
                   <span className="font-bold">
-                    Lvl {calcLevel(user!.pet_fat_exp)}
+                    Lvl {calcLevel(user.pet_fat_exp)}
                   </span>
                 </p>
               </div>
               <progress
                 className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${defenseColor}`}
                 id="fat"
-                value={calcRemainderExp(user!.pet_fat_exp)}
+                value={calcRemainderExp(user.pet_fat_exp)}
                 max={100}
               ></progress>
 
@@ -137,14 +148,14 @@ const ProfilePage: React.FC = () => {
 
                 <p>
                   <span className="font-bold">
-                    Lvl {calcLevel(user!.pet_carb_exp)}
+                    Lvl {calcLevel(user.pet_carb_exp)}
                   </span>
                 </p>
               </div>
               <progress
                 className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${dexterityColor}`}
                 id="carbs"
-                value={calcRemainderExp(user!.pet_carb_exp)}
+                value={calcRemainderExp(user.pet_carb_exp)}
                 max={100}
               ></progress>
 
@@ -158,14 +169,14 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <p>
                   <span className="font-bold">
-                    Lvl {calcLevel(user!.pet_calorie_exp)}
+                    Lvl {calcLevel(user.pet_calorie_exp)}
                   </span>
                 </p>
               </div>
               <progress
                 className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${staminaColor}`}
                 id="calories"
-                value={calcRemainderExp(user!.pet_calorie_exp)}
+                value={calcRemainderExp(user.pet_calorie_exp)}
                 max={100}
               ></progress>
 
@@ -179,14 +190,14 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <p>
                   <span className="font-bold">
-                    Lvl {calcLevel(user!.pet_wisdom_exp)}
+                    Lvl {calcLevel(user.pet_wisdom_exp)}
                   </span>
                 </p>
               </div>
               <progress
                 className={`w-full mb-7 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${wisdomColor}`}
                 id="wisdom"
-                value={calcRemainderExp(user!.pet_wisdom_exp)}
+                value={calcRemainderExp(user.pet_wisdom_exp)}
                 max={100}
               ></progress>
             </div>

@@ -128,7 +128,7 @@ const Navbar: React.FC = () => {
                 }`}
                 onClick={toggleNavbar}
               >
-                <Link to="/Achievements" className="block w-full h-full">
+                <Link to="/achievements" className="block w-full h-full">
                   Achievements
                 </Link>
               </li>

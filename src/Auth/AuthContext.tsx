@@ -84,7 +84,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
       setIsLoading(false);
     };
 
-    if (!user) loadSession();
+    loadSession();
 
     // Listen for authentication state changes
     const {
