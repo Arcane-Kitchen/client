@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FiMinus, FiX } from 'react-icons/fi';
 import wizardImage from '../assets/AI_Wizard.jpg';
 
 const Chatbot: React.FC = () => {
@@ -56,13 +57,13 @@ const Chatbot: React.FC = () => {
               onClick={() => setIsCollapsed(true)}
               className="ml-auto p-1 bg-gray-200 rounded-full"
             >
-              -
+              <FiMinus />
             </button>
             <button
               onClick={() => setIsVisible(false)}
               className="ml-2 p-1 bg-gray-200 rounded-full"
             >
-              X
+              <FiX />
             </button>
           </div>
           <div className="h-64 overflow-y-auto mb-2">
