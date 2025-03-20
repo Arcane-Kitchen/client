@@ -29,6 +29,10 @@ const QuestPage: React.FC = () => {
 
   useEffect(() => {
     handleGetEnemy();
+  }, []);
+
+  useEffect(() => {
+    handleGetEnemy();
   }, [user]);
 
   // Show message in the modal for 3 seconds
@@ -47,8 +51,8 @@ const QuestPage: React.FC = () => {
 
       const newEnemyIdToString = newEnemyId.toString();
       const newEnemy = await fetchEnemyById(newEnemyIdToString);
-      setQuestTitle(`Fight a ${enemy?.name}!`);
       setEnemy(newEnemy);
+      setQuestTitle(`Fight a ${enemy?.name}!`);
       setIsLoading(false);
     }
   };
@@ -172,28 +176,54 @@ const QuestPage: React.FC = () => {
               </h1>
             </div>
 
-            <button
-              onClick={handleFight}
-              className="bg-[url('/button-box.svg')] bg-cover bg-center h-21 w-30"
-            >
-              <p className="text-white text-2xl">Fight</p>
-            </button>
-
             {/* before fight */}
             {fightResult === "" && (
               <div className="flex flex-col items-center text-2xl">
+                <button
+                  onClick={handleFight}
+                  className="bg-[url('/button-box.svg')] bg-cover bg-center h-21 w-30"
+                >
+                  <p className="text-white text-2xl">Fight</p>
+                </button>
                 <img
                   className="w-3/4 h-auto"
                   src={normalPet}
                   alt="normal pet"
                 />
+                <div className="flex text-2xl mb-4 m-1">
+                  <h1 className="flex font-bold m-1 p-1">
+                    <PiSwordFill className="m-1" />
+                    {calcLevel(user.pet_protein_exp)}
+                  </h1>
+                  <h1 className="flex font-bold m-1 p-1">
+                    <FaShieldAlt className="m-1" />
+
+                    {calcLevel(user.pet_fat_exp)}
+                  </h1>
+
+                  <h1 className="flex font-bold m-1 p-1">
+                    <PiSneakerMoveFill className="m-1" />
+
+                    {calcLevel(user.pet_carb_exp)}
+                  </h1>
+
+                  <h1 className="flex font-bold m-1 p-1">
+                    <MdEnergySavingsLeaf className="m-1" />
+                    {calcLevel(user.pet_calorie_exp)}
+                  </h1>
+
+                  <h1 className="flex font-bold m-1 p-1">
+                    <FaBookOpen className="m-1" />
+
+                    {calcLevel(user.pet_wisdom_exp)}
+                  </h1>
+                </div>
               </div>
             )}
 
             {/* lose message */}
             {fightResult === "lose" && (
               <div className="flex flex-col items-center text-2xl">
-                <img className="w-3/4 h-auto" src={sadPet} alt="happy pet" />
                 <button
                   onClick={() => {
                     navigate("/meal-plan");
@@ -202,13 +232,41 @@ const QuestPage: React.FC = () => {
                 >
                   <p className="text-30 text-white">Lvl Up</p>
                 </button>
+                <img className="w-3/4 h-auto" src={sadPet} alt="happy pet" />
+                <div className="flex text-2xl mb-4 m-1">
+                  <h1 className="flex font-bold m-1 p-1">
+                    <PiSwordFill className="m-1" />
+                    {calcLevel(user.pet_protein_exp)}
+                  </h1>
+                  <h1 className="flex font-bold m-1 p-1">
+                    <FaShieldAlt className="m-1" />
+
+                    {calcLevel(user.pet_fat_exp)}
+                  </h1>
+
+                  <h1 className="flex font-bold m-1 p-1">
+                    <PiSneakerMoveFill className="m-1" />
+
+                    {calcLevel(user.pet_carb_exp)}
+                  </h1>
+
+                  <h1 className="flex font-bold m-1 p-1">
+                    <MdEnergySavingsLeaf className="m-1" />
+                    {calcLevel(user.pet_calorie_exp)}
+                  </h1>
+
+                  <h1 className="flex font-bold m-1 p-1">
+                    <FaBookOpen className="m-1" />
+
+                    {calcLevel(user.pet_wisdom_exp)}
+                  </h1>
+                </div>
               </div>
             )}
 
             {/* win message */}
             {fightResult === "win" && (
               <div className="flex flex-col items-center text-2xl">
-                <img className="w-3/4 h-auto" src={happyPet} alt="happy pet" />
                 <button
                   onClick={() => {
                     window.location.reload();
@@ -217,6 +275,35 @@ const QuestPage: React.FC = () => {
                 >
                   <p className="text-white">Next</p>
                 </button>
+                <img className="w-3/4 h-auto" src={happyPet} alt="happy pet" />
+                <div className="flex text-2xl mb-4 m-1">
+                  <h1 className="flex font-bold m-1 p-1">
+                    <PiSwordFill className="m-1" />
+                    {calcLevel(user.pet_protein_exp)}
+                  </h1>
+                  <h1 className="flex font-bold m-1 p-1">
+                    <FaShieldAlt className="m-1" />
+
+                    {calcLevel(user.pet_fat_exp)}
+                  </h1>
+
+                  <h1 className="flex font-bold m-1 p-1">
+                    <PiSneakerMoveFill className="m-1" />
+
+                    {calcLevel(user.pet_carb_exp)}
+                  </h1>
+
+                  <h1 className="flex font-bold m-1 p-1">
+                    <MdEnergySavingsLeaf className="m-1" />
+                    {calcLevel(user.pet_calorie_exp)}
+                  </h1>
+
+                  <h1 className="flex font-bold m-1 p-1">
+                    <FaBookOpen className="m-1" />
+
+                    {calcLevel(user.pet_wisdom_exp)}
+                  </h1>
+                </div>
               </div>
             )}
 
