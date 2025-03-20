@@ -23,7 +23,7 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
     if (session) {
       navigate("/profile");
     } else {
-      navigate("/signup");
+      navigate("/login");
     }
   }
 
@@ -119,10 +119,16 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
         <div className="flex flex-col gap-3 lg:w-1/2 lg:gap-8">
           <p className="text-amber-50 text-2xl lg:text-4xl">Join the adventure and watch your pet grow stronger as you make healthier food choices!</p>
           <button 
+            className={`text-amber-50 text-xl bg-[#19243e] opacity-80 p-2 w-full rounded-lg cursor-pointer hover:scale-105 hover:shadow-lg hover:text-[#ebd6aa] hover:opacity-100 lg:w-2/3 lg:text-2xl lg:p-4 ${session ? "hidden" : "block"}`}
+            onClick={() => navigate("/signup")}
+          >
+            Start Your Journey
+          </button>
+          <button 
             className="text-amber-50 text-xl bg-[#19243e] opacity-80 p-2 w-full rounded-lg cursor-pointer hover:scale-105 hover:shadow-lg hover:text-[#ebd6aa] hover:opacity-100 lg:w-2/3 lg:text-2xl lg:p-4"
             onClick={handleAuthRedirect}
           >
-            {session ? "Continue Your Journey" : "Start Your Journey"}
+            Continue Your Journey
           </button>
         </div>
       </div>
@@ -161,7 +167,7 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
             <SwiperSlide>
               <button
                 className="w-full h-52 p-5 text-amber-50 text-3xl bg-[#19243e] opacity-80 rounded-lg cursor-pointer hover:scale-105 hover:shadow-lg hover:text-[#ebd6aa] hover:opacity-100"
-                onClick={() => navigate("/recipes")}
+                onClick={handleRecipesRedirect}
               >
                 Explore Healthy Recipes
               </button>

@@ -10,11 +10,11 @@ import { PiSwordFill } from "react-icons/pi";
 import { FaBookOpen } from "react-icons/fa6";
 import { MdEnergySavingsLeaf } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { PacmanLoader } from "react-spinners";
+import { FadeLoader } from "react-spinners";
 
 const QuestPage: React.FC = () => {
   const [enemy, setEnemy] = useState<Enemy | null>(null);
-  const { user, session, isLoading } = useAuth();
+  const { user, session, isLoading, setIsLoading } = useAuth();
   const navigate = useNavigate();
 
   const [message, setMessage] = useState<string>("");
@@ -42,12 +42,14 @@ const QuestPage: React.FC = () => {
 
   const handleGetEnemy = async () => {
     if (user) {
+      setIsLoading(true);
       const newEnemyId = user.enemies_defeated + 1;
 
       const newEnemyIdToString = newEnemyId.toString();
       const newEnemy = await fetchEnemyById(newEnemyIdToString);
       setQuestTitle(`Fight a ${enemy?.name}!`);
       setEnemy(newEnemy);
+      setIsLoading(false);
     }
   };
 
@@ -130,11 +132,11 @@ const QuestPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[80vh] flex items-center justify-around p-4">
+    <div className="h-full flex flex-col items-center justify-center pb-16">
+      <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-4">
       {isLoading ? (
           // Show loading spinner while data is being fetched
-          <PacmanLoader />
+          <FadeLoader />
           ) : user && enemy ?  (
         <div className="w-full flex flex-col items-center">
           <h1 className="font-bold text-4xl m-1 p-1">Current Quest</h1>

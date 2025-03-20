@@ -6,7 +6,7 @@ import { PiSneakerMoveFill, PiSwordFill } from "react-icons/pi";
 import { FaShieldAlt } from "react-icons/fa";
 import { FaBookOpen } from "react-icons/fa6";
 import { MdEnergySavingsLeaf } from "react-icons/md";
-import { PacmanLoader } from "react-spinners";
+import { FadeLoader } from "react-spinners";
 
 const ProfilePage: React.FC = () => {
   const { user, isLoading } = useAuth();
@@ -69,12 +69,12 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[80vh] flex items-center justify-around p-4">
+    <div className="h-full flex flex-col items-center justify-center pb-16">
+      <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-4 py-6">
         {isLoading ? (
           // Show loading spinner while data is being fetched
-          <PacmanLoader />
-          ) : (
+          <FadeLoader />
+          ) : user && (
           <div className="flex flex-col items-center">
             <h1 className="font-bold text-2xl">Pet Name: </h1>
             <h2 className="text-2xl">{user?.pet_name}</h2>
@@ -94,14 +94,14 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <p>
                   <span className="font-bold">
-                    Lvl {calcLevel(user!.pet_protein_exp)}
+                    Lvl {calcLevel(user.pet_protein_exp)}
                   </span>
                 </p>
               </div>
               <progress
                 className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${strengthColor}`}
                 id="protein"
-                value={calcRemainderExp(user!.pet_protein_exp)}
+                value={calcRemainderExp(user.pet_protein_exp)}
                 max={100}
               ></progress>
 
@@ -115,14 +115,14 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <p>
                   <span className="font-bold">
-                    Lvl {calcLevel(user!.pet_fat_exp)}
+                    Lvl {calcLevel(user.pet_fat_exp)}
                   </span>
                 </p>
               </div>
               <progress
                 className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${defenseColor}`}
                 id="fat"
-                value={calcRemainderExp(user!.pet_fat_exp)}
+                value={calcRemainderExp(user.pet_fat_exp)}
                 max={100}
               ></progress>
 
@@ -137,7 +137,7 @@ const ProfilePage: React.FC = () => {
 
                 <p>
                   <span className="font-bold">
-                    Lvl {calcLevel(user!.pet_carb_exp)}
+                    Lvl {calcLevel(user.pet_carb_exp)}
                   </span>
                 </p>
               </div>
@@ -158,14 +158,14 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <p>
                   <span className="font-bold">
-                    Lvl {calcLevel(user!.pet_calorie_exp)}
+                    Lvl {calcLevel(user.pet_calorie_exp)}
                   </span>
                 </p>
               </div>
               <progress
                 className={`w-full mb-1 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${staminaColor}`}
                 id="calories"
-                value={calcRemainderExp(user!.pet_calorie_exp)}
+                value={calcRemainderExp(user.pet_calorie_exp)}
                 max={100}
               ></progress>
 
@@ -179,14 +179,14 @@ const ProfilePage: React.FC = () => {
                 </div>
                 <p>
                   <span className="font-bold">
-                    Lvl {calcLevel(user!.pet_wisdom_exp)}
+                    Lvl {calcLevel(user.pet_wisdom_exp)}
                   </span>
                 </p>
               </div>
               <progress
                 className={`w-full mb-7 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-gray-300 ${wisdomColor}`}
                 id="wisdom"
-                value={calcRemainderExp(user!.pet_wisdom_exp)}
+                value={calcRemainderExp(user.pet_wisdom_exp)}
                 max={100}
               ></progress>
             </div>

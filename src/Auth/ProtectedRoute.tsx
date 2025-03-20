@@ -7,10 +7,10 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-    const { session } = useAuth();
+    const { session, isLoading } = useAuth();
 
     // If there is no session, redirect to the landing page
-    if (!session) {
+    if (!isLoading && !session) {
         return <Navigate to="/" />;
     }
 
