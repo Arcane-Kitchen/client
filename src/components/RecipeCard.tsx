@@ -8,7 +8,6 @@ import { FaBookOpen } from "react-icons/fa6";
 import { MdEnergySavingsLeaf } from "react-icons/md";
 import { handlePointCalc, handleRatioCalc } from "../util/statCalc";
 import { useAuth } from "../Auth/AuthContext";
-// import { useAuth } from "../Auth/AuthContext";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -96,7 +95,6 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                 )
               )}
             </p>
-            {/* <FaBookOpen /> */}
           </div>
         </div>
       </div>
