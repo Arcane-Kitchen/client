@@ -3,7 +3,7 @@ import RecipeCard from "../components/RecipeCard";
 import RecipeModal from "../components/RecipeModal";
 import FilterModal from "../components/FilterModal";
 import { useAuth } from "../Auth/AuthContext";
-import { PacmanLoader } from "react-spinners";
+import { FadeLoader } from "react-spinners";
 import { Recipe, Meal, Filter } from "../types";
 import { IoSearch, IoChevronBackCircle } from "react-icons/io5";
 import { FaFilter } from "react-icons/fa";
@@ -86,7 +86,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes, mealPlan, filteredRe
     <div className="flex flex-col h-dvh relative">
       {/* Conditionally render a loading spinner or the recipes */}
       {isLoading ? (
-        <PacmanLoader className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+        <FadeLoader className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
       ) : (
         <>
           {/* Back button, search bar and filter section */}
