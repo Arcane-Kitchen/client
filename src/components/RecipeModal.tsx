@@ -416,9 +416,9 @@ const RecipeModal: React.FC<ModalProps> = ({
                     <span className="font-bold">Calories: </span>
                     {`${selectedRecipe.nutrition.calories} kcal`}
                   </p>
-                  <div className="flex">
+                  <div className="flex text-base items-center mt-1">
                     <MdEnergySavingsLeaf />
-                    <p>
+                    <p className="">
                       +{" "}
                       {handlePointCalc(
                         handleRatioCalc(
@@ -434,7 +434,7 @@ const RecipeModal: React.FC<ModalProps> = ({
                     <span className="font-bold">Fat: </span>
                     {`${selectedRecipe.nutrition.macronutrients.fat.amount} g`}
                   </p>
-                  <div className="flex">
+                  <div className="flex text-base items-center mt-1">
                     <FaShieldAlt />
                     <p>
                       +{" "}
@@ -452,7 +452,7 @@ const RecipeModal: React.FC<ModalProps> = ({
                     <span className="font-bold">Carbs: </span>
                     {`${selectedRecipe.nutrition.macronutrients.carbs.amount} g`}
                   </p>
-                  <div className="flex">
+                  <div className="flex text-base items-center mt-1">
                     <PiSneakerMoveFill />
                     <p>
                       +{" "}
@@ -471,7 +471,7 @@ const RecipeModal: React.FC<ModalProps> = ({
                     <span className="font-bold">Protein: </span>
                     {`${selectedRecipe.nutrition.macronutrients.protein.amount} g`}
                   </p>
-                  <div className="flex">
+                  <div className="flex text-base items-center mt-1">
                     <PiSwordFill />
                     <p className="">
                       +{" "}
