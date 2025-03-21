@@ -47,7 +47,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const { user, isLoading } = useAuth();
+  const { isLoading } = useAuth();
 
   const filtersCount = Object.values(filters).reduce((count, array) => {
     return count + array.filter(Boolean).length;

@@ -3,8 +3,10 @@ import { Recipe, Meal } from "../types";
 import { useAuth } from "../Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { IoChevronBackCircle, IoRemove } from "react-icons/io5";
-import { FaCircleXmark } from "react-icons/fa6";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCircleXmark, FaBookOpen } from "react-icons/fa6";
+import { FaCheckCircle, FaShieldAlt } from "react-icons/fa";
+import { PiSneakerMoveFill, PiSwordFill } from "react-icons/pi";
+import { MdEnergySavingsLeaf } from "react-icons/md";
 import {
   addRecipeToMealPlan,
   updateMealPlanById,
@@ -14,12 +16,6 @@ import moment from "moment";
 import { updateUserPetStat } from "../api/userApi";
 import { fetchARecipeById } from "../api/recipeApi";
 import { addUserActivity } from "../api/activityApi";
-
-import { PiSneakerMoveFill } from "react-icons/pi";
-import { FaShieldAlt } from "react-icons/fa";
-import { PiSwordFill } from "react-icons/pi";
-import { FaBookOpen } from "react-icons/fa6";
-import { MdEnergySavingsLeaf } from "react-icons/md";
 import { handlePointCalc, handleRatioCalc } from "../util/statCalc";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -366,10 +362,12 @@ const RecipeModal: React.FC<ModalProps> = ({
                 <h2 className="text-3xl font-bold mr-3">
                   {selectedRecipe.name}
                 </h2>
-                <div className="flex items-center">
-                  <FaBookOpen className="mr-2" />
-                  <p>+20</p>
-                </div>
+                {user && (
+                  <div className="flex items-center">
+                    <FaBookOpen className="mr-2" />
+                    <p>+20</p>
+                  </div>
+                )}
               </div>
 
               {/* Nutritional Information Section */}
@@ -379,74 +377,82 @@ const RecipeModal: React.FC<ModalProps> = ({
                     <span className="font-bold">Calories: </span>
                     {`${selectedRecipe.nutrition.calories} kcal`}
                   </p>
-                  <div className="flex text-base items-center mt-1">
-                    <MdEnergySavingsLeaf />
-                    <p className="">
-                      +{" "}
-                      {handlePointCalc(
-                        handleRatioCalc(
-                          user.daily_calorie_goal / 3,
-                          selectedRecipe.nutrition.calories
-                        )
-                      )}
-                    </p>
-                  </div>
+                  {user && (
+                    <div className="flex text-base items-center mt-1">
+                      <MdEnergySavingsLeaf />
+                      <p className="">
+                        +{" "}
+                        {handlePointCalc(
+                          handleRatioCalc(
+                            user.daily_calorie_goal / 3,
+                            selectedRecipe.nutrition.calories
+                          )
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-center border-l-1 border-gray-400 text-xs pl-2 lg:text-sm">
                   <p className="font-bold">
                     <span className="font-bold">Fat: </span>
                     {`${selectedRecipe.nutrition.macronutrients.fat.amount} g`}
                   </p>
-                  <div className="flex text-base items-center mt-1">
-                    <FaShieldAlt />
-                    <p>
-                      +{" "}
-                      {handlePointCalc(
-                        handleRatioCalc(
-                          user?.daily_fat_goal,
-                          selectedRecipe.nutrition.macronutrients.fat.percentage
-                        )
-                      )}
-                    </p>
-                  </div>
+                  {user && (
+                    <div className="flex text-base items-center mt-1">
+                      <FaShieldAlt />
+                      <p>
+                        +{" "}
+                        {handlePointCalc(
+                          handleRatioCalc(
+                            user?.daily_fat_goal,
+                            selectedRecipe.nutrition.macronutrients.fat.percentage
+                          )
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-center border-l-1 border-gray-400 text-xs pl-2 lg:text-sm">
                   <p className="font-bold">
                     <span className="font-bold">Carbs: </span>
                     {`${selectedRecipe.nutrition.macronutrients.carbs.amount} g`}
                   </p>
-                  <div className="flex text-base items-center mt-1">
-                    <PiSneakerMoveFill />
-                    <p>
-                      +{" "}
-                      {handlePointCalc(
-                        handleRatioCalc(
-                          user?.daily_carb_goal,
-                          selectedRecipe.nutrition.macronutrients.carbs
-                            .percentage
-                        )
-                      )}
-                    </p>
-                  </div>
+                  {user && (
+                    <div className="flex text-base items-center mt-1">
+                      <PiSneakerMoveFill />
+                      <p>
+                        +{" "}
+                        {handlePointCalc(
+                          handleRatioCalc(
+                            user?.daily_carb_goal,
+                            selectedRecipe.nutrition.macronutrients.carbs
+                              .percentage
+                          )
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-center border-l-1 border-gray-400 text-xs pl-2 lg:text-sm">
                   <p className="font-bold">
                     <span className="font-bold">Protein: </span>
                     {`${selectedRecipe.nutrition.macronutrients.protein.amount} g`}
                   </p>
-                  <div className="flex text-base items-center mt-1">
-                    <PiSwordFill />
-                    <p className="">
-                      +{" "}
-                      {handlePointCalc(
-                        handleRatioCalc(
-                          user?.daily_protein_goal,
-                          selectedRecipe.nutrition.macronutrients.protein
-                            .percentage
-                        )
-                      )}
-                    </p>
-                  </div>
+                  {user && (
+                    <div className="flex text-base items-center mt-1">
+                      <PiSwordFill />
+                      <p className="">
+                        +{" "}
+                        {handlePointCalc(
+                          handleRatioCalc(
+                            user?.daily_protein_goal,
+                            selectedRecipe.nutrition.macronutrients.protein
+                              .percentage
+                          )
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 

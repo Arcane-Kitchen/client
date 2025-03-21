@@ -7,7 +7,7 @@ import {
 } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "../supabaseClient";
-import { getUserProfile, createNewUser } from "../api/userApi";
+import { getUserProfile } from "../api/userApi";
 import { useLocation } from "react-router-dom";
 
 interface AuthContextType {
@@ -16,7 +16,6 @@ interface AuthContextType {
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   signUp: (
-    username: string,
     email: string,
     password: string
   ) => Promise<SupabaseResponse>;
@@ -84,7 +83,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
       setIsLoading(false);
     };
 
-    if (!user) loadSession();
+    loadSession();
 
     // Listen for authentication state changes
     const {
@@ -106,11 +105,10 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [location.pathname]);
 
   // Signing up with email and password
   const signUp = async (
-    username: string,
     email: string,
     password: string
   ): Promise<SupabaseResponse> => {
@@ -121,16 +119,6 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
 
     if (error) {
       console.error("There was an error signing up: ", error);
-      return { success: false, error };
-    }
-
-    try {
-      if (data?.user && data?.session) {
-        // Create the user profile
-        await createNewUser(data.user.id, username, data.session.access_token);
-      }
-    } catch (error: any) {
-      console.error("There was an error creating the user profile: ", error);
       return { success: false, error };
     }
 

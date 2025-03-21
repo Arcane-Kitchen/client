@@ -46,7 +46,7 @@ function App() {
           const today = new Date();
           const userToday = today.toISOString();
           await updateUserLastLoginById(
-            user?.id,
+            user.id,
             userToday,
             session?.access_token
           );
@@ -89,7 +89,7 @@ function App() {
       loginDateUpdate();
       fetchUserMealData();
     }
-  }, [session]);
+  }, [session, user]);
 
   useEffect(() => {
     fetchAllRecipes()

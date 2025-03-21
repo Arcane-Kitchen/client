@@ -82,7 +82,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
   return (
     !isAdding ? (<div className="h-full flex flex-col items-center justify-center pb-16 ">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-5 lg:p-15">
-        {isLoading ? (
+        {isLoading && !user ? (
           // Show loading spinner while data is being fetched
           <FadeLoader />
         ) : user && !user.pet_name ? (
@@ -96,7 +96,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
               <h1 className="text-white text-base/5">Set <br /> Preferences</h1>
             </button>
           </div>
-        ) : mealPlan && (
+        ) : user && (
           <div className="flex-1 flex flex-col">
             <h3 className="text-2xl mb-2">{`${currentStartOfWeek.format("MMMM DD")} - ${currentStartOfWeek.clone().add(6, "days").format("DD")}`}</h3>
 
