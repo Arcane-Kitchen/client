@@ -35,21 +35,21 @@ const ProfilePage: React.FC = () => {
 
   const colorPicker = (exp: number) => {
     if (exp < 17) {
-      return "[&::-webkit-progress-value]:bg-red-500";
+      return "[&::-webkit-progress-value]:bg-green-200";
     }
     if (exp < 34) {
-      return "[&::-webkit-progress-value]:bg-orange-500";
+      return "[&::-webkit-progress-value]:bg-green-300";
     }
     if (exp < 51) {
-      return "[&::-webkit-progress-value]:bg-amber-500";
+      return "[&::-webkit-progress-value]:bg-green-400";
     }
     if (exp < 68) {
-      return "[&::-webkit-progress-value]:bg-yellow-500";
+      return "[&::-webkit-progress-value]:bg-green-500";
     }
     if (exp < 85) {
-      return "[&::-webkit-progress-value]:bg-lime-500";
+      return "[&::-webkit-progress-value]:bg-green-600";
     }
-    return "[&::-webkit-progress-value]:bg-green-500";
+    return "[&::-webkit-progress-value]:bg-green-700";
   };
 
   const checkDailyStatColors = async () => {
