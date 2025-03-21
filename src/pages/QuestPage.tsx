@@ -135,7 +135,7 @@ const QuestPage: React.FC = () => {
   return (
     <div className="h-full flex flex-col items-center justify-center pb-16">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-4">
-      {isLoading ? (
+      {isLoading ? !user && (
         // Show loading spinner while data is being fetched
         <FadeLoader />
         ) : user && !user.pet_name ? (
