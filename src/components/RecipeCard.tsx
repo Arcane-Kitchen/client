@@ -1,9 +1,7 @@
 import { Recipe } from "../types";
 import { IoIosTimer } from "react-icons/io";
-
-import { PiSneakerMoveFill } from "react-icons/pi";
+import { PiSneakerMoveFill, PiSwordFill } from "react-icons/pi";
 import { FaShieldAlt } from "react-icons/fa";
-import { PiSwordFill } from "react-icons/pi";
 import { FaBookOpen } from "react-icons/fa6";
 import { MdEnergySavingsLeaf } from "react-icons/md";
 import { handlePointCalc, handleRatioCalc } from "../util/statCalc";
@@ -48,54 +46,58 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                 {recipe.nutrition.calories}
               </p>
             </div>
-            <div className="flex items-center">
-              <FaBookOpen className="text-xs" />
-              <p className="text-xs">+20</p>
-            </div>
+            {user && (
+              <div className="flex items-center">
+                <FaBookOpen className="text-xs" />
+                <p className="text-xs">+20</p>
+              </div>
+            )}
           </div>
           <p className="text-sm/5 mb-2 lg:text-base/5">{recipe.description}</p>
-          <div className="flex items-center">
-            <PiSwordFill />
-            <p>
-              +
-              {handlePointCalc(
-                handleRatioCalc(
-                  user?.daily_protein_goal,
-                  recipe.nutrition.macronutrients.protein.percentage
-                )
-              )}
-            </p>
-            <FaShieldAlt />
-            <p>
-              +
-              {handlePointCalc(
-                handleRatioCalc(
-                  user?.daily_fat_goal,
-                  recipe.nutrition.macronutrients.fat.percentage
-                )
-              )}
-            </p>
-            <PiSneakerMoveFill />
-            <p>
-              +
-              {handlePointCalc(
-                handleRatioCalc(
-                  user?.daily_carb_goal,
-                  recipe.nutrition.macronutrients.carbs.percentage
-                )
-              )}
-            </p>
-            <MdEnergySavingsLeaf />
-            <p>
-              +
-              {handlePointCalc(
-                handleRatioCalc(
-                  user?.daily_calorie_goal / 3,
-                  recipe.nutrition.calories
-                )
-              )}
-            </p>
-          </div>
+          {user && (
+            <div className="flex items-center">
+              <PiSwordFill />
+              <p>
+                +
+                {handlePointCalc(
+                  handleRatioCalc(
+                    user.daily_protein_goal,
+                    recipe.nutrition.macronutrients.protein.percentage
+                  )
+                )}
+              </p>
+              <FaShieldAlt />
+              <p>
+                +
+                {handlePointCalc(
+                  handleRatioCalc(
+                    user.daily_fat_goal,
+                    recipe.nutrition.macronutrients.fat.percentage
+                  )
+                )}
+              </p>
+              <PiSneakerMoveFill />
+              <p>
+                +
+                {handlePointCalc(
+                  handleRatioCalc(
+                    user.daily_carb_goal,
+                    recipe.nutrition.macronutrients.carbs.percentage
+                  )
+                )}
+              </p>
+              <MdEnergySavingsLeaf />
+              <p>
+                +
+                {handlePointCalc(
+                  handleRatioCalc(
+                    user.daily_calorie_goal / 3,
+                    recipe.nutrition.calories
+                  )
+                )}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

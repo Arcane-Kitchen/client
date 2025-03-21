@@ -115,17 +115,17 @@ const QuestPage: React.FC = () => {
       session &&
       user &&
       enemy &&
-      user.pet_calorie_exp >= enemy?.calorie_exp &&
-      user.pet_carb_exp >= enemy?.carb_exp &&
-      user.pet_fat_exp >= enemy?.fat_exp &&
-      user.pet_protein_exp >= enemy?.protein_exp &&
-      user.pet_wisdom_exp >= enemy?.wisdom_exp
+      user.pet_calorie_exp >= enemy.calorie_exp &&
+      user.pet_carb_exp >= enemy.carb_exp &&
+      user.pet_fat_exp >= enemy.fat_exp &&
+      user.pet_protein_exp >= enemy.protein_exp &&
+      user.pet_wisdom_exp >= enemy.wisdom_exp
     ) {
       await updateUserPetStat(
-        user?.id,
-        user?.enemies_defeated + 1,
+        user.id,
+        user.enemies_defeated + 1,
         "enemies_defeated",
-        session?.access_token
+        session.access_token
       );
       setEnemyRotation("w-1/2 h-auto m-3 -rotate-90");
       setFightResult("win");
@@ -161,12 +161,23 @@ const QuestPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center pb-16">
-      <div className="bg-[url('/paper-box.jpg')] bg-repeat w-5/6 h-[80vh] flex items-center justify-around p-4">
-        {isLoading ? (
-          // Show loading spinner while data is being fetched
-          <FadeLoader />
-        ) : user && enemy ? (
+    <div className="h-full flex flex-col items-center justify-center pb-16">
+      <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-4">
+      {isLoading ? (
+        // Show loading spinner while data is being fetched
+        <FadeLoader />
+        ) : user && !user.pet_name ? (
+          <div className="flex-1 flex flex-col items-center gap-2 p-2">
+            <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-2/5 aspect-square"></div>
+            <h1 className="text-2xl text-center mb-5">Ah, brave traveler! Almost there—finish setting up your profile, and you’ll be ready to embark on your journey!</h1>
+            <button
+              className="bg-[url('/button-box.svg')] bg-center bg-cover h-20 w-30"
+              onClick={() => navigate("/preferences")}
+            >
+              <h1 className="text-white text-base/5">Set <br /> Preferences</h1>
+            </button>
+          </div>
+        ) : user && enemy && (
           <div className="w-full flex flex-col items-center">
             <h1 className="font-bold text-4xl m-1 p-1">Current Quest</h1>
             <h1 className="text-4xl m-1 p-1">{questTitle}</h1>
@@ -338,8 +349,6 @@ const QuestPage: React.FC = () => {
               </div>
             )}
           </div>
-        ) : (
-          <div>Set up your profile to begin your adventure!</div>
         )}
       </div>
     </div>

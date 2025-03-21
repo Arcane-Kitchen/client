@@ -13,7 +13,6 @@ import UserDetailsForm from "../components/UserDetailsForm";
 import { PiSneakerMoveFill, PiSwordFill } from "react-icons/pi";
 import { FaShieldAlt } from "react-icons/fa";
 
-
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -49,7 +48,14 @@ const Preferences = () => {
             event.preventDefault();
 
             if (formRef.current) {
-                formRef.current.reportValidity(); // Validate form fields
+                const isFormValid = formRef.current.checkValidity(); // Check if the form is valid
+
+                // Trigger browser validation messages if invalid
+                if (!isFormValid) {
+                    formRef.current.reportValidity(); 
+                    return;
+                }
+
                 const recommendedCaloriesAndMacros = calculateDailyCaloriesAndMacrosIntake(userProfile);
                 setDailyCaloriesAndMacros(recommendedCaloriesAndMacros);
 
@@ -206,7 +212,7 @@ const Preferences = () => {
                                     slidesPerView={1}
                                     spaceBetween={30}
                                     pagination={{
-                                      clickable: true,
+                                    clickable: true,
                                     }}
                                     navigation={true}
                                     onSlideChange={handleSlideChange}
