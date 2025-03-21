@@ -54,6 +54,7 @@ const RecipeModal: React.FC<ModalProps> = ({
   const daysOfTheWeek = ["S", "M", "T", "W", "TH", "F", "S"];
   const mealTypes = ["Breakfast", "Lunch", "Dinner"];
   const [message, setMessage] = useState<string>("");
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
 
   const { user, session, isLoading, setIsLoading, setUser } = useAuth();
   const navigate = useNavigate();
@@ -314,8 +315,11 @@ const RecipeModal: React.FC<ModalProps> = ({
             // Display notification for achievement unlocked
             showMessage(activityResult.message);
           }
+          // reenable cook button once finished (both in try and catch block)
+          setButtonDisabled(false);
         } catch (error: any) {
           console.error("Error updating meal plan:", error);
+          setButtonDisabled(false);
         }
       }
     }
@@ -514,7 +518,12 @@ const RecipeModal: React.FC<ModalProps> = ({
                     ? "bg-[#19243e] text-[#ebd6aa]"
                     : "bg-gray-400 text-gray-300"
                 }`}
-                onClick={handleCookedClick}
+                onClick={() => {
+                  if (!isButtonDisabled) {
+                    setButtonDisabled(true);
+                    handleCookedClick();
+                  }
+                }}
               >
                 <FaCheckCircle />
                 <h1
