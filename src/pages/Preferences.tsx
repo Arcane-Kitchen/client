@@ -48,7 +48,14 @@ const Preferences = () => {
             event.preventDefault();
 
             if (formRef.current) {
-                formRef.current.reportValidity(); // Validate form fields
+                const isFormValid = formRef.current.checkValidity(); // Check if the form is valid
+
+                // Trigger browser validation messages if invalid
+                if (!isFormValid) {
+                    formRef.current.reportValidity(); 
+                    return;
+                }
+
                 const recommendedCaloriesAndMacros = calculateDailyCaloriesAndMacrosIntake(userProfile);
                 setDailyCaloriesAndMacros(recommendedCaloriesAndMacros);
 
