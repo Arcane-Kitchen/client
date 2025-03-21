@@ -337,7 +337,20 @@ const RecipeModal: React.FC<ModalProps> = ({
         (meal) => meal.id !== selectedMeal.id
       );
       setMealPlan(updatedMealPlan);
-      onClose();
+      // subtract 20 points of wisdom if removing meal from plan
+      await updateUserPetStat(
+        user.id,
+        user.pet_wisdom_exp - 20,
+        "wisdom",
+        session.access_token
+      );
+      const updatedUser = { ...user };
+      updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp - 20;
+      setUser(updatedUser);
+      showMessage("Wisdom -20");
+      setTimeout(() => {
+        onClose();
+      }, 3000);
     }
   };
 
