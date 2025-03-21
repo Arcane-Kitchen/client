@@ -55,7 +55,7 @@ const RecipeModal: React.FC<ModalProps> = ({
   const mealTypes = ["Breakfast", "Lunch", "Dinner"];
   const [message, setMessage] = useState<string>("");
 
-  const { user, session, isLoading, setIsLoading } = useAuth();
+  const { user, session, isLoading, setIsLoading, setUser } = useAuth();
   const navigate = useNavigate();
 
   // Select a day for the meal plan
@@ -201,6 +201,10 @@ const RecipeModal: React.FC<ModalProps> = ({
           );
           showMessage(`Recipe added to meal plan: Wisdom +20`);
           setMealPlan([...mealPlan, newMeal.mealPlan]);
+          // update current page user wisdom exp so that a user can add muliple recipes in a row and get all the wisdom points
+          const updatedUser = { ...user };
+          updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp + 20;
+          setUser(updatedUser);
         } else {
           showMessage("Error adding recipe to meal plan, try again");
         }
@@ -268,6 +272,19 @@ const RecipeModal: React.FC<ModalProps> = ({
             "protein",
             eatenProteinPercent
           );
+          // update current page user data to make sure eating multiple things in a row gives all the points
+          const updatedUser = { ...user };
+          if (proteinPoints)
+            updatedUser.pet_protein_exp =
+              updatedUser.pet_protein_exp + proteinPoints;
+          if (fatPoints)
+            updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
+          if (carbPoints)
+            updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
+          if (caloriePoints)
+            updatedUser.pet_calorie_exp =
+              updatedUser.pet_calorie_exp + caloriePoints;
+          setUser(updatedUser);
 
           showMessage(
             `Strength +${proteinPoints} Defense +${fatPoints} Dexterity +${carbPoints} Stamina +${caloriePoints}`
@@ -405,7 +422,8 @@ const RecipeModal: React.FC<ModalProps> = ({
                         {handlePointCalc(
                           handleRatioCalc(
                             user?.daily_fat_goal,
-                            selectedRecipe.nutrition.macronutrients.fat.percentage
+                            selectedRecipe.nutrition.macronutrients.fat
+                              .percentage
                           )
                         )}
                       </p>
