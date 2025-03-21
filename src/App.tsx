@@ -15,7 +15,7 @@ import Preferences from "./pages/Preferences";
 import { useAuth } from "./Auth/AuthContext";
 import { fetchFullUserMealPlan } from "./api/mealPlanApi";
 import { fetchAllRecipes, fetchARecipeById } from "./api/recipeApi";
-import { Recipe, Meal, MealRawData, Filter } from "./types";
+import { Recipe, Meal, Filter } from "./types";
 import { updateUserLastLoginById } from "./api/userApi";
 import AchievementSubscriptionProvider from "./components/AchievementSubscriptionProvider";
 import QuestPage from "./pages/QuestPage";
@@ -56,38 +56,38 @@ function App() {
       };
 
       // fetch use meal data
-      const fetchUserMealData = async () => {
-        try {
-          const mealPlan = await fetchFullUserMealPlan(
-            user.id,
-            session.access_token
-          );
-          const mappedMealPlan = await Promise.all(
-            mealPlan.map(async (meal: MealRawData) => {
-              const date = new Date(meal.day_to_eat).toLocaleDateString();
-              const recipe = await fetchARecipeById(meal.recipe_id);
+      // const fetchUserMealData = async () => {
+      //   try {
+      //     const mealPlan = await fetchFullUserMealPlan(
+      //       user.id,
+      //       session.access_token
+      //     );
+      //     const mappedMealPlan = await Promise.all(
+      //       mealPlan.map(async (meal: MealRawData) => {
+      //         const date = new Date(meal.day_to_eat).toLocaleDateString();
+      //         const recipe = await fetchARecipeById(meal.recipe_id);
 
-              return {
-                id: meal.id,
-                recipeId: meal.recipe_id,
-                date,
-                mealType: meal.chosen_meal_type,
-                imageUrl: recipe.image,
-                hasBeenEaten: meal.has_been_eaten,
-                exp: meal.exp,
-                calories: recipe.nutrition.calories,
-              };
-            })
-          );
-          setMealPlan(mappedMealPlan);
-        } catch (error: any) {
-          console.error(error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
+      //         return {
+      //           id: meal.id,
+      //           recipeId: meal.recipe_id,
+      //           date,
+      //           mealType: meal.chosen_meal_type,
+      //           imageUrl: recipe.image,
+      //           hasBeenEaten: meal.has_been_eaten,
+      //           exp: meal.exp,
+      //           calories: recipe.nutrition.calories,
+      //         };
+      //       })
+      //     );
+      //     setMealPlan(mappedMealPlan);
+        // } catch (error: any) {
+        //   console.error(error);
+        // } finally {
+        //   setIsLoading(false);
+        // }
+      // };
       loginDateUpdate();
-      fetchUserMealData();
+      // fetchUserMealData();
     }
   }, [session, user]);
 
@@ -136,8 +136,6 @@ function App() {
               <ProtectedRoute>
               <CalendarPage
                 recipes={recipes}
-                mealPlan={mealPlan}
-                setMealPlan={setMealPlan}
                 filteredRecipes={filteredRecipes}
                 setFilteredRecipes={setFilteredRecipes}
               />

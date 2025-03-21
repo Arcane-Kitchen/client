@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import moment from "moment";
 import { useAuth } from "../Auth/AuthContext";
 import { FadeLoader } from "react-spinners";
@@ -9,17 +9,16 @@ import RecipeModal from "../components/RecipeModal";
 import RecipesPage from "./RecipesPage";
 import { filterRecipes } from '../util/filterRecipes';
 import { useNavigate } from "react-router-dom";
+import { fetchFullUserMealPlan } from "../api/mealPlanApi";
 
 interface CalendarPageProps {
   recipes: Recipe[]
-  mealPlan: Meal[];
   filteredRecipes: Recipe[];
-  setMealPlan: React.Dispatch<React.SetStateAction<Meal[]>>;
   setFilteredRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
 }
 
-const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, recipes, filteredRecipes, setFilteredRecipes }) => {
-  const { isLoading, user } = useAuth();
+const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, setFilteredRecipes }) => {
+  const { isLoading, user, setIsLoading, session } = useAuth();
   const navigate = useNavigate();
 
   const [currentStartOfWeek, setCurrentStartOfWeek] = useState<moment.Moment>(moment().startOf("week"));
@@ -35,6 +34,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
     calorieRange: [false, false, false],
     difficultyLevel: [false, false, false],
   })
+  const [mealPlan, setMealPlan] = useState<Meal[]>([]);
 
   // Generate the days of the current week to display on the calendar
   const daysOfWeek = [];
@@ -78,6 +78,27 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ mealPlan, setMealPlan, reci
     setSelectedMeal(null);
     setIsAdding(false);
   }
+
+  useEffect(() => {
+    if (user && session) {
+      setIsLoading(true)
+      // fetch user meal data
+      const fetchUserMealData = async () => {
+        try {
+          const mealPlan = await fetchFullUserMealPlan(
+            user.id,
+            session.access_token
+          );
+          setMealPlan(mealPlan);
+        } catch (error: any) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchUserMealData();
+    }
+  }, [user])
 
   return (
     !isAdding ? (<div className="h-full flex flex-col items-center justify-center pb-16 ">
