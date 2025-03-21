@@ -15,7 +15,6 @@ import Preferences from "./pages/Preferences";
 import { useAuth } from "./Auth/AuthContext";
 import { fetchAllRecipes } from "./api/recipeApi";
 import { Recipe, Meal, Filter } from "./types";
-import { updateUserLastLoginById } from "./api/userApi";
 import AchievementSubscriptionProvider from "./components/AchievementSubscriptionProvider";
 import QuestPage from "./pages/QuestPage";
 import Chatbot from './components/Chatbot';
@@ -31,45 +30,21 @@ function App() {
     calorieRange: [false, false, false],
     difficultyLevel: [false, false, false],
   });
-  const { user, session, setIsLoading } = useAuth();
+  const { setIsLoading } = useAuth();
   const location = useLocation();
   const showChatbot = location.pathname === '/recipes' || location.pathname === '/meal-plan';  
-
-  useEffect(() => {
-    if (user && session) {
-      setIsLoading(true);
-
-      // update user last login date
-      const loginDateUpdate = async () => {
-        try {
-          const today = new Date();
-          const userToday = today.toISOString();
-          await updateUserLastLoginById(
-            user.id,
-            userToday,
-            session?.access_token
-          );
-        } catch (error: any) {
-          console.error(error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      loginDateUpdate();
-    }
-  }, [session, user]);
 
   useEffect(() => {
     fetchAllRecipes()
       .then((data) => {
         setRecipes(data);
         setFilteredRecipes(data);
-        setIsLoading(false);
       })
       .catch((error) => {
         console.error(error);
+      }).finally(() => {
         setIsLoading(false);
-      });
+      })
   }, []);
 
   return (

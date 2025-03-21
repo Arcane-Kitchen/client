@@ -26,16 +26,6 @@ export interface Recipe {
   ingredients: { [key: string]: Ingredient };
 }
 
-export interface MealRawData {
-  id: string;
-  recipe_id: string;
-  day_to_eat: string;
-  chosen_meal_type: string;
-  servings: number;
-  exp: number;
-  has_been_eaten: boolean;
-}
-
 export interface Meal {
   id: string;
   recipeId: string;
@@ -92,12 +82,12 @@ export interface Pet {
 }
 
 export interface Enemy {
-  id: string;
-  name: string;
-  img: string;
-  calorie_exp: number;
-  carb_exp: number;
-  protein_exp: number;
-  fat_exp: number;
-  wisdom_exp: number;
+  imageUrl: string,
+  stats: {
+    calorieExp: number,
+    carbExp: number,
+    proteinExp: number,
+    fatExp: number,
+    wisdomExp: number,
+}
 }
