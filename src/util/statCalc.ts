@@ -14,28 +14,28 @@ export const calcRemainderExp = (exp: number) => {
 // Handle point calc based on goal/actual ratio
 export const handlePointCalc = (ratio: number) => {
   if (ratio > 0.9) {
-    return 50;
-  }
-  if (ratio > 0.8) {
-    return 45;
-  }
-  if (ratio > 0.7) {
-    return 40;
-  }
-  if (ratio > 0.6) {
     return 35;
   }
-  if (ratio > 0.5) {
-    return 30;
+  if (ratio > 0.8) {
+    return 29;
   }
-  if (ratio > 0.4) {
-    return 25;
+  if (ratio > 0.7) {
+    return 24;
   }
-  if (ratio > 0.3) {
+  if (ratio > 0.6) {
     return 20;
   }
-  if (ratio > 0.2) {
+  if (ratio > 0.5) {
+    return 17;
+  }
+  if (ratio > 0.4) {
     return 15;
+  }
+  if (ratio > 0.3) {
+    return 13;
+  }
+  if (ratio > 0.2) {
+    return 11;
   }
   return 10;
 };
