@@ -14,16 +14,29 @@ interface RecipeCardProps {
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
   const { user } = useAuth();
 
+  const dietColors = {
+    "Omnivore": "hidden",
+    "Gluten free": "bg-blue-800",
+    "Lactose free": "bg-purple-800",
+    "Vegetarian": "bg-green-800",
+    "Vegan": "bg-teal-800",
+    "Nut free": "bg-yellow-800",
+    "Keto": "bg-red-800",
+  }
+
   return (
     <div className="w-full h-full bg-[url('/paper-box.jpg')] bg-cover bg-center hover:cursor-pointer">
       <div className="w-full p-2 gap-2 flex flex-col lg:flex-row-reverse">
-        {recipe.image && (
-          <img
-            className="object-cover w-full lg:mb-0 lg:w-1/3"
-            src={recipe.image}
-            alt={recipe.name}
-          />
-        )}
+        <div className="h-3/5 relative">
+          {recipe.image && (
+            <img
+              className="object-cover w-full lg:mb-0 lg:w-1/3"
+              src={recipe.image}
+              alt={recipe.name}
+            />
+          )}
+          <p className={`absolute top-0 right-0 text-white px-2 ${dietColors[recipe.diet]}`}>{recipe.diet}</p>
+        </div>
         <div className="lg:px-2">
           <h1 className="font-bold text-xl lg:mb-2 lg:text-3xl">
             {recipe.name}
@@ -32,7 +45,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
             <div className="flex gap-0.5 items-center">
               <img src="/level-icon.png" className="size-2.5 lg:size-3" />
               <p className="text-[10px] mb-0 lg:text-sm">
-                {recipe.difficulty.charAt(0) +
+                {recipe.difficulty === "INTERMEDIATE" ? "Moderate" : recipe.difficulty.charAt(0) +
                   recipe.difficulty.slice(1).toLowerCase()}
               </p>
             </div>
@@ -63,7 +76,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                   handleRatioCalc(
                     user.daily_protein_goal,
                     recipe.nutrition.macronutrients.protein.percentage
-                  )
+                  ), false
                 )}
               </p>
               <FaShieldAlt />
@@ -73,7 +86,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                   handleRatioCalc(
                     user.daily_fat_goal,
                     recipe.nutrition.macronutrients.fat.percentage
-                  )
+                  ), false
                 )}
               </p>
               <PiSneakerMoveFill />
@@ -83,7 +96,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                   handleRatioCalc(
                     user.daily_carb_goal,
                     recipe.nutrition.macronutrients.carbs.percentage
-                  )
+                  ), false
                 )}
               </p>
               <MdEnergySavingsLeaf />
@@ -93,7 +106,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
                   handleRatioCalc(
                     user.daily_calorie_goal / 3,
                     recipe.nutrition.calories
-                  )
+                  ), false
                 )}
               </p>
             </div>

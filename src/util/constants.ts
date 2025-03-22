@@ -94,3 +94,13 @@ export const enemyProfile = {
         }
     }
 }
+
+export const dietColors = {
+    "Omnivore": "hidden",
+    "Gluten free": "bg-blue-800",
+    "Lactose free": "bg-purple-800",
+    "Vegetarian": "bg-green-800",
+    "Vegan": "bg-teal-800",
+    "Nut free": "bg-yellow-800",
+    "Keto": "bg-red-800",
+  }
