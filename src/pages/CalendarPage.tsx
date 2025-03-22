@@ -18,7 +18,7 @@ interface CalendarPageProps {
 }
 
 const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, setFilteredRecipes }) => {
-  const { isLoading, user, setIsLoading, session } = useAuth();
+  const { user, session } = useAuth();
   const navigate = useNavigate();
 
   const [currentStartOfWeek, setCurrentStartOfWeek] = useState<moment.Moment>(moment().startOf("week"));
@@ -35,6 +35,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, s
     difficultyLevel: [false, false, false],
   })
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Generate the days of the current week to display on the calendar
   const daysOfWeek = [];
@@ -103,7 +104,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, s
   return (
     !isAdding ? (<div className="h-full flex flex-col items-center justify-center pb-16 ">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-5 lg:p-15">
-        {isLoading && !user ? (
+        {isLoading ? (
           // Show loading spinner while data is being fetched
           <FadeLoader />
         ) : user && !user.pet_name ? (
@@ -117,7 +118,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, s
               <h1 className="text-white text-base/5">Set <br /> Preferences</h1>
             </button>
           </div>
-        ) : user && (
+        ) : (
           <div className="flex-1 flex flex-col">
             <h3 className="text-2xl mb-2">{`${currentStartOfWeek.format("MMMM DD")} - ${currentStartOfWeek.clone().add(6, "days").format("DD")}`}</h3>
 

@@ -5,7 +5,6 @@ import { createNewUser } from "../api/userApi";
 
 const SignUp: React.FC = () => {
   const [signUpForm, setSignUpForm] = useState({
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -52,7 +51,7 @@ const SignUp: React.FC = () => {
 
       if (result.success && result.data && result.data.user && result.data.session) {
         // Create the user profile
-        await createNewUser(result.data.user.id, signUpForm.username, result.data.session.access_token);
+        // await createNewUser(result.data.user.id, signUpForm.username, result.data.session.access_token);
         navigate("/preferences");
       } else {
         console.error("Sign-up failed:", result);
@@ -82,24 +81,6 @@ const SignUp: React.FC = () => {
             Sign Up
           </h2>
           <form className="px-6 w-4/5 lg:w-3/5" onSubmit={handleSubmit}>
-            {/* Username Input */}
-            <div className="mb-4">
-              <label
-                className="block text-white text-sm font-bold mb-2"
-                htmlFor="email"
-              >
-                Username
-              </label>
-              <input
-                className="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-white"
-                id="username"
-                type="text"
-                placeholder="Username"
-                value={signUpForm.username}
-                required={true}
-                onChange={handleChange}
-              />
-            </div>
             {/* Email Input */}
             <div className="mb-4">
               <label

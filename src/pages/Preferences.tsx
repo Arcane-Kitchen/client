@@ -89,6 +89,18 @@ const Preferences = () => {
 
                 await updateUserCalorieAndMacrosGoal(user.id, session.access_token, dailyCaloriesAndMacros); // Update user's macros in the database
                 await updateUserPet(user.id, session.access_token, pet); // Update user's pet data in the database
+
+                const updatedUser = { ...user };
+                updatedUser.daily_calorie_goal = dailyCaloriesAndMacros!.calories;
+                updatedUser.daily_carb_goal = dailyCaloriesAndMacros!.carbs.percentage;
+                updatedUser.daily_fat_goal = dailyCaloriesAndMacros!.fats.percentage;
+                updatedUser.daily_protein_goal = dailyCaloriesAndMacros!.protein.percentage;
+                updatedUser.pet_name = pet.name;
+                updatedUser.pet_img_happy = pet.imageUrl.happy;
+                updatedUser.pet_img_normal = pet.imageUrl.neutral;
+                updatedUser.pet_img_sad = pet.imageUrl.sad;
+                setUser(updatedUser);
+
                 navigate("/profile");
             }
         }

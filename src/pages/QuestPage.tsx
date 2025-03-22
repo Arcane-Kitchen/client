@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../Auth/AuthContext";
-import { fetchEnemyById } from "../api/enemyApi";
 import { Enemy } from "../types";
 import { updateUserPetStat } from "../api/userApi";
 import { calcLevel } from "../util/statCalc";
@@ -10,18 +9,15 @@ import { PiSwordFill } from "react-icons/pi";
 import { FaBookOpen } from "react-icons/fa6";
 import { MdEnergySavingsLeaf } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { FadeLoader } from "react-spinners";
+import { enemies, enemyProfile } from "../util/constants";
 
 const QuestPage: React.FC = () => {
-  const [enemy, setEnemy] = useState<Enemy | null>(null);
-  const { user, session, isLoading, setIsLoading } = useAuth();
+  const { user, session, setUser } = useAuth();
   const navigate = useNavigate();
-
-  const [message, setMessage] = useState<string>("");
+  
+  const [enemy, setEnemy] = useState<Enemy | null>(null);
   const [fightResult, setFightResult] = useState<string>("");
-  const [questTitle, setQuestTitle] = useState<string>("");
-  const [enemyRotation, setEnemyRotation] =
-    useState<string>(" w-1/2 h-auto m-3");
+  const [defeatedEnemies, setDefeatedEnemies] = useState<number>(0);
 
   const [petStrColor, setPetStrColor] = useState<string>(
     "flex font-bold m-1 p-1"
@@ -45,46 +41,38 @@ const QuestPage: React.FC = () => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    handleGetEnemy();
-    setQuestTitle(`Fight a ${enemy?.name}!`);
-  }, [user]);
-
-  const handleGetEnemy = async () => {
-    setFightResult("");
     if (user) {
-      setIsLoading(true);
-      const newEnemyId = user.enemies_defeated + 1;
-
-      const newEnemyIdToString = newEnemyId.toString();
-      const newEnemy = await fetchEnemyById(newEnemyIdToString);
-      setEnemy(newEnemy);
-      setIsLoading(false);
+      setDefeatedEnemies(user.enemies_defeated);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (defeatedEnemies >= 0) {
+      const currentEnemy = enemies[defeatedEnemies];
+      setEnemy(enemyProfile[currentEnemy]);
+    }
+  }, [defeatedEnemies]);
+
+  const handleNext = () => {
+    setFightResult("");
+    setDefeatedEnemies(defeatedEnemies + 1);
+  }
 
   // function that tells the user which stats were too low
   const handleFightLoss = () => {
-    if (
-      enemy?.calorie_exp &&
-      user &&
-      user.pet_calorie_exp < enemy?.calorie_exp
-    ) {
+    if (enemy && user && user.pet_calorie_exp < enemy.stats.calorieExp) {
       setPetStaminaColor("flex font-bold m-1 p-1 text-red-500");
     }
-    if (enemy?.carb_exp && user && user.pet_carb_exp < enemy?.carb_exp) {
+    if (enemy && user && user.pet_carb_exp < enemy.stats.carbExp) {
       setPetDexColor("flex font-bold m-1 p-1 text-red-500");
     }
-    if (enemy?.fat_exp && user && user.pet_fat_exp < enemy?.fat_exp) {
+    if (enemy && user && user.pet_fat_exp < enemy.stats.fatExp) {
       setPetDefColor("flex font-bold m-1 p-1 text-red-500");
     }
-    if (
-      enemy?.protein_exp &&
-      user &&
-      user.pet_protein_exp < enemy?.protein_exp
-    ) {
+    if (enemy && user && user.pet_protein_exp < enemy.stats.proteinExp) {
       setPetStrColor("flex font-bold m-1 p-1 text-red-500");
     }
-    if (enemy?.wisdom_exp && user && user.pet_wisdom_exp < enemy?.wisdom_exp) {
+    if (enemy && user && user.pet_wisdom_exp < enemy.stats.wisdomExp) {
       setPetWisColor("flex font-bold m-1 p-1 text-red-500");
     }
   };
@@ -94,11 +82,11 @@ const QuestPage: React.FC = () => {
       session &&
       user &&
       enemy &&
-      user.pet_calorie_exp >= enemy.calorie_exp &&
-      user.pet_carb_exp >= enemy.carb_exp &&
-      user.pet_fat_exp >= enemy.fat_exp &&
-      user.pet_protein_exp >= enemy.protein_exp &&
-      user.pet_wisdom_exp >= enemy.wisdom_exp
+      user.pet_calorie_exp >= enemy.stats.calorieExp &&
+      user.pet_carb_exp >= enemy.stats.carbExp &&
+      user.pet_fat_exp >= enemy.stats.fatExp &&
+      user.pet_protein_exp >= enemy.stats.proteinExp &&
+      user.pet_wisdom_exp >= enemy.stats.wisdomExp
     ) {
       await updateUserPetStat(
         user.id,
@@ -106,9 +94,12 @@ const QuestPage: React.FC = () => {
         "enemies_defeated",
         session.access_token
       );
-      setEnemyRotation("w-1/2 h-auto m-3 -rotate-90");
       setFightResult("win");
-      setQuestTitle("You won!");
+
+      const updatedUser = { ...user };
+      updatedUser.enemies_defeated = defeatedEnemies + 1;
+      setUser(updatedUser);
+
       // Add activity to User_Activity table
       try {
         const response = await fetch(`${baseUrl}/activity/add-activity`, {
@@ -131,7 +122,6 @@ const QuestPage: React.FC = () => {
         console.error("Error adding activity:", error);
       }
     } else {
-      setQuestTitle("You lost!");
       setFightResult("lose");
       handleFightLoss();
     }
@@ -140,10 +130,7 @@ const QuestPage: React.FC = () => {
   return (
     <div className="h-full flex flex-col items-center justify-center pb-16">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-4">
-        {isLoading ? (
-          // Show loading spinner while data is being fetched
-          <FadeLoader />
-        ) : user && !user.pet_name ? (
+        {user && !user.pet_name ? (
           <div className="flex-1 flex flex-col items-center gap-2 p-2">
             <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-2/5 aspect-square"></div>
             <h1 className="text-2xl text-center mb-5">
@@ -160,38 +147,53 @@ const QuestPage: React.FC = () => {
             </button>
           </div>
         ) : (
-          user &&
-          enemy && (
+          user && enemy && (
             <div className="w-full flex flex-col items-center">
               <h1 className="font-bold text-4xl m-1 p-1">Battle</h1>
-              <h1 className="text-4xl m-1 p-1">{questTitle}</h1>
-              <img className={enemyRotation} src={enemy.img} alt="" />
+              <h1 className="text-4xl m-1 p-1">
+                {fightResult === "lose" 
+                  ? "You lost!" 
+                  : fightResult === "win" 
+                  ? "You won!" 
+                  : `Fight a ${enemies[defeatedEnemies]}!`
+                }
+              </h1>
+              <div className="w-1/2 h-30 flex items-center">
+                {enemies.map((enemy, index) => (
+                  <img 
+                    key={enemy} 
+                    className={`w-full h-full m-3 ${fightResult ==="win" && "-rotate-90"} ${defeatedEnemies === index ? "block" : "hidden"}`} 
+                    src={enemyProfile[enemy].imageUrl} 
+                    alt={enemy} 
+                  />
+                ))}
+              </div>
               <div className="flex text-2xl mb-4 m-1">
                 <h1 className="flex font-bold m-1 p-1">
                   <PiSwordFill className="m-1" />
-                  {calcLevel(enemy.protein_exp)}
+                  {calcLevel(enemy.stats.proteinExp)}
                 </h1>
                 <h1 className="flex font-bold m-1 p-1">
                   <FaShieldAlt className="m-1" />
 
-                  {calcLevel(enemy.fat_exp)}
+                  {calcLevel(enemy.stats.fatExp)}
                 </h1>
 
                 <h1 className="flex font-bold m-1 p-1">
                   <PiSneakerMoveFill className="m-1" />
 
-                  {calcLevel(enemy.carb_exp)}
+                  {calcLevel(enemy.stats.carbExp)}
                 </h1>
 
                 <h1 className="flex font-bold m-1 p-1">
                   <MdEnergySavingsLeaf className="m-1" />
-                  {calcLevel(enemy.calorie_exp)}
+                  {calcLevel(enemy.stats.calorieExp)}
                 </h1>
 
                 <h1 className="flex font-bold m-1 p-1">
                   <FaBookOpen className="m-1" />
 
-                  {calcLevel(enemy.wisdom_exp)}
+                  {calcLevel(enemy.stats.wisdomExp)}
                 </h1>
               </div>
 
@@ -204,11 +206,13 @@ const QuestPage: React.FC = () => {
                   >
                     <p className="text-white text-2xl">Fight</p>
                   </button>
-                  <img
-                    className="w-3/4 h-auto"
-                    src={normalPet}
-                    alt="normal pet"
-                  />
+                  <div className="w-3/4 aspect-square">
+                    <img
+                      className="w-full h-full"
+                      src={normalPet}
+                      alt="normal pet"
+                    />
+                  </div>
                   <div className="flex text-2xl mb-4 m-1">
                     <h1 className={petStrColor}>
                       <PiSwordFill className="m-1" />
@@ -251,7 +255,9 @@ const QuestPage: React.FC = () => {
                   >
                     <p className="text-30 text-white">Lvl Up</p>
                   </button>
-                  <img className="w-3/4 h-auto" src={sadPet} alt="happy pet" />
+                  <div className="w-3/4 aspect">
+                    <img className="w-full h-full" src={sadPet} alt="happy pet" />
+                  </div>
                   <div className="flex text-2xl mb-4 m-1">
                     <h1 className={petStrColor}>
                       <PiSwordFill className="m-1" />
@@ -287,18 +293,18 @@ const QuestPage: React.FC = () => {
               {fightResult === "win" && (
                 <div className="flex flex-col items-center text-2xl">
                   <button
-                    onClick={() => {
-                      window.location.reload();
-                    }}
+                    onClick={handleNext}
                     className="bg-[url('/button-box.svg')] bg-cover bg-center w-35 h-23"
                   >
                     <p className="text-white">Next</p>
                   </button>
-                  <img
-                    className="w-3/4 h-auto"
-                    src={happyPet}
-                    alt="happy pet"
-                  />
+                  <div className="w-3/4 aspect">
+                    <img
+                      className="w-full h-full"
+                      src={happyPet}
+                      alt="happy pet"
+                    />
+                  </div>
                   <div className={petStrColor}>
                     <h1 className="flex font-bold m-1 p-1">
                       <PiSwordFill className="m-1" />

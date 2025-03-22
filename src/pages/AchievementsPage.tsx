@@ -15,9 +15,10 @@ interface Achievement {
 }
 
 const AchievementsPage: React.FC = () => {
-  const { user, isLoading, setIsLoading } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchAchievements = async () => {
@@ -54,7 +55,7 @@ const AchievementsPage: React.FC = () => {
   return (
     <div className="h-full flex flex-col items-center justify-center pb-16">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center min-h-[80vh] max-h-fit w-11/12 md:w-5/6 h-fit flex flex-col items-center justify-around p-4 pt-2">
-        {isLoading && !user ? (
+        {isLoading ? (
           // Show loading spinner while data is being fetched
           <FadeLoader />
           ) : user && !user.pet_name ? (
@@ -68,7 +69,7 @@ const AchievementsPage: React.FC = () => {
                 <h1 className="text-white text-base/5">Set <br /> Preferences</h1>
               </button>
             </div>
-          ) : user && achievements.length > 0 ? (
+          ) : achievements.length > 0 ? (
           <div className="flex-1">
             <h2 className="text-2xl font-bold text-center text-black mt-4 mb-4">
               Achievements

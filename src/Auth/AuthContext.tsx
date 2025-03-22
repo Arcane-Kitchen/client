@@ -8,17 +8,13 @@ import {
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "../supabaseClient";
 import { getUserProfile } from "../api/userApi";
-import { useLocation } from "react-router-dom";
 
 interface AuthContextType {
   session: Session | null;
   user: UserProfile | null;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  signUp: (
-    email: string,
-    password: string
-  ) => Promise<SupabaseResponse>;
+  signUp: (email: string, password: string) => Promise<SupabaseResponse>;
   signIn: (email: string, password: string) => Promise<SupabaseResponse>;
   signOut: () => Promise<SupabaseResponse>;
   setUser: React.Dispatch<React.SetStateAction<UserProfile | null>>;
@@ -60,7 +56,6 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const location = useLocation();
 
   useEffect(() => {
     // Function to load the session and user profile
@@ -72,7 +67,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
       setSession(session);
 
       // Fetch user profile
-      if (location.pathname !== "/signup" && session && session.user) {
+      if (session && session.user && !user) {
         const userProfile = await getUserProfile(
           session.user.id,
           session.access_token
@@ -91,7 +86,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
 
-      if (location.pathname !== "/signup" && session && session.user) {
+      if (session && session.user && !user) {
         const userProfile = await getUserProfile(
           session.user.id,
           session.access_token
@@ -105,7 +100,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     });
 
     return () => subscription.unsubscribe();
-  }, [location.pathname]);
+  }, []);
 
   // Signing up with email and password
   const signUp = async (
