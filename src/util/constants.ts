@@ -49,3 +49,48 @@ export const petMoods = {
 };
 
 export const mealTypes = ["Breakfast", "Lunch", "Dinner", "Snack"];
+
+export const enemies: ("blob" | "goblin" | "skeleton" | "troll")[] = ["blob", "goblin", "skeleton", "troll"];
+
+export const enemyProfile = {
+    blob: {
+        imageUrl: "/enemy_blob.png",
+        stats: {
+            calorieExp: 0,
+            carbExp: 0,
+            proteinExp: 0,
+            fatExp: 0,
+            wisdomExp: 0,
+        }
+    },
+    goblin: {
+        imageUrl: "/enemy_goblin.png",
+        stats: {
+            calorieExp: 0,
+            carbExp: 0,
+            proteinExp: 100,
+            fatExp: 0,
+            wisdomExp: 100,
+        }
+    },
+    skeleton: {
+        imageUrl: "/enemy_skeleton.png",
+        stats: {
+            calorieExp: 0,
+            carbExp:100,
+            proteinExp: 100,
+            fatExp: 0,
+            wisdomExp: 100,
+        }
+    },
+    troll: {
+        imageUrl: "/enemy_troll.png",
+        stats: {
+            calorieExp: 100,
+            carbExp:100,
+            proteinExp: 100,
+            fatExp: 100,
+            wisdomExp: 100,
+        }
+    }
+}

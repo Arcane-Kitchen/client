@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { Recipe } from "../types";
+import { useAuth } from "../Auth/AuthContext";
 import 'swiper/css';
 import 'swiper/css/navigation';
 
@@ -15,6 +16,24 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
 
   const navigate = useNavigate();
   const isDesktop = window.innerWidth >= 1024;
+
+  const { session } = useAuth();
+
+  const handleAuthRedirect = () => {
+    if (session) {
+      navigate("/profile");
+    } else {
+      navigate("/login");
+    }
+  }
+
+  const handleRecipesRedirect = () => {
+    if (session) {
+      navigate("/meal-plan");
+    } else {
+      navigate("/recipes");
+    }
+  }
 
   return (
     <div className="bg-[url('/background.jpg')] bg-cover bg-center min-h-screen max-h-screen flex flex-col p-8 gap-10 overflow-y-auto lg:px-15 lg:gap-5">
@@ -100,10 +119,16 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
         <div className="flex flex-col gap-3 lg:w-1/2 lg:gap-8">
           <p className="text-amber-50 text-2xl lg:text-4xl">Join the adventure and watch your pet grow stronger as you make healthier food choices!</p>
           <button 
-            className="text-amber-50 text-xl bg-[#19243e] opacity-80 p-2 w-full rounded-lg cursor-pointer hover:scale-105 hover:shadow-lg hover:text-[#ebd6aa] hover:opacity-100 lg:w-2/3 lg:text-2xl lg:p-4"
+            className={`text-amber-50 text-xl bg-[#19243e] opacity-80 p-2 w-full rounded-lg cursor-pointer hover:scale-105 hover:shadow-lg hover:text-[#ebd6aa] hover:opacity-100 lg:w-2/3 lg:text-2xl lg:p-4 ${session ? "hidden" : "block"}`}
             onClick={() => navigate("/signup")}
           >
             Start Your Journey
+          </button>
+          <button 
+            className="text-amber-50 text-xl bg-[#19243e] opacity-80 p-2 w-full rounded-lg cursor-pointer hover:scale-105 hover:shadow-lg hover:text-[#ebd6aa] hover:opacity-100 lg:w-2/3 lg:text-2xl lg:p-4"
+            onClick={handleAuthRedirect}
+          >
+            Continue Your Journey
           </button>
         </div>
       </div>
@@ -142,7 +167,7 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
             <SwiperSlide>
               <button
                 className="w-full h-52 p-5 text-amber-50 text-3xl bg-[#19243e] opacity-80 rounded-lg cursor-pointer hover:scale-105 hover:shadow-lg hover:text-[#ebd6aa] hover:opacity-100"
-                onClick={() => navigate("/recipes")}
+                onClick={handleRecipesRedirect}
               >
                 Explore Healthy Recipes
               </button>
@@ -153,7 +178,7 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
         </div>
         <button 
           className="text-amber-50 text-xl bg-[#19243e] opacity-80 p-2 w-full rounded-lg cursor-pointer hover:scale-105 hover:shadow-lg hover:text-[#ebd6aa] hover:opacity-100 mt-2 lg:hidden"
-          onClick={() => navigate("/recipes")}
+          onClick={handleRecipesRedirect}
         >
           Explore Healthy Recipes
         </button>

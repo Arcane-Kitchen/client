@@ -13,7 +13,6 @@ import UserDetailsForm from "../components/UserDetailsForm";
 import { PiSneakerMoveFill, PiSwordFill } from "react-icons/pi";
 import { FaShieldAlt } from "react-icons/fa";
 
-
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -49,7 +48,14 @@ const Preferences = () => {
             event.preventDefault();
 
             if (formRef.current) {
-                formRef.current.reportValidity(); // Validate form fields
+                const isFormValid = formRef.current.checkValidity(); // Check if the form is valid
+
+                // Trigger browser validation messages if invalid
+                if (!isFormValid) {
+                    formRef.current.reportValidity(); 
+                    return;
+                }
+
                 const recommendedCaloriesAndMacros = calculateDailyCaloriesAndMacrosIntake(userProfile);
                 setDailyCaloriesAndMacros(recommendedCaloriesAndMacros);
 
@@ -83,6 +89,18 @@ const Preferences = () => {
 
                 await updateUserCalorieAndMacrosGoal(user.id, session.access_token, dailyCaloriesAndMacros); // Update user's macros in the database
                 await updateUserPet(user.id, session.access_token, pet); // Update user's pet data in the database
+
+                const updatedUser = { ...user };
+                updatedUser.daily_calorie_goal = dailyCaloriesAndMacros!.calories;
+                updatedUser.daily_carb_goal = dailyCaloriesAndMacros!.carbs.percentage;
+                updatedUser.daily_fat_goal = dailyCaloriesAndMacros!.fats.percentage;
+                updatedUser.daily_protein_goal = dailyCaloriesAndMacros!.protein.percentage;
+                updatedUser.pet_name = pet.name;
+                updatedUser.pet_img_happy = pet.imageUrl.happy;
+                updatedUser.pet_img_normal = pet.imageUrl.neutral;
+                updatedUser.pet_img_sad = pet.imageUrl.sad;
+                setUser(updatedUser);
+
                 navigate("/profile");
             }
         }
@@ -131,7 +149,7 @@ const Preferences = () => {
 
     return (
         <div className="flex-1 flex flex-col items-center px-2 py-10">
-            <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-3/5 aspect-square lg:p-15"></div>
+            <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-2/5 aspect-square lg:p-15"></div>
             <div className="h-65 w-full p-4 flex flex-col items-center justify-center relative">
                 <img src="/sign-up-box.svg" className="w-full transform scale-y-210 lg:w-4/5 lg:scale-y-110" />
                 <div className="absolute top-6/11 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full flex flex-col items-center justify-center lg:w-4/5">
@@ -206,7 +224,7 @@ const Preferences = () => {
                                     slidesPerView={1}
                                     spaceBetween={30}
                                     pagination={{
-                                      clickable: true,
+                                    clickable: true,
                                     }}
                                     navigation={true}
                                     onSlideChange={handleSlideChange}

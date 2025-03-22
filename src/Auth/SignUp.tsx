@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
+import { createNewUser } from "../api/userApi";
 
 const SignUp: React.FC = () => {
   const [signUpForm, setSignUpForm] = useState({
-    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -35,26 +35,32 @@ const SignUp: React.FC = () => {
     setSignUpForm(updatedSignUpForm);
   };
 
-  const { signUp } = useAuth();
+  const { signUp, setIsLoading } = useAuth();
   const navigate = useNavigate();
 
   // Handles form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true);
 
     try {
       const result = await signUp(
-        signUpForm.username,
         signUpForm.email,
         signUpForm.password
       ); // Call signUp from AuthContext
-      if (result.success) {
+
+      if (result.success && result.data && result.data.user && result.data.session) {
+        // Create the user profile
+        // await createNewUser(result.data.user.id, signUpForm.username, result.data.session.access_token);
         navigate("/preferences");
       } else {
+        console.error("Sign-up failed:", result);
         setError("Sign-up failed:");
       }
     } catch (error) {
       console.error("An error occured: ", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -75,24 +81,6 @@ const SignUp: React.FC = () => {
             Sign Up
           </h2>
           <form className="px-6 w-4/5 lg:w-3/5" onSubmit={handleSubmit}>
-            {/* Username Input */}
-            <div className="mb-4">
-              <label
-                className="block text-white text-sm font-bold mb-2"
-                htmlFor="email"
-              >
-                Username
-              </label>
-              <input
-                className="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-white"
-                id="username"
-                type="text"
-                placeholder="Username"
-                value={signUpForm.username}
-                required={true}
-                onChange={handleChange}
-              />
-            </div>
             {/* Email Input */}
             <div className="mb-4">
               <label

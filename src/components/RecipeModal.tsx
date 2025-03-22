@@ -3,8 +3,10 @@ import { Recipe, Meal } from "../types";
 import { useAuth } from "../Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { IoChevronBackCircle, IoRemove } from "react-icons/io5";
-import { FaCircleXmark } from "react-icons/fa6";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCircleXmark, FaBookOpen } from "react-icons/fa6";
+import { FaCheckCircle, FaShieldAlt } from "react-icons/fa";
+import { PiSneakerMoveFill, PiSwordFill } from "react-icons/pi";
+import { MdEnergySavingsLeaf } from "react-icons/md";
 import {
   addRecipeToMealPlan,
   updateMealPlanById,
@@ -14,6 +16,7 @@ import moment from "moment";
 import { updateUserPetStat } from "../api/userApi";
 import { fetchARecipeById } from "../api/recipeApi";
 import { addUserActivity } from "../api/activityApi";
+import { handlePointCalc, handleRatioCalc } from "../util/statCalc";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -51,8 +54,9 @@ const RecipeModal: React.FC<ModalProps> = ({
   const daysOfTheWeek = ["S", "M", "T", "W", "TH", "F", "S"];
   const mealTypes = ["Breakfast", "Lunch", "Dinner"];
   const [message, setMessage] = useState<string>("");
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
 
-  const { user, session, isLoading, setIsLoading } = useAuth();
+  const { user, session, isLoading, setIsLoading, setUser } = useAuth();
   const navigate = useNavigate();
 
   // Select a day for the meal plan
@@ -65,46 +69,17 @@ const RecipeModal: React.FC<ModalProps> = ({
     setSelectedMealType(type);
   };
 
-  // Handle point calc based on goal/actual ratio
-  const handlePointCalc = (ratio: number) => {
-    if (ratio > 0.9) {
-      return 50;
-    }
-    if (ratio > 0.8) {
-      return 45;
-    }
-    if (ratio > 0.7) {
-      return 40;
-    }
-    if (ratio > 0.6) {
-      return 35;
-    }
-    if (ratio > 0.5) {
-      return 30;
-    }
-    if (ratio > 0.4) {
-      return 25;
-    }
-    if (ratio > 0.3) {
-      return 20;
-    }
-    if (ratio > 0.2) {
-      return 15;
-    }
-    return 10;
-  };
-
   // Handle updating stat
   const handleUpdateStat = async (
     statName: string,
-    eatenMacroValue: number
+    eatenMacroValue: number,
+    isSubtraction: boolean
   ) => {
     switch (statName) {
       case "carb":
         if (user?.daily_carb_goal) {
-          let ratio = user.daily_carb_goal / eatenMacroValue;
-          if (ratio > 1) ratio = 1 / ratio;
-          const points = handlePointCalc(ratio);
+          const ratio = handleRatioCalc(user.daily_carb_goal, eatenMacroValue);
+          const points = handlePointCalc(ratio, isSubtraction);
           await updateUserPetStat(
             user.id,
             user.pet_carb_exp + points,
@@ -116,9 +91,8 @@ const RecipeModal: React.FC<ModalProps> = ({
         break;
       case "fat":
         if (user?.daily_fat_goal) {
-          let ratio = user.daily_fat_goal / eatenMacroValue;
-          if (ratio > 1) ratio = 1 / ratio;
-          const points = handlePointCalc(ratio);
+          const ratio = handleRatioCalc(user.daily_fat_goal, eatenMacroValue);
+          const points = handlePointCalc(ratio, isSubtraction);
           await updateUserPetStat(
             user.id,
             user.pet_fat_exp + points,
@@ -130,9 +104,11 @@ const RecipeModal: React.FC<ModalProps> = ({
         break;
       case "protein":
         if (user?.daily_protein_goal) {
-          let ratio = user.daily_protein_goal / eatenMacroValue;
-          if (ratio > 1) ratio = 1 / ratio;
-          const points = handlePointCalc(ratio);
+          const ratio = handleRatioCalc(
+            user.daily_protein_goal,
+            eatenMacroValue
+          );
+          const points = handlePointCalc(ratio, isSubtraction);
           await updateUserPetStat(
             user.id,
             user.pet_protein_exp + points,
@@ -144,9 +120,11 @@ const RecipeModal: React.FC<ModalProps> = ({
         break;
       case "calorie":
         if (user?.daily_calorie_goal) {
-          let ratio = user.daily_calorie_goal / 3 / eatenMacroValue;
-          if (ratio > 1) ratio = 1 / ratio;
-          const points = handlePointCalc(ratio);
+          const ratio = handleRatioCalc(
+            user.daily_calorie_goal / 3,
+            eatenMacroValue
+          );
+          const points = handlePointCalc(ratio, isSubtraction);
           await updateUserPetStat(
             user.id,
             user.pet_calorie_exp + points,
@@ -225,6 +203,10 @@ const RecipeModal: React.FC<ModalProps> = ({
           );
           showMessage(`Recipe added to meal plan: Wisdom +20`);
           setMealPlan([...mealPlan, newMeal.mealPlan]);
+          // update current page user wisdom exp so that a user can add muliple recipes in a row and get all the wisdom points
+          const updatedUser = { ...user };
+          updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp + 20;
+          setUser(updatedUser);
         } else {
           showMessage("Error adding recipe to meal plan, try again");
         }
@@ -272,30 +254,104 @@ const RecipeModal: React.FC<ModalProps> = ({
           );
           setSelectedMeal(meal);
           setMealPlan(updatedMealPlan);
-          // after successfully eating, update strength, defense, dex, and stamina points
-          // first, grab eaten meal's nutrition info
-          const recipe = await fetchARecipeById(meal.recipeId);
-          const nutrition = recipe.nutrition;
-          const eatenCalories = nutrition.calories;
-          const eatenCarbPercent = nutrition.macronutrients.carbs.percentage;
-          const eatenFatPercent = nutrition.macronutrients.fat.percentage;
-          const eatenProteinPercent =
-            nutrition.macronutrients.protein.percentage;
-          // next, calculate points for each stat and update
-          const caloriePoints = await handleUpdateStat(
-            "calorie",
-            eatenCalories
-          );
-          const carbPoints = await handleUpdateStat("carb", eatenCarbPercent);
-          const fatPoints = await handleUpdateStat("fat", eatenFatPercent);
-          const proteinPoints = await handleUpdateStat(
-            "protein",
-            eatenProteinPercent
-          );
 
-          showMessage(
-            `Strength +${proteinPoints} Defense +${fatPoints} Dexterity +${carbPoints} Stamina +${caloriePoints}`
-          );
+          // if meal was uneaten (this block), subtract strength, defense, dex, and stamina points (selectedMeal.hasBeenEaten is reversed)
+          if (selectedMeal.hasBeenEaten) {
+            // first, grab eaten meal's nutrition info
+            const recipe = await fetchARecipeById(meal.recipeId);
+            const nutrition = recipe.nutrition;
+            const eatenCalories = nutrition.calories;
+            const eatenCarbPercent = nutrition.macronutrients.carbs.percentage;
+            const eatenFatPercent = nutrition.macronutrients.fat.percentage;
+            const eatenProteinPercent =
+              nutrition.macronutrients.protein.percentage;
+            // next, calculate points for each stat and update
+            const caloriePoints = await handleUpdateStat(
+              "calorie",
+              eatenCalories,
+              true
+            );
+            const carbPoints = await handleUpdateStat(
+              "carb",
+              eatenCarbPercent,
+              true
+            );
+            const fatPoints = await handleUpdateStat(
+              "fat",
+              eatenFatPercent,
+              true
+            );
+            const proteinPoints = await handleUpdateStat(
+              "protein",
+              eatenProteinPercent,
+              true
+            );
+            // update current page user data to make sure eating multiple things in a row gives all the points
+            const updatedUser = { ...user };
+            if (proteinPoints)
+              updatedUser.pet_protein_exp =
+                updatedUser.pet_protein_exp + proteinPoints;
+            if (fatPoints)
+              updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
+            if (carbPoints)
+              updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
+            if (caloriePoints)
+              updatedUser.pet_calorie_exp =
+                updatedUser.pet_calorie_exp + caloriePoints;
+            setUser(updatedUser);
+
+            showMessage(
+              `Strength ${proteinPoints} Defense ${fatPoints} Dexterity ${carbPoints} Stamina ${caloriePoints}`
+            );
+          } else if (!selectedMeal.hasBeenEaten) {
+            // if meal was eaten (this block), add stats
+            // first, grab eaten meal's nutrition info
+            const recipe = await fetchARecipeById(meal.recipeId);
+            const nutrition = recipe.nutrition;
+            const eatenCalories = nutrition.calories;
+            const eatenCarbPercent = nutrition.macronutrients.carbs.percentage;
+            const eatenFatPercent = nutrition.macronutrients.fat.percentage;
+            const eatenProteinPercent =
+              nutrition.macronutrients.protein.percentage;
+            // next, calculate points for each stat and update
+            const caloriePoints = await handleUpdateStat(
+              "calorie",
+              eatenCalories,
+              false
+            );
+            const carbPoints = await handleUpdateStat(
+              "carb",
+              eatenCarbPercent,
+              false
+            );
+            const fatPoints = await handleUpdateStat(
+              "fat",
+              eatenFatPercent,
+              false
+            );
+            const proteinPoints = await handleUpdateStat(
+              "protein",
+              eatenProteinPercent,
+              false
+            );
+            // update current page user data to make sure eating multiple things in a row gives all the points
+            const updatedUser = { ...user };
+            if (proteinPoints)
+              updatedUser.pet_protein_exp =
+                updatedUser.pet_protein_exp + proteinPoints;
+            if (fatPoints)
+              updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
+            if (carbPoints)
+              updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
+            if (caloriePoints)
+              updatedUser.pet_calorie_exp =
+                updatedUser.pet_calorie_exp + caloriePoints;
+            setUser(updatedUser);
+
+            showMessage(
+              `Strength +${proteinPoints} Defense +${fatPoints} Dexterity +${carbPoints} Stamina +${caloriePoints}`
+            );
+          }
 
           // Add activity for cooking a meal
           const activityResponse = await fetch(
@@ -321,8 +377,11 @@ const RecipeModal: React.FC<ModalProps> = ({
             // Display notification for achievement unlocked
             showMessage(activityResult.message);
           }
+          // reenable cook button once finished (both in try and catch block)
+          setButtonDisabled(false);
         } catch (error: any) {
           console.error("Error updating meal plan:", error);
+          setButtonDisabled(false);
         }
       }
     }
@@ -340,7 +399,20 @@ const RecipeModal: React.FC<ModalProps> = ({
         (meal) => meal.id !== selectedMeal.id
       );
       setMealPlan(updatedMealPlan);
-      onClose();
+      // subtract 20 points of wisdom if removing meal from plan
+      await updateUserPetStat(
+        user.id,
+        user.pet_wisdom_exp - 20,
+        "wisdom",
+        session.access_token
+      );
+      const updatedUser = { ...user };
+      updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp - 20;
+      setUser(updatedUser);
+      showMessage("Wisdom -20");
+      setTimeout(() => {
+        onClose();
+      }, 3000);
     }
   };
 
@@ -382,7 +454,17 @@ const RecipeModal: React.FC<ModalProps> = ({
               />
             )}
             <div className="px-5">
-              <h2 className="text-3xl font-bold">{selectedRecipe.name}</h2>
+              <div className="flex items-center">
+                <h2 className="text-3xl font-bold mr-3">
+                  {selectedRecipe.name}
+                </h2>
+                {user && (
+                  <div className="flex items-center">
+                    <FaBookOpen className="mr-2" />
+                    <p>+20</p>
+                  </div>
+                )}
+              </div>
 
               {/* Nutritional Information Section */}
               <div className="flex gap-2 mb-4">
@@ -391,24 +473,83 @@ const RecipeModal: React.FC<ModalProps> = ({
                     <span className="font-bold">Calories: </span>
                     {`${selectedRecipe.nutrition.calories} kcal`}
                   </p>
+                  {user && (
+                    <div className="flex text-base items-center mt-1">
+                      <MdEnergySavingsLeaf />
+                      <p className="">
+                        +{" "}
+                        {handlePointCalc(
+                          handleRatioCalc(
+                            user.daily_calorie_goal / 3,
+                            selectedRecipe.nutrition.calories
+                          )
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-center border-l-1 border-gray-400 text-xs pl-2 lg:text-sm">
                   <p className="font-bold">
                     <span className="font-bold">Fat: </span>
                     {`${selectedRecipe.nutrition.macronutrients.fat.amount} g`}
                   </p>
+                  {user && (
+                    <div className="flex text-base items-center mt-1">
+                      <FaShieldAlt />
+                      <p>
+                        +{" "}
+                        {handlePointCalc(
+                          handleRatioCalc(
+                            user?.daily_fat_goal,
+                            selectedRecipe.nutrition.macronutrients.fat
+                              .percentage
+                          )
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-center border-l-1 border-gray-400 text-xs pl-2 lg:text-sm">
                   <p className="font-bold">
                     <span className="font-bold">Carbs: </span>
                     {`${selectedRecipe.nutrition.macronutrients.carbs.amount} g`}
                   </p>
+                  {user && (
+                    <div className="flex text-base items-center mt-1">
+                      <PiSneakerMoveFill />
+                      <p>
+                        +{" "}
+                        {handlePointCalc(
+                          handleRatioCalc(
+                            user?.daily_carb_goal,
+                            selectedRecipe.nutrition.macronutrients.carbs
+                              .percentage
+                          )
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-center border-l-1 border-gray-400 text-xs pl-2 lg:text-sm">
                   <p className="font-bold">
                     <span className="font-bold">Protein: </span>
                     {`${selectedRecipe.nutrition.macronutrients.protein.amount} g`}
                   </p>
+                  {user && (
+                    <div className="flex text-base items-center mt-1">
+                      <PiSwordFill />
+                      <p className="">
+                        +{" "}
+                        {handlePointCalc(
+                          handleRatioCalc(
+                            user?.daily_protein_goal,
+                            selectedRecipe.nutrition.macronutrients.protein
+                              .percentage
+                          )
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -452,7 +593,12 @@ const RecipeModal: React.FC<ModalProps> = ({
                     ? "bg-[#19243e] text-[#ebd6aa]"
                     : "bg-gray-400 text-gray-300"
                 }`}
-                onClick={handleCookedClick}
+                onClick={() => {
+                  if (!isButtonDisabled) {
+                    setButtonDisabled(true);
+                    handleCookedClick();
+                  }
+                }}
               >
                 <FaCheckCircle />
                 <h1
