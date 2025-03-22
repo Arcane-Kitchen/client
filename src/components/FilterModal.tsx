@@ -31,7 +31,6 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
     // Filter the recipes based on the selected filters
     const handleApply = () => {
         const filteredRecipes = filterRecipes(recipes, filters, searchQuery);
-        console.log(filteredRecipes)
         setFilteredRecipes(filteredRecipes);
         onClose();
     }
