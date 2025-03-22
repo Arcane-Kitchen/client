@@ -72,13 +72,14 @@ const RecipeModal: React.FC<ModalProps> = ({
   // Handle updating stat
   const handleUpdateStat = async (
     statName: string,
-    eatenMacroValue: number
+    eatenMacroValue: number,
+    isSubtraction: boolean
   ) => {
     switch (statName) {
       case "carb":
         if (user?.daily_carb_goal) {
           const ratio = handleRatioCalc(user.daily_carb_goal, eatenMacroValue);
-          const points = handlePointCalc(ratio);
+          const points = handlePointCalc(ratio, isSubtraction);
           await updateUserPetStat(
             user.id,
             user.pet_carb_exp + points,
@@ -91,7 +92,7 @@ const RecipeModal: React.FC<ModalProps> = ({
       case "fat":
         if (user?.daily_fat_goal) {
           const ratio = handleRatioCalc(user.daily_fat_goal, eatenMacroValue);
-          const points = handlePointCalc(ratio);
+          const points = handlePointCalc(ratio, isSubtraction);
           await updateUserPetStat(
             user.id,
             user.pet_fat_exp + points,
@@ -107,7 +108,7 @@ const RecipeModal: React.FC<ModalProps> = ({
             user.daily_protein_goal,
             eatenMacroValue
           );
-          const points = handlePointCalc(ratio);
+          const points = handlePointCalc(ratio, isSubtraction);
           await updateUserPetStat(
             user.id,
             user.pet_protein_exp + points,
@@ -123,7 +124,7 @@ const RecipeModal: React.FC<ModalProps> = ({
             user.daily_calorie_goal / 3,
             eatenMacroValue
           );
-          const points = handlePointCalc(ratio);
+          const points = handlePointCalc(ratio, isSubtraction);
           await updateUserPetStat(
             user.id,
             user.pet_calorie_exp + points,
@@ -253,43 +254,104 @@ const RecipeModal: React.FC<ModalProps> = ({
           );
           setSelectedMeal(meal);
           setMealPlan(updatedMealPlan);
-          // after successfully eating, update strength, defense, dex, and stamina points
-          // first, grab eaten meal's nutrition info
-          const recipe = await fetchARecipeById(meal.recipeId);
-          const nutrition = recipe.nutrition;
-          const eatenCalories = nutrition.calories;
-          const eatenCarbPercent = nutrition.macronutrients.carbs.percentage;
-          const eatenFatPercent = nutrition.macronutrients.fat.percentage;
-          const eatenProteinPercent =
-            nutrition.macronutrients.protein.percentage;
-          // next, calculate points for each stat and update
-          const caloriePoints = await handleUpdateStat(
-            "calorie",
-            eatenCalories
-          );
-          const carbPoints = await handleUpdateStat("carb", eatenCarbPercent);
-          const fatPoints = await handleUpdateStat("fat", eatenFatPercent);
-          const proteinPoints = await handleUpdateStat(
-            "protein",
-            eatenProteinPercent
-          );
-          // update current page user data to make sure eating multiple things in a row gives all the points
-          const updatedUser = { ...user };
-          if (proteinPoints)
-            updatedUser.pet_protein_exp =
-              updatedUser.pet_protein_exp + proteinPoints;
-          if (fatPoints)
-            updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
-          if (carbPoints)
-            updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
-          if (caloriePoints)
-            updatedUser.pet_calorie_exp =
-              updatedUser.pet_calorie_exp + caloriePoints;
-          setUser(updatedUser);
 
-          showMessage(
-            `Strength +${proteinPoints} Defense +${fatPoints} Dexterity +${carbPoints} Stamina +${caloriePoints}`
-          );
+          // if meal was uneaten (this block), subtract strength, defense, dex, and stamina points (selectedMeal.hasBeenEaten is reversed)
+          if (selectedMeal.hasBeenEaten) {
+            // first, grab eaten meal's nutrition info
+            const recipe = await fetchARecipeById(meal.recipeId);
+            const nutrition = recipe.nutrition;
+            const eatenCalories = nutrition.calories;
+            const eatenCarbPercent = nutrition.macronutrients.carbs.percentage;
+            const eatenFatPercent = nutrition.macronutrients.fat.percentage;
+            const eatenProteinPercent =
+              nutrition.macronutrients.protein.percentage;
+            // next, calculate points for each stat and update
+            const caloriePoints = await handleUpdateStat(
+              "calorie",
+              eatenCalories,
+              true
+            );
+            const carbPoints = await handleUpdateStat(
+              "carb",
+              eatenCarbPercent,
+              true
+            );
+            const fatPoints = await handleUpdateStat(
+              "fat",
+              eatenFatPercent,
+              true
+            );
+            const proteinPoints = await handleUpdateStat(
+              "protein",
+              eatenProteinPercent,
+              true
+            );
+            // update current page user data to make sure eating multiple things in a row gives all the points
+            const updatedUser = { ...user };
+            if (proteinPoints)
+              updatedUser.pet_protein_exp =
+                updatedUser.pet_protein_exp + proteinPoints;
+            if (fatPoints)
+              updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
+            if (carbPoints)
+              updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
+            if (caloriePoints)
+              updatedUser.pet_calorie_exp =
+                updatedUser.pet_calorie_exp + caloriePoints;
+            setUser(updatedUser);
+
+            showMessage(
+              `Strength ${proteinPoints} Defense ${fatPoints} Dexterity ${carbPoints} Stamina ${caloriePoints}`
+            );
+          } else if (!selectedMeal.hasBeenEaten) {
+            // if meal was eaten (this block), add stats
+            // first, grab eaten meal's nutrition info
+            const recipe = await fetchARecipeById(meal.recipeId);
+            const nutrition = recipe.nutrition;
+            const eatenCalories = nutrition.calories;
+            const eatenCarbPercent = nutrition.macronutrients.carbs.percentage;
+            const eatenFatPercent = nutrition.macronutrients.fat.percentage;
+            const eatenProteinPercent =
+              nutrition.macronutrients.protein.percentage;
+            // next, calculate points for each stat and update
+            const caloriePoints = await handleUpdateStat(
+              "calorie",
+              eatenCalories,
+              false
+            );
+            const carbPoints = await handleUpdateStat(
+              "carb",
+              eatenCarbPercent,
+              false
+            );
+            const fatPoints = await handleUpdateStat(
+              "fat",
+              eatenFatPercent,
+              false
+            );
+            const proteinPoints = await handleUpdateStat(
+              "protein",
+              eatenProteinPercent,
+              false
+            );
+            // update current page user data to make sure eating multiple things in a row gives all the points
+            const updatedUser = { ...user };
+            if (proteinPoints)
+              updatedUser.pet_protein_exp =
+                updatedUser.pet_protein_exp + proteinPoints;
+            if (fatPoints)
+              updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
+            if (carbPoints)
+              updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
+            if (caloriePoints)
+              updatedUser.pet_calorie_exp =
+                updatedUser.pet_calorie_exp + caloriePoints;
+            setUser(updatedUser);
+
+            showMessage(
+              `Strength +${proteinPoints} Defense +${fatPoints} Dexterity +${carbPoints} Stamina +${caloriePoints}`
+            );
+          }
 
           // Add activity for cooking a meal
           const activityResponse = await fetch(
@@ -337,7 +399,20 @@ const RecipeModal: React.FC<ModalProps> = ({
         (meal) => meal.id !== selectedMeal.id
       );
       setMealPlan(updatedMealPlan);
-      onClose();
+      // subtract 20 points of wisdom if removing meal from plan
+      await updateUserPetStat(
+        user.id,
+        user.pet_wisdom_exp - 20,
+        "wisdom",
+        session.access_token
+      );
+      const updatedUser = { ...user };
+      updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp - 20;
+      setUser(updatedUser);
+      showMessage("Wisdom -20");
+      setTimeout(() => {
+        onClose();
+      }, 3000);
     }
   };
 
