@@ -33,6 +33,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, s
     cookingTime: [false, false, false],
     calorieRange: [false, false, false],
     difficultyLevel: [false, false, false],
+    dietType: [false, false, false, false, false, false]
   })
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);

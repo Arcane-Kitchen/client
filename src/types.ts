@@ -43,6 +43,7 @@ export interface Filter {
   cookingTime: boolean[];
   calorieRange: boolean[];
   difficultyLevel: boolean[];
+  dietType: boolean[];
 }
 
 export interface UserProfile {

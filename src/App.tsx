@@ -29,6 +29,7 @@ function App() {
     cookingTime: [false, false, false],
     calorieRange: [false, false, false],
     difficultyLevel: [false, false, false],
+    dietType: [false, false, false, false, false, false]
   });
   const { setIsLoading } = useAuth();
   const location = useLocation();

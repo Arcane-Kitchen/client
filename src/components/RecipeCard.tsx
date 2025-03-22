@@ -33,6 +33,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
               className="object-cover w-full lg:mb-0 lg:w-1/3"
               src={recipe.image}
               alt={recipe.name}
+              loading="lazy"
             />
           )}
           <p className={`absolute top-0 right-0 text-white px-2 ${dietColors[recipe.diet]}`}>{recipe.diet}</p>
