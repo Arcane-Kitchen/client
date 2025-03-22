@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
-import { createNewUser } from "../api/userApi";
 
 const SignUp: React.FC = () => {
   const [signUpForm, setSignUpForm] = useState({
@@ -50,8 +49,6 @@ const SignUp: React.FC = () => {
       ); // Call signUp from AuthContext
 
       if (result.success && result.data && result.data.user && result.data.session) {
-        // Create the user profile
-        // await createNewUser(result.data.user.id, signUpForm.username, result.data.session.access_token);
         navigate("/preferences");
       } else {
         console.error("Sign-up failed:", result);

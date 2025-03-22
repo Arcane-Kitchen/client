@@ -90,6 +90,39 @@ const filterByDifficultyLevel = (recipe: Recipe, difficultyLevelFilters: boolean
     return !difficultyLevelSelected;
 }
 
+// Filter by diet type
+const filterByDietType = (recipe: Recipe, dietTypeFilters: boolean[]) => {
+    let dietTypeSelected = false;
+
+    for (let i = 0; i < dietTypeFilters.length; i++) {
+        if (dietTypeFilters[i]) {
+            dietTypeSelected = true;
+            switch (i) {
+                case 0: // Gluten Free
+                    if (recipe.diet === "Gluten free") return true;
+                    break;
+                case 1: // Lactose Free
+                    if (recipe.diet === "Lactose free") return true;
+                    break;
+                case 2: // Vegetarian
+                    if (recipe.diet === "Vegetarian") return true;
+                    break;
+                case 3: // Vegan
+                    if (recipe.diet === "Vegan") return true;
+                    break;
+                case 4: // Nut free
+                    if (recipe.diet === "Nut free") return true;
+                    break;
+                case 5: // Keto
+                    if (recipe.diet === "Keto") return true;
+                    break;
+            }
+        }
+    }
+    // If no difficulty level is selected, return true
+    return !dietTypeSelected;
+}
+
 // Filter recipes based on selected filters
 export const filterRecipes = (recipes: Recipe[], filters: Filter, searchQuery: string) => {
 
@@ -98,11 +131,12 @@ export const filterRecipes = (recipes: Recipe[], filters: Filter, searchQuery: s
         const isCookingTimeMatch = filterByCookingTime(recipe, filters.cookingTime);
         const isCalorieRangeMatch = filterByCalorieRange(recipe, filters.calorieRange);
         const isDifficultyLevelMatch = filterByDifficultyLevel(recipe, filters.difficultyLevel);
+        const isDietTypeMatch = filterByDietType(recipe, filters.dietType);
 
         // Check if the recipe matches the search query
         const isSearchMatch = recipe.name.toLowerCase().includes(searchQuery.toLowerCase());
         
         // return the recipe if it passes all selected filters
-        return isMealTypeMatch && isCookingTimeMatch && isCalorieRangeMatch && isDifficultyLevelMatch && isSearchMatch;
+        return isMealTypeMatch && isCookingTimeMatch && isCalorieRangeMatch && isDifficultyLevelMatch && isDietTypeMatch && isSearchMatch;
     })
 }

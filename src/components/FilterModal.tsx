@@ -87,7 +87,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                             {["< 300 kcal", "300 - 600 kcal", "> 600 kcal"].map((calories, index) => (
                                 <button
                                     key={calories}
-                                    className={`cursor-pointer rounded-full py-1 px-2 flex-1 ${filters.calorieRange[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
+                                    className={`cursor-pointer rounded-full py-1 px-1 flex-1 ${filters.calorieRange[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
                                     onClick={() => handleFilterClick("calorieRange", index)}
                                 >{calories}</button>
 
@@ -99,12 +99,27 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                     <div className="flex flex-col gap-2">
                         <h1>Difficulty Level</h1>
                         <div className="flex gap-2">
-                            {["Easy", "Intermediate", "Difficult"].map((level, index) => (
+                            {["Easy", "Moderate", "Difficult"].map((level, index) => (
                                 <button
                                     key={level}
                                     className={`cursor-pointer rounded-full py-1 px-2 flex-1 ${filters.difficultyLevel[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
                                     onClick={() => handleFilterClick("difficultyLevel", index)}
                                 >{level}</button>
+
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Dietary Restrictions Filter */}
+                    <div className="flex flex-col gap-2">
+                        <h1>Difficulty Level</h1>
+                        <div className="flex flex-wrap gap-2">
+                            {["Gluten free", "Lactose free", "Vegetarian", "Vegan", "Nut free", "Keto"].map((dietType, index) => (
+                                <button
+                                    key={dietType}
+                                    className={`cursor-pointer rounded-full py-1 px-2 ${filters.dietType[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
+                                    onClick={() => handleFilterClick("dietType", index)}
+                                >{dietType}</button>
 
                             ))}
                         </div>

@@ -24,6 +24,7 @@ export interface Recipe {
   nutrition: Nutrition;
   meal_type: string[];
   ingredients: { [key: string]: Ingredient };
+  diet: "Omnivore" | "Gluten free" | "Lactose free" | "Vegetarian" | "Vegan" | "Nut free" | "Keto";
 }
 
 export interface Meal {
@@ -42,6 +43,7 @@ export interface Filter {
   cookingTime: boolean[];
   calorieRange: boolean[];
   difficultyLevel: boolean[];
+  dietType: boolean[];
 }
 
 export interface UserProfile {

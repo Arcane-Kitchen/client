@@ -17,6 +17,7 @@ import { updateUserPetStat } from "../api/userApi";
 import { fetchARecipeById } from "../api/recipeApi";
 import { addUserActivity } from "../api/activityApi";
 import { handlePointCalc, handleRatioCalc } from "../util/statCalc";
+import { dietColors } from "../util/constants"
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -453,13 +454,14 @@ const RecipeModal: React.FC<ModalProps> = ({
                 className="mb-4 lg:w-1/3 lg:object-cover lg:mb-0"
               />
             )}
+            <p className={`absolute top-0 right-0 text-white text-2xl px-5 py-1 ${dietColors[selectedRecipe.diet]}`}>{selectedRecipe.diet}</p>
             <div className="px-5">
               <div className="flex items-center">
                 <h2 className="text-3xl font-bold mr-3">
                   {selectedRecipe.name}
                 </h2>
                 {user && (
-                  <div className="flex items-center">
+                  <div className="flex items-center text-2xl">
                     <FaBookOpen className="mr-2" />
                     <p>+20</p>
                   </div>
@@ -482,7 +484,7 @@ const RecipeModal: React.FC<ModalProps> = ({
                           handleRatioCalc(
                             user.daily_calorie_goal / 3,
                             selectedRecipe.nutrition.calories
-                          )
+                          ), false
                         )}
                       </p>
                     </div>
@@ -503,7 +505,7 @@ const RecipeModal: React.FC<ModalProps> = ({
                             user?.daily_fat_goal,
                             selectedRecipe.nutrition.macronutrients.fat
                               .percentage
-                          )
+                          ), false
                         )}
                       </p>
                     </div>
@@ -524,7 +526,7 @@ const RecipeModal: React.FC<ModalProps> = ({
                             user?.daily_carb_goal,
                             selectedRecipe.nutrition.macronutrients.carbs
                               .percentage
-                          )
+                          ), false
                         )}
                       </p>
                     </div>
@@ -545,7 +547,7 @@ const RecipeModal: React.FC<ModalProps> = ({
                             user?.daily_protein_goal,
                             selectedRecipe.nutrition.macronutrients.protein
                               .percentage
-                          )
+                          ), false
                         )}
                       </p>
                     </div>
