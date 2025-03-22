@@ -3,6 +3,7 @@ import { Recipe } from '../types';
 import { addRecipeToDatabase } from './recipeApi'; 
 import { uploadImage } from './imageUpload'; 
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
 // Set up OpenAI API configuration
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY as string,
@@ -73,25 +74,27 @@ export const parseRecipeWithAI = async (rawText: string): Promise<Recipe> => {
   }
 };
 
+
 export const generateImageWithAI = async (recipeName: string): Promise<Blob> => {
-  const prompt = `Create an image of the recipe "${recipeName}" served on a medieval plate.`;
+  try {
+    const response = await fetch(`${baseUrl}/api/generate-image`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ recipeName }),
+    });
 
-  const response = await openai.images.generate({
-    prompt: prompt,
-    n: 1,
-    size: '512x512',
-  });
+    if (!response.ok) {
+      throw new Error('Failed to generate image');
+    }
 
-  const imageUrl = response.data[0]?.url;
-  if (!imageUrl) {
-    throw new Error('Failed to generate image: imageUrl is undefined');
+    const imageBlob = await response.blob();
+    return imageBlob;
+  } catch (error) {
+    console.error('Error generating image:', error);
+    throw error;
   }
-
-  // Use the no-cors mode to fetch the image
-  const imageResponse = await fetch(imageUrl, { mode: 'no-cors' });
-  const imageBlob = await imageResponse.blob();
-
-  return imageBlob;
 };
 
 export const addRecipeFromRawText = async (rawText: string): Promise<{ success: boolean; message: string; recipe?: Recipe }> => {
