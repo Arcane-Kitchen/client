@@ -54,7 +54,7 @@ export const generateImageWithAI = async (recipeName: string): Promise<Blob> => 
   }
 };
 
-export const addRecipeFromRawText = async (rawText: string): Promise<{ success: boolean; message: string; recipe?: Recipe }> => {
+export const addRecipeFromRawText = async (rawText: string, userId: string): Promise<{ success: boolean; message: string; recipe?: Recipe }> => {
   try {
     const recipe = await parseRecipeWithAI(rawText);
 
@@ -66,7 +66,7 @@ export const addRecipeFromRawText = async (rawText: string): Promise<{ success: 
     // const imageUrl = await uploadImage(imageFile, 'arcane-kitchen-images', `recipes/${imageFile.name}`);
     // recipe.image = imageUrl;
 
-    await addRecipeToDatabase(recipe);
+    await addRecipeToDatabase({ ...recipe, user_id: userId });
     return { success: true, message: 'Recipe added successfully!', recipe };
   } catch (error) {
     console.error('Error adding recipe:', error);

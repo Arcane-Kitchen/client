@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { addRecipeFromRawText } from '../api/recipeParser';
+import { useAuth } from '../Auth/AuthContext';
 
 interface RecipeAddModalProps {
   isOpen: boolean;
@@ -10,15 +11,19 @@ const RecipeAddModal: React.FC<RecipeAddModalProps> = ({ isOpen, onClose }) => {
   const [rawText, setRawText] = useState<string>('');
   const [message, setMessage] = useState<string>('');
 
+  const { user } = useAuth();
+
   const handleAddRecipe = async () => {
-    try {
-      const result = await addRecipeFromRawText(rawText);
-      setMessage(result.message);
-      if (result.success) {
-        setRawText('');
+    if (user) {
+      try {
+        const result = await addRecipeFromRawText(rawText, user.id);
+        setMessage(result.message);
+        if (result.success) {
+          setRawText('');
+        }
+      } catch (error) {
+        setMessage('Error adding recipe');
       }
-    } catch (error) {
-      setMessage('Error adding recipe');
     }
   };
 
