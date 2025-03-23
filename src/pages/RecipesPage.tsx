@@ -51,7 +51,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const { isLoading } = useAuth();
+  const { isLoading, user } = useAuth();
 
   const filtersCount = Object.values(filters).reduce((count, array) => {
     return count + array.filter(Boolean).length;
@@ -110,7 +110,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
           {/* Back button, search bar and filter section */}
           <div className="flex items-center p-5 lg:px-15 lg:w-full">
             {/* Back button */}
-            <button
+            {user && <button
               className="flex-1 cursor-pointer lg:left-auto lg:right-2"
               onClick={handleBackClick}
             >
@@ -122,7 +122,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
                 size={40}
                 className="text-[#19243e] hover:text-slate-600 hidden lg:block"
               />
-            </button>
+            </button>}
             <div className="flex items-center w-full justify-end">
               {/* Search input field */}
               <div className="w-2/3 relative lg:flex-0">
@@ -160,12 +160,12 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
                 <p>{`${filteredRecipes.length} ${
                   filteredRecipes.length === 1 ? " result" : "results"
                 } found`}</p>
-                <button
+                {user && <button
                   onClick={() => setIsAddModalOpen(true)}
                   className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                 >
                   Add Recipe
-                </button>
+                </button>}
               </div>
               <div className="grid grid-cols-2 gap-2 justify-items-center lg:grid-cols-3">
                 {/* Render recipe cards */}

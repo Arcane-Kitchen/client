@@ -31,22 +31,36 @@ function App() {
     difficultyLevel: [false, false, false],
     dietType: [false, false, false, false, false, false]
   });
-  const { setIsLoading } = useAuth();
+  const [previousUserId, setPreviousUserId] = useState<string | null>(null);
+
+  const { setIsLoading, user } = useAuth();
   const location = useLocation();
   const showChatbot = location.pathname === '/recipes' || location.pathname === '/meal-plan';  
 
   useEffect(() => {
     fetchAllRecipes()
       .then((data) => {
-        setRecipes(data);
-        setFilteredRecipes(data);
+        if (user && user.id !== previousUserId) {
+          setPreviousUserId(user.id);
+          const recipes = data.filter((recipe: Recipe) => {
+            return recipe.user_id === user.id || recipe.user_id === null
+          });
+          setRecipes(recipes);
+          setFilteredRecipes(recipes);
+        } else if (!user) {
+          const recipes = data.filter((recipe: Recipe) => {
+            return recipe.user_id === null
+          });
+          setRecipes(recipes);
+          setFilteredRecipes(recipes);
+        }
       })
       .catch((error) => {
         console.error(error);
       }).finally(() => {
         setIsLoading(false);
       })
-  }, []);
+  }, [user]);
 
   return (
     <AchievementSubscriptionProvider>
@@ -70,6 +84,7 @@ function App() {
                 setFilteredRecipes={setFilteredRecipes}
                 filters={filters}
                 setFilters={setFilters}
+                setRecipes={setRecipes}
               />
             }
           />
