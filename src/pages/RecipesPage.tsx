@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import RecipeModal from "../components/RecipeModal";
+import RecipeAddModal from "../components/RecipeAddModal";
 import FilterModal from "../components/FilterModal";
 import { useAuth } from "../Auth/AuthContext";
 import { FadeLoader } from "react-spinners";
@@ -45,6 +46,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const { isLoading } = useAuth();
@@ -152,9 +154,17 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
           {filteredRecipes && filteredRecipes.length > 0 ? (
             // Recipe grid display
             <div className="w-full px-4 pb-5 lg:px-15">
-              <p className="mb-2">{`${filteredRecipes.length} ${
-                filteredRecipes.length === 1 ? " result" : "results"
-              } found`}</p>
+              <div className="flex justify-between items-center mb-2">
+                <p>{`${filteredRecipes.length} ${
+                  filteredRecipes.length === 1 ? " result" : "results"
+                } found`}</p>
+                <button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                >
+                  Add Recipe
+                </button>
+              </div>
               <div className="grid grid-cols-2 gap-2 justify-items-center lg:grid-cols-3">
                 {/* Render recipe cards */}
                 {filteredRecipes.map((recipe, index) => (
@@ -201,6 +211,14 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
           setFilteredRecipes={setFilteredRecipes}
           handleClearAll={handleClearAll}
           searchQuery={searchQuery}
+        />
+      )}
+
+      {/* Display add recipe modal */}
+      {isAddModalOpen && (
+        <RecipeAddModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
         />
       )}
     </div>
