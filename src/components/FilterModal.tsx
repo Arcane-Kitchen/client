@@ -4,6 +4,7 @@ import { IoIosClose } from "react-icons/io";
 import { Filter, Recipe } from '../types';
 import { filterRecipes } from '../util/filterRecipes';
 import { mealTypes } from '../util/constants';
+import { useAuth } from '../Auth/AuthContext';
 
 interface FilterProps {
     onClose: () => void;
@@ -16,6 +17,8 @@ interface FilterProps {
   }
 
 const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, recipes, setFilteredRecipes, handleClearAll, searchQuery }) => {
+
+    const { user } = useAuth();
 
     // Toggle the value for a specific filter
     const handleFilterClick = (filterType: keyof Filter, index: number) => {
@@ -124,6 +127,21 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                             ))}
                         </div>
                     </div>
+
+                    {/* Recipe Type Filter */}
+                    {user && <div className="flex flex-col gap-2">
+                        <h1>Recipe Type</h1>
+                        <div className="flex gap-2">
+                            {["Public", "Private"].map((recipeType, index) => (
+                                <button
+                                    key={recipeType}
+                                    className={`cursor-pointer rounded-full py-1 px-2 flex-1 ${filters.recipeType[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
+                                    onClick={() => handleFilterClick("recipeType", index)}
+                                >{recipeType}</button>
+
+                            ))}
+                        </div>
+                    </div>}
                 </div>
                 
                 {/* Apply and Clear All buttons */}
