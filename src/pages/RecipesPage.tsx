@@ -26,6 +26,7 @@ interface RecipesPageProps {
   startOfTheWeek?: moment.Moment;
   filters: Filter;
   setFilters: React.Dispatch<React.SetStateAction<Filter>>;
+  setRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
 }
 
 const RecipesPage: React.FC<RecipesPageProps> = ({
@@ -42,6 +43,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
   startOfTheWeek,
   filters,
   setFilters,
+  setRecipes,
 }) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -219,6 +221,10 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
         <RecipeAddModal
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
+          setRecipes={setRecipes}
+          recipes={recipes}
+          setFilteredRecipes={setFilteredRecipes}
+          filters={filters}
         />
       )}
     </div>

@@ -456,7 +456,7 @@ const RecipeModal: React.FC<ModalProps> = ({
             ) : (
               <img className="object-cover w-full" src="/recipe_placeholder.png" />
             )}
-            <p className={`absolute top-0 right-0 text-white text-2xl px-5 py-1 ${dietColors[selectedRecipe.diet]}`}>{selectedRecipe.diet}</p>
+            {selectedRecipe.diet && <p className={`absolute top-0 right-0 text-white text-2xl px-5 py-1 ${dietColors[selectedRecipe.diet]}`}>{selectedRecipe.diet}</p>}
             <div className="px-5">
               <div className="flex items-center">
                 <h2 className="text-3xl font-bold mr-3">

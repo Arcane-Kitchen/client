@@ -24,8 +24,8 @@ export interface Recipe {
   nutrition: Nutrition;
   meal_type: string[];
   ingredients: { [key: string]: Ingredient };
-  diet: "Omnivore" | "Gluten free" | "Lactose free" | "Vegetarian" | "Vegan" | "Nut free" | "Keto";
-  user_id: string;
+  diet: "Omnivore" | "Gluten free" | "Lactose free" | "Vegetarian" | "Vegan" | "Nut free" | "Keto" | null;
+  user_id: string | null;
 }
 
 export interface Meal {

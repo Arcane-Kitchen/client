@@ -38,7 +38,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
           ) : (
             <img className="object-cover w-full" src="/recipe_placeholder.png" />
           )}
-          <p className={`absolute top-0 right-0 text-white px-2 ${dietColors[recipe.diet]}`}>{recipe.diet}</p>
+          {recipe.diet && <p className={`absolute top-0 right-0 text-white px-2 ${dietColors[recipe.diet]}`}>{recipe.diet}</p>}
         </div>
         <div className="lg:px-2">
           <h1 className="font-bold text-xl lg:mb-2 lg:text-3xl">

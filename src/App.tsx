@@ -82,6 +82,7 @@ function App() {
                 recipes={recipes}
                 filteredRecipes={filteredRecipes}
                 setFilteredRecipes={setFilteredRecipes}
+                setRecipes={setRecipes}
               />
               </ProtectedRoute>
             }
