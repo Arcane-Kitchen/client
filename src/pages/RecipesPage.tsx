@@ -24,25 +24,10 @@ interface RecipesPageProps {
   selectedMealType?: string;
   setSelectedMealType?: React.Dispatch<React.SetStateAction<string>>;
   startOfTheWeek?: moment.Moment;
-  filters: Filter;;
+  filters: Filter;
   setFilters: React.Dispatch<React.SetStateAction<Filter>>;
 }
 
-const RecipesPage: React.FC<RecipesPageProps> = ({
-  recipes,
-  mealPlan,
-  filteredRecipes,
-  setFilteredRecipes,
-  setMealPlan,
-  finishAdding,
-  selectedDay,
-  setSelectedDay,
-  selectedMealType,
-  setSelectedMealType,
-  startOfTheWeek,
-  filters,
-  setFilters,
-}) => {
 const RecipesPage: React.FC<RecipesPageProps> = ({
   recipes,
   mealPlan,
