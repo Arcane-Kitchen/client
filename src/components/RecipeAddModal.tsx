@@ -29,7 +29,7 @@ const RecipeAddModal: React.FC<RecipeAddModalProps> = ({ isOpen, onClose, recipe
         if (result.success && result.recipe) {
           setRawText('');
 
-          const newRecipes = [{ ...result.recipe, "user_id": user.id}, ...recipes]
+          const newRecipes = [result.recipe, ...recipes]
           setRecipes(newRecipes);
 
           const newFilteredRecipes = filterRecipes(newRecipes, filters, "");

@@ -194,7 +194,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, s
                       return weeklyMeals.map((meal) => (
                         <div key={`${day}-${type}-${meal.id}`} className="w-1/4 aspect-square p-1 relative lg:w-full lg:h-40">
                           <img 
-                            src={meal.imageUrl} 
+                            src={meal.imageUrl ? meal.imageUrl : "/recipe_placeholder.png"} 
                             className={`${meal.date < moment().startOf("day").format("M/DD/YYYY") && "grayscale-75"}`}
                             onClick={() => handleClick(meal)} // Open modal on meal click
                           />

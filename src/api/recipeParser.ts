@@ -66,8 +66,8 @@ export const addRecipeFromRawText = async (rawText: string, userId: string): Pro
     // const imageUrl = await uploadImage(imageFile, 'arcane-kitchen-images', `recipes/${imageFile.name}`);
     // recipe.image = imageUrl;
 
-    await addRecipeToDatabase({ ...recipe, user_id: userId });
-    return { success: true, message: 'Recipe added successfully!', recipe };
+    const newRecipe: Recipe[] = await addRecipeToDatabase({ ...recipe, user_id: userId });
+    return { success: true, message: 'Recipe added successfully!', recipe: newRecipe[0] };
   } catch (error) {
     console.error('Error adding recipe:', error);
     throw error;

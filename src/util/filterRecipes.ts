@@ -140,7 +140,7 @@ const filterByRecipeType = (recipe: Recipe, recipeTypeFilters: boolean[]) => {
             }
         }
     }
-    // If no difficulty level is selected, return true
+    // If no recipe type is selected, return true
     return !recipeTypeSelected;
 }
 
