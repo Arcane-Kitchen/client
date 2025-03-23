@@ -148,13 +148,19 @@ const Preferences = () => {
     }
 
     return (
-        <div className="flex-1 flex flex-col items-center px-2 py-10">
-            <div className="bg-[url('/wizard.jpg')] bg-cover bg-center rounded-full w-2/5 aspect-square lg:p-15"></div>
-            <div className="h-65 w-full p-4 flex flex-col items-center justify-center relative">
-                <img src="/sign-up-box.svg" className="w-full transform scale-y-210 lg:w-4/5 lg:scale-y-110" />
-                <div className="absolute top-6/11 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full flex flex-col items-center justify-center lg:w-4/5">
+        <div 
+            className="flex flex-col items-center px-5 pb-10 relative"
+            style={{
+                height: window.innerHeight <= 800 ? "auto" : "100vh",
+                paddingTop: window.innerHeight <= 800 ? "" : "15px",
+            }}
+        >
+            <div className="bg-[url('/wizard.jpg')] bg-cover bg-[center_left_0.5rem] rounded-full w-2/5 aspect-square lg:p-15"></div>
+            
+            <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/3 p-4 flex items-center justify-center bg-[url('/input_field.png')] bg-cover bg-center aspect-3/4 w-9/10 md:bg-[url('/sign-up-box.svg')] md:bg-cover lg:bg-cover lg:w-3/5">
+                <div className=" w-4/5 h-full flex flex-col items-center justify-center md:w-3/5 lg:w-3/5">
                     {user && user.pet_name && !isEditing && (
-                        <div className="px-6 w-4/5 pb-5">
+                        <div className="w-full pb-5">
                             <h1 className="text-white text-center text-2xl mb-3">Your goals to prepare for the challenges ahead</h1>
                             <div className="flex flex-col w-full items-center gap-3">
                                 {/* Macros Chart */}
@@ -189,7 +195,7 @@ const Preferences = () => {
                         />
                     ) : page === 2 ? (
                         // Page 2: Display recommended calories and macros
-                        <div className="px-6 w-4/5 pb-5">
+                        <div className="w-full pb-5">
                             <h1 className="text-white text-center text-2xl mb-3">Your goals to prepare for the challenges ahead</h1>
                             {dailyCaloriesAndMacros && (
                                 <div className="flex flex-col w-full items-center gap-3">
@@ -217,7 +223,7 @@ const Preferences = () => {
                         </div>
                     ) : page === 3 ? (
                         // Page 3: Pet selection and naming
-                        <div className="px-6 w-4/5 flex flex-col gap-3">
+                        <div className="w-full flex flex-col gap-3">
                             <h1 className="text-white text-center text-2xl">Pick your loyal pet companion to aid you in your journey!</h1>
                             <div className="flex-1">
                                 <Swiper
@@ -268,7 +274,12 @@ const Preferences = () => {
             </div>
 
             {/* Navigation buttons */}
-            <div className="mt-25 flex items-center justify-center gap-5">
+            <div 
+                className="flex items-center justify-center gap-5"
+                style={{
+                    marginTop: window.innerHeight <= 800 ? "400px" : "460px",
+                }}
+            >
                 <button className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 cursor-pointer ${page === 1 ? "hidden" : "block"}`} onClick={handleBackClick}>
                     <h1 className="text-white">Back</h1>
                 </button>
@@ -280,7 +291,6 @@ const Preferences = () => {
                 </button>
                 
             </div>
-        
         </div>
     )
 }
