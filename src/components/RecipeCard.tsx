@@ -28,15 +28,17 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
     <div className="w-full h-full bg-[url('/paper-box.jpg')] bg-cover bg-center hover:cursor-pointer">
       <div className="w-full p-2 gap-2 flex flex-col lg:flex-row-reverse">
         <div className="h-3/5 relative">
-          {recipe.image && (
+          {recipe.image ? (
             <img
               className="object-cover w-full lg:mb-0 lg:w-1/3"
               src={recipe.image}
               alt={recipe.name}
               loading="lazy"
             />
+          ) : (
+            <img className="object-cover w-full" src="/recipe_placeholder.png" />
           )}
-          <p className={`absolute top-0 right-0 text-white px-2 ${dietColors[recipe.diet]}`}>{recipe.diet}</p>
+          {recipe.diet && <p className={`absolute top-0 right-0 text-white px-2 ${dietColors[recipe.diet]}`}>{recipe.diet}</p>}
         </div>
         <div className="lg:px-2">
           <h1 className="font-bold text-xl lg:mb-2 lg:text-3xl">

@@ -123,6 +123,27 @@ const filterByDietType = (recipe: Recipe, dietTypeFilters: boolean[]) => {
     return !dietTypeSelected;
 }
 
+// Filter by diet type
+const filterByRecipeType = (recipe: Recipe, recipeTypeFilters: boolean[]) => {
+    let recipeTypeSelected = false;
+
+    for (let i = 0; i < recipeTypeFilters.length; i++) {
+        if (recipeTypeFilters[i]) {
+            recipeTypeSelected = true;
+            switch (i) {
+                case 0: // Public
+                    if (recipe.user_id === null) return true;
+                    break;
+                case 1: // Private
+                    if (recipe.user_id !== null) return true;
+                    break;
+            }
+        }
+    }
+    // If no recipe type is selected, return true
+    return !recipeTypeSelected;
+}
+
 // Filter recipes based on selected filters
 export const filterRecipes = (recipes: Recipe[], filters: Filter, searchQuery: string) => {
 
@@ -132,11 +153,12 @@ export const filterRecipes = (recipes: Recipe[], filters: Filter, searchQuery: s
         const isCalorieRangeMatch = filterByCalorieRange(recipe, filters.calorieRange);
         const isDifficultyLevelMatch = filterByDifficultyLevel(recipe, filters.difficultyLevel);
         const isDietTypeMatch = filterByDietType(recipe, filters.dietType);
+        const isRecipeTypeMatch = filterByRecipeType(recipe, filters.recipeType)
 
         // Check if the recipe matches the search query
         const isSearchMatch = recipe.name.toLowerCase().includes(searchQuery.toLowerCase());
         
         // return the recipe if it passes all selected filters
-        return isMealTypeMatch && isCookingTimeMatch && isCalorieRangeMatch && isDifficultyLevelMatch && isDietTypeMatch && isSearchMatch;
+        return isMealTypeMatch && isCookingTimeMatch && isCalorieRangeMatch && isDifficultyLevelMatch && isDietTypeMatch && isRecipeTypeMatch && isSearchMatch;
     })
 }

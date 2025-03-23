@@ -29,20 +29,20 @@ const Login: React.FC = () => {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen w-full"
+      className="flex flex-col items-center justify-center min-h-screen max-h-screen w-full p-3"
       style={{
         backgroundImage: `url(/background.jpg)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="p-4 flex items-center justify-center relative">
-        <img src="/sign-up-box.svg" className="w-full h-full transform scale-y-200 lg:w-4/5 lg:scale-y-110"></img>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full flex flex-col items-center justify-center lg:w-4/5">
+      <div className="p-4 flex items-center justify-center bg-[url('/input_field.png')] bg-contain bg-center h-[56vh] w-full md:bg-[url('/sign-up-box.svg')] md:bg-cover lg:bg-cover lg:w-3/5">
+        {/* Login Form */}
+        <div className=" w-4/5 h-full flex flex-col items-center justify-center md:w-3/5 lg:w-3/5">
           <h2 className="text-2xl font-bold mb-4 text-center text-white lg:text-3xl">
             Login
           </h2>
-          <form className="px-6 w-4/5 lg:w-3/5" onSubmit={handleSubmit}>
+          <form className="px-6 w-full" onSubmit={handleSubmit}>
             {/* Email Input */}
             <div className="mb-4">
               <label
@@ -99,7 +99,6 @@ const Login: React.FC = () => {
             </div>
           </form>
         </div>
-        
       </div>
     </div>
   );

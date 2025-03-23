@@ -15,9 +15,10 @@ interface CalendarPageProps {
   recipes: Recipe[]
   filteredRecipes: Recipe[];
   setFilteredRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
+  setRecipes: React.Dispatch<React.SetStateAction<Recipe[]>>;
 }
 
-const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, setFilteredRecipes }) => {
+const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, setFilteredRecipes, setRecipes }) => {
   const { user, session } = useAuth();
   const navigate = useNavigate();
 
@@ -33,7 +34,8 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, s
     cookingTime: [false, false, false],
     calorieRange: [false, false, false],
     difficultyLevel: [false, false, false],
-    dietType: [false, false, false, false, false, false]
+    dietType: [false, false, false, false, false, false],
+    recipeType: [false, false],
   })
   const [mealPlan, setMealPlan] = useState<Meal[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -192,7 +194,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, s
                       return weeklyMeals.map((meal) => (
                         <div key={`${day}-${type}-${meal.id}`} className="w-1/4 aspect-square p-1 relative lg:w-full lg:h-40">
                           <img 
-                            src={meal.imageUrl} 
+                            src={meal.imageUrl ? meal.imageUrl : "/recipe_placeholder.png"} 
                             className={`${meal.date < moment().startOf("day").format("M/DD/YYYY") && "grayscale-75"}`}
                             onClick={() => handleClick(meal)} // Open modal on meal click
                           />
@@ -245,6 +247,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, s
             startOfTheWeek={currentStartOfWeek}
             filters={filters}
             setFilters={setFilters}
+            setRecipes={setRecipes}
           />
         </div>
       </div>

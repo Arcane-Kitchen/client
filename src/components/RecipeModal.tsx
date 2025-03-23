@@ -447,14 +447,16 @@ const RecipeModal: React.FC<ModalProps> = ({
 
         <div className="overflow-auto h-[87vh] lg:flex lg:flex-col lg:h-3/4 lg:w-auto">
           <div className="lg:p-5 lg:flex-1 lg:flex">
-            {selectedRecipe.image && (
+            {selectedRecipe.image ? (
               <img
                 src={selectedRecipe.image}
                 alt={selectedRecipe.name}
                 className="mb-4 lg:w-1/3 lg:object-cover lg:mb-0"
               />
+            ) : (
+              <img className="object-cover w-full" src="/recipe_placeholder.png" />
             )}
-            <p className={`absolute top-0 right-0 text-white text-2xl px-5 py-1 ${dietColors[selectedRecipe.diet]}`}>{selectedRecipe.diet}</p>
+            {selectedRecipe.diet && <p className={`absolute top-0 right-0 text-white text-2xl px-5 py-1 ${dietColors[selectedRecipe.diet]}`}>{selectedRecipe.diet}</p>}
             <div className="px-5">
               <div className="flex items-center">
                 <h2 className="text-3xl font-bold mr-3">
