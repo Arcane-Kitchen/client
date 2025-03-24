@@ -40,7 +40,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
 
     return (
         <div className="fixed inset-0 bg-[rgba(255,255,255,0.5)] z-50 w-vh h-vh lg:flex lg:justify-center lg:items-center">
-            <div className="bg-white p-6 rounded-md shadow-2xl mt-17 ml-15 h-[92vh] flex flex-col gap-5 justify-between relative lg:mt-0 lg:ml-0 lg:w-1/2 lg:h-fit lg:items-center lg:gap-10">
+            <div className="bg-white p-6 rounded-md shadow-2xl mt-17 ml-10 h-[92vh] flex flex-col gap-5 justify-between relative overflow-y-auto lg:mt-0 lg:ml-0 lg:w-1/2 lg:h-fit lg:items-center lg:gap-10">
                 <div className="flex gap-5 flex-col lg:w-4/5">
                     {/* Header of the filter modal */}
                     <div className="flex gap-2 items-center justify-between">
@@ -75,7 +75,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                             {["< 30 mins", "30 - 60 mins", "> 60 mins"].map((time, index) => (
                                 <button 
                                     key={time}
-                                    className={`cursor-pointer rounded-full py-1 px-2 flex-1 ${filters.cookingTime[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
+                                    className={`cursor-pointer rounded-full py-1 px-1 flex-1 ${filters.cookingTime[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
                                     onClick={() => handleFilterClick("cookingTime", index)}
                                 >{time}</button>
 
@@ -90,7 +90,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                             {["< 300 kcal", "300 - 600 kcal", "> 600 kcal"].map((calories, index) => (
                                 <button
                                     key={calories}
-                                    className={`cursor-pointer rounded-full py-1 px-1 flex-1 ${filters.calorieRange[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
+                                    className={`cursor-pointer rounded-full py-1 flex-1 ${filters.calorieRange[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
                                     onClick={() => handleFilterClick("calorieRange", index)}
                                 >{calories}</button>
 
@@ -102,7 +102,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                     <div className="flex flex-col gap-2">
                         <h1>Difficulty Level</h1>
                         <div className="flex gap-2">
-                            {["Easy", "Moderate", "Difficult"].map((level, index) => (
+                            {["Easy", "Average", "Hard"].map((level, index) => (
                                 <button
                                     key={level}
                                     className={`cursor-pointer rounded-full py-1 px-2 flex-1 ${filters.difficultyLevel[index] ? "bg-[#19243e] text-[#ebd6aa]" : "bg-gray-200 text-[#19243e]"}`}
@@ -115,7 +115,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
 
                     {/* Dietary Restrictions Filter */}
                     <div className="flex flex-col gap-2">
-                        <h1>Difficulty Level</h1>
+                        <h1>Dietary Restriction</h1>
                         <div className="flex flex-wrap gap-2">
                             {["Gluten free", "Lactose free", "Vegetarian", "Vegan", "Nut free", "Keto"].map((dietType, index) => (
                                 <button
@@ -129,7 +129,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
                     </div>
 
                     {/* Recipe Type Filter */}
-                    {user && <div className="flex flex-col gap-2">
+                    {user && <div className="flex flex-col gap-2 mb-10">
                         <h1>Recipe Type</h1>
                         <div className="flex gap-2">
                             {["Public", "Private"].map((recipeType, index) => (
