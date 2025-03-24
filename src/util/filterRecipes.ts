@@ -81,7 +81,7 @@ const filterByDifficultyLevel = (recipe: Recipe, difficultyLevelFilters: boolean
                     if (recipe.difficulty.toLowerCase() === "intermediate") return true;
                     break;
                 case 2: // Difficult
-                    if (recipe.difficulty.toLowerCase() === "difficult") return true;
+                    if (recipe.difficulty.toLowerCase() === "hard") return true;
                     break;
             }
         }

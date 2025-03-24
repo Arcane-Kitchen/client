@@ -44,11 +44,11 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
           <h1 className="font-bold text-xl lg:mb-2 lg:text-3xl">
             {recipe.name}
           </h1>
-          <div className="flex gap-2 mb-2">
+          <div className="flex justify-around gap-1 mb-2">
             <div className="flex gap-0.5 items-center">
               <img src="/level-icon.png" className="size-2.5 lg:size-3" />
               <p className="text-[10px] mb-0 lg:text-sm">
-                {recipe.difficulty === "INTERMEDIATE" ? "Moderate" : recipe.difficulty.charAt(0) +
+                {recipe.difficulty === "INTERMEDIATE" ? "Average" : recipe.difficulty.charAt(0) +
                   recipe.difficulty.slice(1).toLowerCase()}
               </p>
             </div>
@@ -64,54 +64,62 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
             </div>
             {user && (
               <div className="flex items-center">
-                <FaBookOpen className="text-xs" />
+                <FaBookOpen className="text-[10px]" />
                 <p className="text-xs">+20</p>
               </div>
             )}
           </div>
           <p className="text-sm/5 mb-2 lg:text-base/5">{recipe.description}</p>
           {user && (
-            <div className="flex items-center">
-              <PiSwordFill />
-              <p>
-                +
-                {handlePointCalc(
-                  handleRatioCalc(
-                    user.daily_protein_goal,
-                    recipe.nutrition.macronutrients.protein.percentage
-                  ), false
-                )}
-              </p>
-              <FaShieldAlt />
-              <p>
-                +
-                {handlePointCalc(
-                  handleRatioCalc(
-                    user.daily_fat_goal,
-                    recipe.nutrition.macronutrients.fat.percentage
-                  ), false
-                )}
-              </p>
-              <PiSneakerMoveFill />
-              <p>
-                +
-                {handlePointCalc(
-                  handleRatioCalc(
-                    user.daily_carb_goal,
-                    recipe.nutrition.macronutrients.carbs.percentage
-                  ), false
-                )}
-              </p>
-              <MdEnergySavingsLeaf />
-              <p>
-                +
-                {handlePointCalc(
-                  handleRatioCalc(
-                    user.daily_calorie_goal / 3,
-                    recipe.nutrition.calories
-                  ), false
-                )}
-              </p>
+            <div className="flex items-center justify-around text-sm">
+              <div className="flex items-center">
+                <PiSwordFill />
+                <p>
+                  +
+                  {handlePointCalc(
+                    handleRatioCalc(
+                      user.daily_protein_goal,
+                      recipe.nutrition.macronutrients.protein.percentage
+                    ), false
+                  )}
+                </p>
+              </div>
+              <div className="flex items-center">
+                <FaShieldAlt />
+                <p>
+                  +
+                  {handlePointCalc(
+                    handleRatioCalc(
+                      user.daily_fat_goal,
+                      recipe.nutrition.macronutrients.fat.percentage
+                    ), false
+                  )}
+                </p>
+              </div>
+              <div className="flex items-center">
+                <PiSneakerMoveFill />
+                <p>
+                  +
+                  {handlePointCalc(
+                    handleRatioCalc(
+                      user.daily_carb_goal,
+                      recipe.nutrition.macronutrients.carbs.percentage
+                    ), false
+                  )}
+                </p>
+              </div>
+              <div className="flex items-center">
+                <MdEnergySavingsLeaf />
+                <p>
+                  +
+                  {handlePointCalc(
+                    handleRatioCalc(
+                      user.daily_calorie_goal / 3,
+                      recipe.nutrition.calories
+                    ), false
+                  )}
+                </p>
+              </div>
             </div>
           )}
         </div>

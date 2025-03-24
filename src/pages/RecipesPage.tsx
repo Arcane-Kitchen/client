@@ -155,7 +155,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
 
           {filteredRecipes && filteredRecipes.length > 0 ? (
             // Recipe grid display
-            <div className="w-full px-4 pb-5 lg:px-15">
+            <div className="w-full px-3 pb-5 lg:px-15">
               <div className="flex justify-between items-center mb-2">
                 <p>{`${filteredRecipes.length} ${
                   filteredRecipes.length === 1 ? " result" : "results"
