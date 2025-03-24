@@ -37,7 +37,7 @@ const RecipeAddModal: React.FC<RecipeAddModalProps> = ({ isOpen, onClose, recipe
         }
       } catch (error) {
         console.error("Error adding recipe:", error); 
-        setMessage('Error adding recipe');
+        setMessage('Error adding recipe. Please use decimals instead of fractions.');
       } finally {
         setIsAdding(false);
       }
@@ -47,30 +47,41 @@ const RecipeAddModal: React.FC<RecipeAddModalProps> = ({ isOpen, onClose, recipe
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 lg:w-1/2">
-        <h2 className="text-2xl font-bold mb-4">Add Recipe</h2>
-        <textarea
-          value={rawText}
-          onChange={(e) => setRawText(e.target.value)}
-          className="w-full p-2 border rounded-lg mb-4"
-          rows={10}
-          placeholder="Paste raw recipe text here..."
-        />
-        <button
-          onClick={isAdding ? (e) => e.preventDefault() : handleAddRecipe}
-          className={`bg-blue-500 text-white px-4 py-2 rounded-lg ${
-            isAdding ? "cursor-not-allowed" : "cursor-pointer"}`}
-        >
-          {isAdding ? "... Adding" : "Add Recipe"}
-        </button>
-        <button
-          onClick={onClose}
-          className="bg-gray-500 text-white px-4 py-2 rounded-lg ml-2"
-        >
-          Close
-        </button>
-        {message && <p className="mt-4">{message}</p>}
+    <div className="fixed inset-0 bg-[rgba(255,255,255,0.6)] z-50 flex items-center justify-center">
+      <div 
+        className="flex items-center justify-center bg-[url('/input_field.png')] bg-cover bg-center w-full md:bg-[url('/sign-up-box.svg')] md:bg-cover lg:bg-cover lg:w-3/5"
+        style={{
+          height: window.innerHeight <= 800 ? "75vh" : "60vh",
+          padding: window.innerHeight <= 800 ? "0.5rem" : "1rem",
+        }}
+      >
+        <div className="w-4/5 h-full flex flex-col items-center px-6 py-10 gap-4 lg:w-1/2">
+          <h2 className="text-2xl font-bold text-center text-white">Add Recipe</h2>
+          <textarea
+            value={rawText}
+            onChange={(e) => setRawText(e.target.value)}
+            className="h-7/11 shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-white"
+            rows={10}
+            placeholder="Paste raw recipe text here..."
+          />
+          <div className="w-full flex gap-2">
+            <button
+              onClick={isAdding ? (e) => e.preventDefault() : handleAddRecipe}
+              className={`bg-[#ebd6aa] text-[#19243e] px-4 py-2 rounded-lg flex-1 ${
+                isAdding ? "cursor-not-allowed" : "cursor-pointer"}`}
+            >
+              {isAdding ? "... Adding" : "Add Recipe"}
+            </button>
+            <button
+              onClick={onClose}
+              className="bg-gray-400 text-white px-4 py-2 rounded-lg flex-1"
+            >
+              Close
+            </button>
+          </div>
+          {message && <p className="text-white mb-2">{message}</p>}
+        </div>
+
       </div>
     </div>
   );

@@ -14,7 +14,6 @@ import {
 } from "../api/mealPlanApi";
 import moment from "moment";
 import { updateUserPetStat } from "../api/userApi";
-import { fetchARecipeById } from "../api/recipeApi";
 import { addUserActivity } from "../api/activityApi";
 import { handlePointCalc, handleRatioCalc } from "../util/statCalc";
 import { dietColors } from "../util/constants";
@@ -57,7 +56,7 @@ const RecipeModal: React.FC<ModalProps> = ({
   const [message, setMessage] = useState<string>("");
   const [isButtonDisabled, setButtonDisabled] = useState(false);
 
-  const { user, session, isLoading, setIsLoading, setUser } = useAuth();
+  const { user, session, setUser } = useAuth();
   const navigate = useNavigate();
 
   // Select a day for the meal plan
@@ -71,72 +70,30 @@ const RecipeModal: React.FC<ModalProps> = ({
   };
 
   // Handle updating stat
-  const handleUpdateStat = async (
-    statName: string,
-    eatenMacroValue: number,
-    isSubtraction: boolean
-  ) => {
-    switch (statName) {
-      case "carb":
-        if (user?.daily_carb_goal) {
-          const ratio = handleRatioCalc(user.daily_carb_goal, eatenMacroValue);
-          const points = handlePointCalc(ratio, isSubtraction);
-          await updateUserPetStat(
-            user.id,
-            user.pet_carb_exp + points,
-            "carb",
-            session!.access_token
-          );
-          return points;
-        }
-        break;
-      case "fat":
-        if (user?.daily_fat_goal) {
-          const ratio = handleRatioCalc(user.daily_fat_goal, eatenMacroValue);
-          const points = handlePointCalc(ratio, isSubtraction);
-          await updateUserPetStat(
-            user.id,
-            user.pet_fat_exp + points,
-            "fat",
-            session!.access_token
-          );
-          return points;
-        }
-        break;
-      case "protein":
-        if (user?.daily_protein_goal) {
-          const ratio = handleRatioCalc(
-            user.daily_protein_goal,
-            eatenMacroValue
-          );
-          const points = handlePointCalc(ratio, isSubtraction);
-          await updateUserPetStat(
-            user.id,
-            user.pet_protein_exp + points,
-            "protein",
-            session!.access_token
-          );
-          return points;
-        }
-        break;
-      case "calorie":
-        if (user?.daily_calorie_goal) {
-          const ratio = handleRatioCalc(
-            user.daily_calorie_goal / 3,
-            eatenMacroValue
-          );
-          const points = handlePointCalc(ratio, isSubtraction);
-          await updateUserPetStat(
-            user.id,
-            user.pet_calorie_exp + points,
-            "calorie",
-            session!.access_token
-          );
-          return points;
-        }
-        break;
+  const handleUpdateAllStats = async (allStats: {calorie: number, carb: number, fat: number, protein: number}, isSubtraction:boolean) => {
+    if (user && session) {
+      const carbRatio = handleRatioCalc(user.daily_carb_goal, allStats.carb);
+      const carbPoints = handlePointCalc(carbRatio, isSubtraction);
+
+      const fatRatio = handleRatioCalc(user.daily_fat_goal, allStats.fat);
+      const fatPoints = handlePointCalc(fatRatio, isSubtraction);
+
+      const proteinRatio = handleRatioCalc(user.daily_protein_goal, allStats.protein);
+      const proteinPoints = handlePointCalc(proteinRatio, isSubtraction);
+
+      const calorieRatio = handleRatioCalc(user.daily_calorie_goal / 3, allStats.calorie);
+      const caloriePoints = handlePointCalc(calorieRatio, isSubtraction);
+
+      await updateUserPetStat(user.id, { 
+        carb: user.pet_carb_exp  + carbPoints,
+        fat: user.pet_fat_exp + fatPoints,
+        protein: user.pet_protein_exp + proteinPoints,
+        calorie: user.pet_calorie_exp + caloriePoints
+      }, session.access_token)
+
+      return { carb: carbPoints, fat: fatPoints,  protein: proteinPoints, calorie: caloriePoints}
     }
-  };
+  }
 
   // Add recipe to the meal plan
   const handleAddClick = async () => {
@@ -151,6 +108,8 @@ const RecipeModal: React.FC<ModalProps> = ({
       }
 
       try {
+        setButtonDisabled(true);
+
         const existingMealPlan = mealPlan?.find(
           (meal) =>
             meal.date === selectedDate.format("M/DD/YYYY") &&
@@ -196,12 +155,13 @@ const RecipeModal: React.FC<ModalProps> = ({
         if (newMeal) {
           await updateUserPetStat(
             user.id,
-            user.pet_wisdom_exp + 20,
-            "wisdom",
+            { wisdom: user.pet_wisdom_exp + 20 },
             session.access_token
           );
+
           showMessage(`Recipe added to meal plan: Wisdom +20`);
           setMealPlan([...mealPlan, newMeal.mealPlan]);
+
           // update current page user wisdom exp so that a user can add muliple recipes in a row and get all the wisdom points
           const updatedUser = { ...user };
           updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp + 20;
@@ -217,6 +177,12 @@ const RecipeModal: React.FC<ModalProps> = ({
         await addUserActivity(user.id, selectedRecipe.id);
       } catch (error: any) {
         console.error("Error adding/updating meal plan:", error);
+      } finally {
+        setButtonDisabled(false);
+        setTimeout(() => {
+          finishAdding();
+          onClose();
+        }, 1500);
       }
     }
   };
@@ -249,109 +215,72 @@ const RecipeModal: React.FC<ModalProps> = ({
               hasBeenEaten: !selectedMeal.hasBeenEaten,
             }
           );
-          setSelectedMeal(meal);
-          setMealPlan(updatedMealPlan);
-
+          
           // if meal was uneaten (this block), subtract strength, defense, dex, and stamina points (selectedMeal.hasBeenEaten is reversed)
           if (selectedMeal.hasBeenEaten) {
             // first, grab eaten meal's nutrition info
-            const recipe = await fetchARecipeById(meal.recipeId);
-            const nutrition = recipe.nutrition;
-            const eatenCalories = nutrition.calories;
-            const eatenCarbPercent = nutrition.macronutrients.carbs.percentage;
-            const eatenFatPercent = nutrition.macronutrients.fat.percentage;
-            const eatenProteinPercent =
-              nutrition.macronutrients.protein.percentage;
+            const eatenCalories = meal.calories;
+            const eatenCarbPercent = meal.macronutrients.carbs;
+            const eatenFatPercent = meal.macronutrients.fat;
+            const eatenProteinPercent = meal.macronutrients.protein;
+            
             // next, calculate points for each stat and update
-            const caloriePoints = await handleUpdateStat(
-              "calorie",
-              eatenCalories,
-              true
-            );
-            const carbPoints = await handleUpdateStat(
-              "carb",
-              eatenCarbPercent,
-              true
-            );
-            const fatPoints = await handleUpdateStat(
-              "fat",
-              eatenFatPercent,
-              true
-            );
-            const proteinPoints = await handleUpdateStat(
-              "protein",
-              eatenProteinPercent,
-              true
-            );
-            // update current page user data to make sure eating multiple things in a row gives all the points
-            const updatedUser = { ...user };
-            if (proteinPoints)
-              updatedUser.pet_protein_exp =
-                updatedUser.pet_protein_exp + proteinPoints;
-            if (fatPoints)
-              updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
-            if (carbPoints)
-              updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
-            if (caloriePoints)
-              updatedUser.pet_calorie_exp =
-                updatedUser.pet_calorie_exp + caloriePoints;
-
+            const allPoints = await handleUpdateAllStats({ 
+              calorie: eatenCalories,
+              carb: eatenCarbPercent,
+              fat: eatenFatPercent,
+              protein: eatenProteinPercent
+            }, true)
+            
             showMessage(
-              `Strength ${proteinPoints} Defense ${fatPoints} Dexterity ${carbPoints} Stamina ${caloriePoints}`
+              `Strength ${allPoints?.protein} Defense ${allPoints?.fat} Dexterity ${allPoints?.carb} Stamina ${allPoints?.calorie}`
             );
 
             setTimeout(() => {
+              setSelectedMeal(meal);
+              setMealPlan(updatedMealPlan);
+              // update current page user data to make sure eating multiple things in a row gives all the points
+              const updatedUser = { ...user };
+              if (allPoints) {
+                updatedUser.pet_protein_exp += allPoints.protein;
+                updatedUser.pet_fat_exp += allPoints.fat;
+                updatedUser.pet_carb_exp += allPoints.carb;
+                updatedUser.pet_calorie_exp += allPoints.calorie;
+              }
               setUser(updatedUser);
+              onClose();
             }, 3000);
           } else if (!selectedMeal.hasBeenEaten) {
             // if meal was eaten (this block), add stats
             // first, grab eaten meal's nutrition info
-            const recipe = await fetchARecipeById(meal.recipeId);
-            const nutrition = recipe.nutrition;
-            const eatenCalories = nutrition.calories;
-            const eatenCarbPercent = nutrition.macronutrients.carbs.percentage;
-            const eatenFatPercent = nutrition.macronutrients.fat.percentage;
-            const eatenProteinPercent =
-              nutrition.macronutrients.protein.percentage;
+            const eatenCalories = meal.calories;
+            const eatenCarbPercent = meal.macronutrients.carbs;
+            const eatenFatPercent = meal.macronutrients.fat;
+            const eatenProteinPercent = meal.macronutrients.protein;
+
             // next, calculate points for each stat and update
-            const caloriePoints = await handleUpdateStat(
-              "calorie",
-              eatenCalories,
-              false
-            );
-            const carbPoints = await handleUpdateStat(
-              "carb",
-              eatenCarbPercent,
-              false
-            );
-            const fatPoints = await handleUpdateStat(
-              "fat",
-              eatenFatPercent,
-              false
-            );
-            const proteinPoints = await handleUpdateStat(
-              "protein",
-              eatenProteinPercent,
-              false
-            );
-            // update current page user data to make sure eating multiple things in a row gives all the points
-            const updatedUser = { ...user };
-            if (proteinPoints)
-              updatedUser.pet_protein_exp =
-                updatedUser.pet_protein_exp + proteinPoints;
-            if (fatPoints)
-              updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
-            if (carbPoints)
-              updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
-            if (caloriePoints)
-              updatedUser.pet_calorie_exp =
-                updatedUser.pet_calorie_exp + caloriePoints;
+            const allPoints = await handleUpdateAllStats({ 
+              calorie: eatenCalories,
+              carb: eatenCarbPercent,
+              fat: eatenFatPercent,
+              protein: eatenProteinPercent
+            }, false)
 
             showMessage(
-              `Strength +${proteinPoints} Defense +${fatPoints} Dexterity +${carbPoints} Stamina +${caloriePoints}`
+              `Strength +${allPoints?.protein} Defense +${allPoints?.fat} Dexterity +${allPoints?.carb} Stamina +${allPoints?.calorie}`
             );
+
             setTimeout(() => {
+              // update current page user data to make sure eating multiple things in a row gives all the points
+              const updatedUser = { ...user };
+              if (allPoints) {
+                updatedUser.pet_protein_exp += allPoints.protein;
+                updatedUser.pet_fat_exp += allPoints.fat;
+                updatedUser.pet_carb_exp += allPoints.carb;
+                updatedUser.pet_calorie_exp += allPoints.calorie;
+              }
               setUser(updatedUser);
+              onClose();
             }, 3000);
           }
 
@@ -403,18 +332,16 @@ const RecipeModal: React.FC<ModalProps> = ({
       const updatedMealPlan = mealPlan.filter(
         (meal) => meal.id !== selectedMeal.id
       );
-      setMealPlan(updatedMealPlan);
       // subtract 20 points of wisdom if removing meal from plan
       await updateUserPetStat(
-        user.id,
-        user.pet_wisdom_exp - 20,
-        "wisdom",
+        user.id, { wisdom: user.pet_wisdom_exp - 20 },
         session.access_token
       );
-      const updatedUser = { ...user };
-      updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp - 20;
       showMessage("Wisdom -20");
       setTimeout(() => {
+        setMealPlan(updatedMealPlan);
+        const updatedUser = { ...user };
+        updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp - 20;
         setUser(updatedUser);
         onClose();
       }, 3000);
@@ -449,7 +376,12 @@ const RecipeModal: React.FC<ModalProps> = ({
           />
         </button>
 
-        <div className="overflow-auto h-[87vh] lg:flex lg:flex-col lg:h-3/4 lg:w-auto">
+        <div 
+          className="overflow-auto lg:flex lg:flex-col lg:h-3/4 lg:w-auto"
+          style={{
+            height: window.innerHeight <= 800 ? "85vh" : "87vh",
+          }}
+        >
           <div className="lg:p-5 lg:flex-1 lg:flex">
             {selectedRecipe.image ? (
               <img
@@ -604,12 +536,16 @@ const RecipeModal: React.FC<ModalProps> = ({
 
         {/* Add meal plan functionality */}
         <div
-          className={`absolute bottom-0 left-0 w-full flex gap-2 border-t-2 p-4 lg:h-1/4 lg:justify-center lg:items-center ${
+          className={`absolute bottom-0 left-0 w-full flex gap-2 border-t-2 lg:h-1/4 lg:justify-center lg:items-center ${
             !user ? "bg-amber-50 border-amber-50" : " border-gray-400"
           }`}
+          style={{
+            padding: window.innerHeight <= 800 ? "0.75rem" : window.innerHeight <= 900 ? "1rem" : "1.25rem",
+            height: window.innerHeight <= 800 ? "15vh" : "13vh",
+          }}
         >
           {user && selectedMeal ? (
-            <div className="flex-1 flex justify-center gap-4">
+            <div className="flex-1 flex justify-center gap-4 py-4">
               <button
                 className={`py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 hover:shadow-lg ${
                   selectedMeal && selectedMeal.hasBeenEaten
@@ -682,33 +618,42 @@ const RecipeModal: React.FC<ModalProps> = ({
                   ))}
                 </div>
               </div>
-              <button
-                className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 ${
-                  isLoading ? "cursor-not-allowed" : "cursor-pointer"
-                }`}
-                onClick={isLoading ? (e) => e.preventDefault() : handleAddClick}
-              >
-                <h1 className="text-white">Add</h1>
-              </button>
+              <div className="flex-1 flex items-center justify-center">
+                <button
+                  className={`bg-[url('/button-box.svg')] bg-cover aspect-[3/2] bg-center flex-1 ${
+                    isButtonDisabled ? "cursor-not-allowed" : "cursor-pointer"
+                  }`}
+                  onClick={isButtonDisabled ? (e) => e.preventDefault() : handleAddClick}
+                >
+                  <h1 className="text-white">Add</h1>
+                </button>
+              </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full">
-              <p className="text-center text-[#19243e]">
-                Sign up or log in now to build your meal plan!
-              </p>
-              <div className="flex items-center justify-center gap-2 lg:w-full">
-                <button
-                  className="bg-[#19243e] text-white py-2 px-6 rounded-lg w-1/3 hover:cursor-pointer hover:scale-105 hover:shadow-lg"
-                  onClick={() => navigate("/signup")}
-                >
-                  Sign Up
-                </button>
-                <button
-                  className="border-1 border-[#19243e] text-[#19243e] py-2 px-6 rounded-lg w-1/3 hover:cursor-pointer hover:scale-105 hover:shadow-lg"
-                  onClick={() => navigate("/login")}
-                >
-                  Login
-                </button>
+            <div 
+              className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full"
+              style={{
+                height: window.innerHeight <= 800 ? "15vh" : "13vh",
+              }}
+            >
+              <div className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full">
+                <p className="text-center text-[#19243e]">
+                  Sign up or log in now to build your meal plan!
+                </p>
+                <div className="flex items-center justify-center gap-2 lg:w-full">
+                  <button
+                    className="bg-[#19243e] text-white py-2 px-6 rounded-lg w-1/3 hover:cursor-pointer hover:scale-105 hover:shadow-lg"
+                    onClick={() => navigate("/signup")}
+                  >
+                    Sign Up
+                  </button>
+                  <button
+                    className="border-1 border-[#19243e] text-[#19243e] py-2 px-6 rounded-lg w-1/3 hover:cursor-pointer hover:scale-105 hover:shadow-lg"
+                    onClick={() => navigate("/login")}
+                  >
+                    Login
+                  </button>
+                </div>
               </div>
             </div>
           )}

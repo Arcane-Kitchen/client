@@ -36,9 +36,14 @@ const Login: React.FC = () => {
         backgroundPosition: "center",
       }}
     >
-      <div className="p-4 flex items-center justify-center bg-[url('/input_field.png')] bg-contain bg-center h-[56vh] w-full md:bg-[url('/sign-up-box.svg')] md:bg-cover lg:bg-cover lg:w-3/5">
+      <div 
+        className="p-4 flex items-center justify-center bg-[url('/input_field.png')] bg-contain bg-center w-full md:bg-[url('/sign-up-box.svg')] md:bg-cover lg:bg-cover lg:w-3/5"
+        style={{
+          height: window.innerHeight <= 800 ? "67vh" : "56vh",
+        }}
+      >
         {/* Login Form */}
-        <div className=" w-4/5 h-full flex flex-col items-center justify-center md:w-3/5 lg:w-3/5">
+        <div className="w-4/5 h-full flex flex-col items-center justify-center md:w-3/5 lg:w-3/5">
           <h2 className="text-2xl font-bold mb-4 text-center text-white lg:text-3xl">
             Login
           </h2>

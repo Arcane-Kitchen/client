@@ -37,7 +37,7 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
 
   return (
     <div className="bg-[url('/background.jpg')] bg-cover bg-center min-h-screen max-h-screen overflow-y-auto overflow-x-hidden">
-      <div className="h-full not-first-of-type:flex flex-col p-8 gap-10 lg:px-15 lg:gap-5">
+      <div className="min-h-screen flex flex-col p-8 gap-10 lg:px-15 lg:gap-5 backdrop-blur-[1.5px]">
         <h1 className="text-4xl font-black text-[#19243e] lg:text-9xl">Level up your health with Arcane Kitchen</h1>
         <div className="flex flex-col gap-3 lg:flex-row-reverse lg:gap-10">
           {/* Pet Dragon Section */}
@@ -118,7 +118,11 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
           </div>
           {/* Sign up call-to-action */}
           <div className="flex flex-col gap-3 lg:w-1/2 lg:gap-8">
-            <p className="text-amber-50 text-2xl lg:text-4xl">Join the adventure and watch your pet grow stronger as you make healthier food choices!</p>
+            <p 
+              className="text-amber-50 text-2xl lg:text-4xl"
+              style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+            >
+              Join the adventure and watch your pet grow stronger as you make healthier food choices!</p>
             <button 
               className={`text-amber-50 text-xl bg-[#19243e] opacity-80 p-2 w-full rounded-lg cursor-pointer hover:scale-105 hover:shadow-lg hover:text-[#ebd6aa] hover:opacity-100 lg:w-2/3 lg:text-2xl lg:p-4 ${session ? "hidden" : "block"}`}
               onClick={() => navigate("/signup")}
@@ -136,7 +140,11 @@ const Home: React.FC<HomeProps> = ({ recipes }) => {
 
         {/* Recipe Section */}
         <div className="flex flex-col gap-3">
-          <p className="text-amber-50 text-2xl lg:hidden">Browse a list of delicious, healthy recipes that will fuel your pet's growth.</p>
+          <p 
+            className="text-amber-50 text-2xl lg:hidden"
+            style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)" }}
+          >
+            Browse a list of delicious, healthy recipes that will fuel your pet's growth.</p>
           {/* Recipe Carousel */}
           <div className="flex w-full items-center justify-between">
           

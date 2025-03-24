@@ -60,9 +60,14 @@ export const updateUserLastLoginById = async (
 
 // update user's pet stat by chosen amount
 export const updateUserPetStat = async (
-  id: string | undefined,
-  amount: number,
-  stat: string,
+  id: string, stats : {
+    carb?: number
+    fat?: number,
+    protein?: number,
+    calorie?: number,
+    wisdom?: number,
+    enemiesDefeated?: number,
+  },
   token: string
 ) => {
   try {
@@ -74,7 +79,7 @@ export const updateUserPetStat = async (
         Authorization: `Bearer ${token}`,
         "X-Supabase-Auth": token,
       },
-      body: JSON.stringify({ statAmount: amount, chosenStat: stat }),
+      body: JSON.stringify(stats),
     });
 
     if (!response.ok) {

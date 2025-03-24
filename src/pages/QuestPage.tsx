@@ -89,9 +89,8 @@ const QuestPage: React.FC = () => {
       user.pet_wisdom_exp >= enemy.stats.wisdomExp
     ) {
       await updateUserPetStat(
-        user.id,
-        user.enemies_defeated + 1,
-        "enemies_defeated",
+        user.id, 
+        { enemiesDefeated: user.enemies_defeated + 1},
         session.access_token
       );
       setFightResult("win");

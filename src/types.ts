@@ -37,6 +37,11 @@ export interface Meal {
   hasBeenEaten: boolean;
   exp: number;
   calories: number;
+  macronutrients: {
+    fat: number;
+    carbs: number;
+    protein: number;
+  }
 }
 
 export interface Filter {

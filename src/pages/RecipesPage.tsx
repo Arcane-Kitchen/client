@@ -162,7 +162,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
                 } found`}</p>
                 {user && <button
                   onClick={() => setIsAddModalOpen(true)}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                  className="bg-[#19243e] text-white px-4 py-2 rounded-lg"
                 >
                   Add Recipe
                 </button>}
