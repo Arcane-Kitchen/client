@@ -14,19 +14,19 @@ const ProfilePage: React.FC = () => {
   const dragonImage = user?.pet_img_normal;
 
   const [strengthColor, setStrengthColor] = useState<string>(
-    "[&::-webkit-progress-value]:bg-yellow-500"
+    "[&::-webkit-progress-value]:bg-green-500"
   );
   const [defenseColor, setDefenseColor] = useState<string>(
-    "[&::-webkit-progress-value]:bg-yellow-500"
+    "[&::-webkit-progress-value]:bg-green-500"
   );
   const [dexterityColor, setDexterityColor] = useState<string>(
-    "[&::-webkit-progress-value]:bg-yellow-500"
+    "[&::-webkit-progress-value]:bg-green-500"
   );
   const [staminaColor, setStaminaColor] = useState<string>(
-    "[&::-webkit-progress-value]:bg-yellow-500"
+    "[&::-webkit-progress-value]:bg-green-500"
   );
   const [wisdomColor, setWisdomColor] = useState<string>(
-    "[&::-webkit-progress-value]:bg-yellow-500"
+    "[&::-webkit-progress-value]:bg-green-500"
   );
 
   useEffect(() => {
@@ -34,22 +34,14 @@ const ProfilePage: React.FC = () => {
   }, [user]);
 
   const colorPicker = (exp: number) => {
-    if (exp < 17) {
-      return "[&::-webkit-progress-value]:bg-green-200";
-    }
     if (exp < 34) {
-      return "[&::-webkit-progress-value]:bg-green-300";
-    }
-    if (exp < 51) {
       return "[&::-webkit-progress-value]:bg-green-400";
     }
-    if (exp < 68) {
+    if (exp < 67) {
       return "[&::-webkit-progress-value]:bg-green-500";
     }
-    if (exp < 85) {
-      return "[&::-webkit-progress-value]:bg-green-600";
-    }
-    return "[&::-webkit-progress-value]:bg-green-700";
+
+    return "[&::-webkit-progress-value]:bg-green-600";
   };
 
   const checkDailyStatColors = async () => {

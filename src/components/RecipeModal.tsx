@@ -17,7 +17,7 @@ import { updateUserPetStat } from "../api/userApi";
 import { fetchARecipeById } from "../api/recipeApi";
 import { addUserActivity } from "../api/activityApi";
 import { handlePointCalc, handleRatioCalc } from "../util/statCalc";
-import { dietColors } from "../util/constants"
+import { dietColors } from "../util/constants";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -151,8 +151,6 @@ const RecipeModal: React.FC<ModalProps> = ({
       }
 
       try {
-        setIsLoading(true);
-
         const existingMealPlan = mealPlan?.find(
           (meal) =>
             meal.date === selectedDate.format("M/DD/YYYY") &&
@@ -207,7 +205,11 @@ const RecipeModal: React.FC<ModalProps> = ({
           // update current page user wisdom exp so that a user can add muliple recipes in a row and get all the wisdom points
           const updatedUser = { ...user };
           updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp + 20;
-          setUser(updatedUser);
+          setTimeout(() => {
+            finishAdding();
+            setUser(updatedUser);
+            onClose();
+          }, 3000);
         } else {
           showMessage("Error adding recipe to meal plan, try again");
         }
@@ -215,12 +217,6 @@ const RecipeModal: React.FC<ModalProps> = ({
         await addUserActivity(user.id, selectedRecipe.id);
       } catch (error: any) {
         console.error("Error adding/updating meal plan:", error);
-      } finally {
-        setIsLoading(false);
-        setTimeout(() => {
-          finishAdding();
-          onClose();
-        }, 1500);
       }
     }
   };
@@ -299,11 +295,14 @@ const RecipeModal: React.FC<ModalProps> = ({
             if (caloriePoints)
               updatedUser.pet_calorie_exp =
                 updatedUser.pet_calorie_exp + caloriePoints;
-            setUser(updatedUser);
 
             showMessage(
               `Strength ${proteinPoints} Defense ${fatPoints} Dexterity ${carbPoints} Stamina ${caloriePoints}`
             );
+
+            setTimeout(() => {
+              setUser(updatedUser);
+            }, 3000);
           } else if (!selectedMeal.hasBeenEaten) {
             // if meal was eaten (this block), add stats
             // first, grab eaten meal's nutrition info
@@ -347,11 +346,13 @@ const RecipeModal: React.FC<ModalProps> = ({
             if (caloriePoints)
               updatedUser.pet_calorie_exp =
                 updatedUser.pet_calorie_exp + caloriePoints;
-            setUser(updatedUser);
 
             showMessage(
               `Strength +${proteinPoints} Defense +${fatPoints} Dexterity +${carbPoints} Stamina +${caloriePoints}`
             );
+            setTimeout(() => {
+              setUser(updatedUser);
+            }, 3000);
           }
 
           // Add activity for cooking a meal
@@ -380,6 +381,9 @@ const RecipeModal: React.FC<ModalProps> = ({
           }
           // reenable cook button once finished (both in try and catch block)
           setButtonDisabled(false);
+          setTimeout(() => {
+            onClose();
+          }, 1500);
         } catch (error: any) {
           console.error("Error updating meal plan:", error);
           setButtonDisabled(false);
@@ -409,9 +413,9 @@ const RecipeModal: React.FC<ModalProps> = ({
       );
       const updatedUser = { ...user };
       updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp - 20;
-      setUser(updatedUser);
       showMessage("Wisdom -20");
       setTimeout(() => {
+        setUser(updatedUser);
         onClose();
       }, 3000);
     }
@@ -454,9 +458,20 @@ const RecipeModal: React.FC<ModalProps> = ({
                 className="mb-4 lg:w-1/3 lg:object-cover lg:mb-0"
               />
             ) : (
-              <img className="object-cover w-full" src="/recipe_placeholder.png" />
+              <img
+                className="object-cover w-full"
+                src="/recipe_placeholder.png"
+              />
             )}
-            {selectedRecipe.diet && <p className={`absolute top-0 right-0 text-white text-2xl px-5 py-1 ${dietColors[selectedRecipe.diet]}`}>{selectedRecipe.diet}</p>}
+            {selectedRecipe.diet && (
+              <p
+                className={`absolute top-0 right-0 text-white text-2xl px-5 py-1 ${
+                  dietColors[selectedRecipe.diet]
+                }`}
+              >
+                {selectedRecipe.diet}
+              </p>
+            )}
             <div className="px-5">
               <div className="flex items-center">
                 <h2 className="text-3xl font-bold mr-3">
@@ -486,7 +501,8 @@ const RecipeModal: React.FC<ModalProps> = ({
                           handleRatioCalc(
                             user.daily_calorie_goal / 3,
                             selectedRecipe.nutrition.calories
-                          ), false
+                          ),
+                          false
                         )}
                       </p>
                     </div>
@@ -507,7 +523,8 @@ const RecipeModal: React.FC<ModalProps> = ({
                             user?.daily_fat_goal,
                             selectedRecipe.nutrition.macronutrients.fat
                               .percentage
-                          ), false
+                          ),
+                          false
                         )}
                       </p>
                     </div>
@@ -528,7 +545,8 @@ const RecipeModal: React.FC<ModalProps> = ({
                             user?.daily_carb_goal,
                             selectedRecipe.nutrition.macronutrients.carbs
                               .percentage
-                          ), false
+                          ),
+                          false
                         )}
                       </p>
                     </div>
@@ -549,7 +567,8 @@ const RecipeModal: React.FC<ModalProps> = ({
                             user?.daily_protein_goal,
                             selectedRecipe.nutrition.macronutrients.protein
                               .percentage
-                          ), false
+                          ),
+                          false
                         )}
                       </p>
                     </div>
