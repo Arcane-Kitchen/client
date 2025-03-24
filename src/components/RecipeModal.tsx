@@ -16,7 +16,7 @@ import moment from "moment";
 import { updateUserPetStat } from "../api/userApi";
 import { addUserActivity } from "../api/activityApi";
 import { handlePointCalc, handleRatioCalc } from "../util/statCalc";
-import { dietColors } from "../util/constants"
+import { dietColors } from "../util/constants";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -108,8 +108,11 @@ const RecipeModal: React.FC<ModalProps> = ({
       }
 
       try {
+<<<<<<< HEAD
         setButtonDisabled(true);
 
+=======
+>>>>>>> origin/main
         const existingMealPlan = mealPlan?.find(
           (meal) =>
             meal.date === selectedDate.format("M/DD/YYYY") &&
@@ -165,7 +168,11 @@ const RecipeModal: React.FC<ModalProps> = ({
           // update current page user wisdom exp so that a user can add muliple recipes in a row and get all the wisdom points
           const updatedUser = { ...user };
           updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp + 20;
-          setUser(updatedUser);
+          setTimeout(() => {
+            finishAdding();
+            setUser(updatedUser);
+            onClose();
+          }, 3000);
         } else {
           showMessage("Error adding recipe to meal plan, try again");
         }
@@ -173,12 +180,15 @@ const RecipeModal: React.FC<ModalProps> = ({
         await addUserActivity(user.id, selectedRecipe.id);
       } catch (error: any) {
         console.error("Error adding/updating meal plan:", error);
+<<<<<<< HEAD
       } finally {
         setButtonDisabled(false);
         setTimeout(() => {
           finishAdding();
           onClose();
         }, 1500);
+=======
+>>>>>>> origin/main
       }
     }
   };
@@ -221,6 +231,7 @@ const RecipeModal: React.FC<ModalProps> = ({
             const eatenProteinPercent = meal.macronutrients.protein;
             
             // next, calculate points for each stat and update
+<<<<<<< HEAD
             const allPoints = await handleUpdateAllStats({ 
               calorie: eatenCalories,
               carb: eatenCarbPercent,
@@ -228,11 +239,47 @@ const RecipeModal: React.FC<ModalProps> = ({
               protein: eatenProteinPercent
             }, true)
             
+=======
+            const caloriePoints = await handleUpdateStat(
+              "calorie",
+              eatenCalories,
+              true
+            );
+            const carbPoints = await handleUpdateStat(
+              "carb",
+              eatenCarbPercent,
+              true
+            );
+            const fatPoints = await handleUpdateStat(
+              "fat",
+              eatenFatPercent,
+              true
+            );
+            const proteinPoints = await handleUpdateStat(
+              "protein",
+              eatenProteinPercent,
+              true
+            );
+            // update current page user data to make sure eating multiple things in a row gives all the points
+            const updatedUser = { ...user };
+            if (proteinPoints)
+              updatedUser.pet_protein_exp =
+                updatedUser.pet_protein_exp + proteinPoints;
+            if (fatPoints)
+              updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
+            if (carbPoints)
+              updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
+            if (caloriePoints)
+              updatedUser.pet_calorie_exp =
+                updatedUser.pet_calorie_exp + caloriePoints;
+
+>>>>>>> origin/main
             showMessage(
               `Strength ${allPoints?.protein} Defense ${allPoints?.fat} Dexterity ${allPoints?.carb} Stamina ${allPoints?.calorie}`
             );
 
             setTimeout(() => {
+<<<<<<< HEAD
               setSelectedMeal(meal);
               setMealPlan(updatedMealPlan);
               // update current page user data to make sure eating multiple things in a row gives all the points
@@ -245,6 +292,9 @@ const RecipeModal: React.FC<ModalProps> = ({
               }
               setUser(updatedUser);
               onClose();
+=======
+              setUser(updatedUser);
+>>>>>>> origin/main
             }, 3000);
           } else if (!selectedMeal.hasBeenEaten) {
             // if meal was eaten (this block), add stats
@@ -255,16 +305,52 @@ const RecipeModal: React.FC<ModalProps> = ({
             const eatenProteinPercent = meal.macronutrients.protein;
 
             // next, calculate points for each stat and update
+<<<<<<< HEAD
             const allPoints = await handleUpdateAllStats({ 
               calorie: eatenCalories,
               carb: eatenCarbPercent,
               fat: eatenFatPercent,
               protein: eatenProteinPercent
             }, false)
+=======
+            const caloriePoints = await handleUpdateStat(
+              "calorie",
+              eatenCalories,
+              false
+            );
+            const carbPoints = await handleUpdateStat(
+              "carb",
+              eatenCarbPercent,
+              false
+            );
+            const fatPoints = await handleUpdateStat(
+              "fat",
+              eatenFatPercent,
+              false
+            );
+            const proteinPoints = await handleUpdateStat(
+              "protein",
+              eatenProteinPercent,
+              false
+            );
+            // update current page user data to make sure eating multiple things in a row gives all the points
+            const updatedUser = { ...user };
+            if (proteinPoints)
+              updatedUser.pet_protein_exp =
+                updatedUser.pet_protein_exp + proteinPoints;
+            if (fatPoints)
+              updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
+            if (carbPoints)
+              updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
+            if (caloriePoints)
+              updatedUser.pet_calorie_exp =
+                updatedUser.pet_calorie_exp + caloriePoints;
+>>>>>>> origin/main
 
             showMessage(
               `Strength +${allPoints?.protein} Defense +${allPoints?.fat} Dexterity +${allPoints?.carb} Stamina +${allPoints?.calorie}`
             );
+<<<<<<< HEAD
 
             setTimeout(() => {
               // update current page user data to make sure eating multiple things in a row gives all the points
@@ -277,6 +363,10 @@ const RecipeModal: React.FC<ModalProps> = ({
               }
               setUser(updatedUser);
               onClose();
+=======
+            setTimeout(() => {
+              setUser(updatedUser);
+>>>>>>> origin/main
             }, 3000);
           }
 
@@ -306,6 +396,9 @@ const RecipeModal: React.FC<ModalProps> = ({
           }
           // reenable cook button once finished (both in try and catch block)
           setButtonDisabled(false);
+          setTimeout(() => {
+            onClose();
+          }, 1500);
         } catch (error: any) {
           console.error("Error updating meal plan:", error);
           setButtonDisabled(false);
@@ -330,11 +423,18 @@ const RecipeModal: React.FC<ModalProps> = ({
         user.id, { wisdom: user.pet_wisdom_exp - 20 },
         session.access_token
       );
+<<<<<<< HEAD
       showMessage("Wisdom -20");
       setTimeout(() => {
         setMealPlan(updatedMealPlan);
         const updatedUser = { ...user };
         updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp - 20;
+=======
+      const updatedUser = { ...user };
+      updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp - 20;
+      showMessage("Wisdom -20");
+      setTimeout(() => {
+>>>>>>> origin/main
         setUser(updatedUser);
         onClose();
       }, 3000);
@@ -383,9 +483,20 @@ const RecipeModal: React.FC<ModalProps> = ({
                 className="mb-4 lg:w-1/3 lg:object-cover lg:mb-0"
               />
             ) : (
-              <img className="object-cover w-full" src="/recipe_placeholder.png" />
+              <img
+                className="object-cover w-full"
+                src="/recipe_placeholder.png"
+              />
             )}
-            {selectedRecipe.diet && <p className={`absolute top-0 right-0 text-white text-2xl px-5 py-1 ${dietColors[selectedRecipe.diet]}`}>{selectedRecipe.diet}</p>}
+            {selectedRecipe.diet && (
+              <p
+                className={`absolute top-0 right-0 text-white text-2xl px-5 py-1 ${
+                  dietColors[selectedRecipe.diet]
+                }`}
+              >
+                {selectedRecipe.diet}
+              </p>
+            )}
             <div className="px-5">
               <div className="flex items-center">
                 <h2 className="text-3xl font-bold mr-3">
@@ -415,7 +526,8 @@ const RecipeModal: React.FC<ModalProps> = ({
                           handleRatioCalc(
                             user.daily_calorie_goal / 3,
                             selectedRecipe.nutrition.calories
-                          ), false
+                          ),
+                          false
                         )}
                       </p>
                     </div>
@@ -436,7 +548,8 @@ const RecipeModal: React.FC<ModalProps> = ({
                             user?.daily_fat_goal,
                             selectedRecipe.nutrition.macronutrients.fat
                               .percentage
-                          ), false
+                          ),
+                          false
                         )}
                       </p>
                     </div>
@@ -457,7 +570,8 @@ const RecipeModal: React.FC<ModalProps> = ({
                             user?.daily_carb_goal,
                             selectedRecipe.nutrition.macronutrients.carbs
                               .percentage
-                          ), false
+                          ),
+                          false
                         )}
                       </p>
                     </div>
@@ -478,7 +592,8 @@ const RecipeModal: React.FC<ModalProps> = ({
                             user?.daily_protein_goal,
                             selectedRecipe.nutrition.macronutrients.protein
                               .percentage
-                          ), false
+                          ),
+                          false
                         )}
                       </p>
                     </div>
