@@ -445,7 +445,12 @@ const RecipeModal: React.FC<ModalProps> = ({
           />
         </button>
 
-        <div className="overflow-auto h-[87vh] lg:flex lg:flex-col lg:h-3/4 lg:w-auto">
+        <div 
+          className="overflow-auto lg:flex lg:flex-col lg:h-3/4 lg:w-auto"
+          style={{
+            height: window.innerHeight <= 800 ? "85vh" : "87vh",
+          }}
+        >
           <div className="lg:p-5 lg:flex-1 lg:flex">
             {selectedRecipe.image ? (
               <img
@@ -585,12 +590,16 @@ const RecipeModal: React.FC<ModalProps> = ({
 
         {/* Add meal plan functionality */}
         <div
-          className={`absolute bottom-0 left-0 w-full flex gap-2 border-t-2 p-4 lg:h-1/4 lg:justify-center lg:items-center ${
+          className={`absolute bottom-0 left-0 w-full flex gap-2 border-t-2 lg:h-1/4 lg:justify-center lg:items-center ${
             !user ? "bg-amber-50 border-amber-50" : " border-gray-400"
           }`}
+          style={{
+            padding: window.innerHeight <= 800 ? "0.75rem" : window.innerHeight <= 900 ? "1rem" : "1.25rem",
+            height: window.innerHeight <= 800 ? "15vh" : "13vh",
+          }}
         >
           {user && selectedMeal ? (
-            <div className="flex-1 flex justify-center gap-4">
+            <div className="flex-1 flex justify-center gap-4 py-4">
               <button
                 className={`py-2 px-6 rounded-lg w-2/5 flex items-center justify-center gap-2 cursor-pointer hover:scale-105 hover:shadow-lg ${
                   selectedMeal && selectedMeal.hasBeenEaten
@@ -663,33 +672,42 @@ const RecipeModal: React.FC<ModalProps> = ({
                   ))}
                 </div>
               </div>
-              <button
-                className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 ${
-                  isLoading ? "cursor-not-allowed" : "cursor-pointer"
-                }`}
-                onClick={isLoading ? (e) => e.preventDefault() : handleAddClick}
-              >
-                <h1 className="text-white">Add</h1>
-              </button>
+              <div className="flex-1 flex items-center justify-center">
+                <button
+                  className={`bg-[url('/button-box.svg')] bg-cover aspect-[3/2] bg-center flex-1 ${
+                    isLoading ? "cursor-not-allowed" : "cursor-pointer"
+                  }`}
+                  onClick={isLoading ? (e) => e.preventDefault() : handleAddClick}
+                >
+                  <h1 className="text-white">Add</h1>
+                </button>
+              </div>
             </>
           ) : (
-            <div className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full">
-              <p className="text-center text-[#19243e]">
-                Sign up or log in now to build your meal plan!
-              </p>
-              <div className="flex items-center justify-center gap-2 lg:w-full">
-                <button
-                  className="bg-[#19243e] text-white py-2 px-6 rounded-lg w-1/3 hover:cursor-pointer hover:scale-105 hover:shadow-lg"
-                  onClick={() => navigate("/signup")}
-                >
-                  Sign Up
-                </button>
-                <button
-                  className="border-1 border-[#19243e] text-[#19243e] py-2 px-6 rounded-lg w-1/3 hover:cursor-pointer hover:scale-105 hover:shadow-lg"
-                  onClick={() => navigate("/login")}
-                >
-                  Login
-                </button>
+            <div 
+              className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full"
+              style={{
+                height: window.innerHeight <= 800 ? "15vh" : "13vh",
+              }}
+            >
+              <div className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full">
+                <p className="text-center text-[#19243e]">
+                  Sign up or log in now to build your meal plan!
+                </p>
+                <div className="flex items-center justify-center gap-2 lg:w-full">
+                  <button
+                    className="bg-[#19243e] text-white py-2 px-6 rounded-lg w-1/3 hover:cursor-pointer hover:scale-105 hover:shadow-lg"
+                    onClick={() => navigate("/signup")}
+                  >
+                    Sign Up
+                  </button>
+                  <button
+                    className="border-1 border-[#19243e] text-[#19243e] py-2 px-6 rounded-lg w-1/3 hover:cursor-pointer hover:scale-105 hover:shadow-lg"
+                    onClick={() => navigate("/login")}
+                  >
+                    Login
+                  </button>
+                </div>
               </div>
             </div>
           )}
