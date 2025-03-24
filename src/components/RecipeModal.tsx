@@ -108,11 +108,8 @@ const RecipeModal: React.FC<ModalProps> = ({
       }
 
       try {
-<<<<<<< HEAD
         setButtonDisabled(true);
 
-=======
->>>>>>> origin/main
         const existingMealPlan = mealPlan?.find(
           (meal) =>
             meal.date === selectedDate.format("M/DD/YYYY") &&
@@ -180,15 +177,12 @@ const RecipeModal: React.FC<ModalProps> = ({
         await addUserActivity(user.id, selectedRecipe.id);
       } catch (error: any) {
         console.error("Error adding/updating meal plan:", error);
-<<<<<<< HEAD
       } finally {
         setButtonDisabled(false);
         setTimeout(() => {
           finishAdding();
           onClose();
         }, 1500);
-=======
->>>>>>> origin/main
       }
     }
   };
@@ -231,7 +225,6 @@ const RecipeModal: React.FC<ModalProps> = ({
             const eatenProteinPercent = meal.macronutrients.protein;
             
             // next, calculate points for each stat and update
-<<<<<<< HEAD
             const allPoints = await handleUpdateAllStats({ 
               calorie: eatenCalories,
               carb: eatenCarbPercent,
@@ -239,47 +232,11 @@ const RecipeModal: React.FC<ModalProps> = ({
               protein: eatenProteinPercent
             }, true)
             
-=======
-            const caloriePoints = await handleUpdateStat(
-              "calorie",
-              eatenCalories,
-              true
-            );
-            const carbPoints = await handleUpdateStat(
-              "carb",
-              eatenCarbPercent,
-              true
-            );
-            const fatPoints = await handleUpdateStat(
-              "fat",
-              eatenFatPercent,
-              true
-            );
-            const proteinPoints = await handleUpdateStat(
-              "protein",
-              eatenProteinPercent,
-              true
-            );
-            // update current page user data to make sure eating multiple things in a row gives all the points
-            const updatedUser = { ...user };
-            if (proteinPoints)
-              updatedUser.pet_protein_exp =
-                updatedUser.pet_protein_exp + proteinPoints;
-            if (fatPoints)
-              updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
-            if (carbPoints)
-              updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
-            if (caloriePoints)
-              updatedUser.pet_calorie_exp =
-                updatedUser.pet_calorie_exp + caloriePoints;
-
->>>>>>> origin/main
             showMessage(
               `Strength ${allPoints?.protein} Defense ${allPoints?.fat} Dexterity ${allPoints?.carb} Stamina ${allPoints?.calorie}`
             );
 
             setTimeout(() => {
-<<<<<<< HEAD
               setSelectedMeal(meal);
               setMealPlan(updatedMealPlan);
               // update current page user data to make sure eating multiple things in a row gives all the points
@@ -292,9 +249,6 @@ const RecipeModal: React.FC<ModalProps> = ({
               }
               setUser(updatedUser);
               onClose();
-=======
-              setUser(updatedUser);
->>>>>>> origin/main
             }, 3000);
           } else if (!selectedMeal.hasBeenEaten) {
             // if meal was eaten (this block), add stats
@@ -305,52 +259,16 @@ const RecipeModal: React.FC<ModalProps> = ({
             const eatenProteinPercent = meal.macronutrients.protein;
 
             // next, calculate points for each stat and update
-<<<<<<< HEAD
             const allPoints = await handleUpdateAllStats({ 
               calorie: eatenCalories,
               carb: eatenCarbPercent,
               fat: eatenFatPercent,
               protein: eatenProteinPercent
             }, false)
-=======
-            const caloriePoints = await handleUpdateStat(
-              "calorie",
-              eatenCalories,
-              false
-            );
-            const carbPoints = await handleUpdateStat(
-              "carb",
-              eatenCarbPercent,
-              false
-            );
-            const fatPoints = await handleUpdateStat(
-              "fat",
-              eatenFatPercent,
-              false
-            );
-            const proteinPoints = await handleUpdateStat(
-              "protein",
-              eatenProteinPercent,
-              false
-            );
-            // update current page user data to make sure eating multiple things in a row gives all the points
-            const updatedUser = { ...user };
-            if (proteinPoints)
-              updatedUser.pet_protein_exp =
-                updatedUser.pet_protein_exp + proteinPoints;
-            if (fatPoints)
-              updatedUser.pet_fat_exp = updatedUser.pet_fat_exp + fatPoints;
-            if (carbPoints)
-              updatedUser.pet_carb_exp = updatedUser.pet_carb_exp + carbPoints;
-            if (caloriePoints)
-              updatedUser.pet_calorie_exp =
-                updatedUser.pet_calorie_exp + caloriePoints;
->>>>>>> origin/main
 
             showMessage(
               `Strength +${allPoints?.protein} Defense +${allPoints?.fat} Dexterity +${allPoints?.carb} Stamina +${allPoints?.calorie}`
             );
-<<<<<<< HEAD
 
             setTimeout(() => {
               // update current page user data to make sure eating multiple things in a row gives all the points
@@ -363,10 +281,6 @@ const RecipeModal: React.FC<ModalProps> = ({
               }
               setUser(updatedUser);
               onClose();
-=======
-            setTimeout(() => {
-              setUser(updatedUser);
->>>>>>> origin/main
             }, 3000);
           }
 
@@ -423,18 +337,11 @@ const RecipeModal: React.FC<ModalProps> = ({
         user.id, { wisdom: user.pet_wisdom_exp - 20 },
         session.access_token
       );
-<<<<<<< HEAD
       showMessage("Wisdom -20");
       setTimeout(() => {
         setMealPlan(updatedMealPlan);
         const updatedUser = { ...user };
         updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp - 20;
-=======
-      const updatedUser = { ...user };
-      updatedUser.pet_wisdom_exp = updatedUser.pet_wisdom_exp - 20;
-      showMessage("Wisdom -20");
-      setTimeout(() => {
->>>>>>> origin/main
         setUser(updatedUser);
         onClose();
       }, 3000);
