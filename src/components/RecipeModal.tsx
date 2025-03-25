@@ -536,7 +536,7 @@ const RecipeModal: React.FC<ModalProps> = ({
 
         {/* Add meal plan functionality */}
         <div
-          className={`fixed bottom-0 left-0 w-full flex gap-2 border-t-2 lg:h-1/4 lg:justify-center lg:items-center ${
+          className={`fixed z-60 bottom-0 left-0 w-full flex gap-2 border-t-2 lg:h-1/4 lg:justify-center lg:items-center ${
             !user ? "bg-amber-50 border-amber-50" : " border-gray-400"
           }`}
           style={{
