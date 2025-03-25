@@ -359,7 +359,7 @@ const RecipeModal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 w-vh h-vh lg:flex lg:justify-center lg:items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 w-full h-screen lg:flex lg:justify-center lg:items-center">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center h-full w-full relative lg:rounded-lg lg:h-2/3 lg:w-1/2 lg:p-5 ">
         {/* Close button */}
         <button
@@ -536,7 +536,7 @@ const RecipeModal: React.FC<ModalProps> = ({
 
         {/* Add meal plan functionality */}
         <div
-          className={`absolute bottom-0 left-0 w-full flex gap-2 border-t-2 lg:h-1/4 lg:justify-center lg:items-center ${
+          className={`fixed bottom-0 left-0 w-full flex gap-2 border-t-2 lg:h-1/4 lg:justify-center lg:items-center ${
             !user ? "bg-amber-50 border-amber-50" : " border-gray-400"
           }`}
           style={{
