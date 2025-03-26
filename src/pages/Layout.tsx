@@ -7,7 +7,7 @@ const Layout = () => {
     <div className="bg-[url('/background.jpg')] bg-cover bg-center min-h-screen max-h-screen">
       <Navbar />
       <div 
-        className="overflow-y-auto pt-[4rem] h-[calc(100dvh - 4rem)] lg:pt-24 flex flex-col"
+        className="overflow-y-auto pt-[4rem] h-[calc(100vh - 4rem)] lg:pt-24 flex flex-col"
         style={{
           WebkitOverflowScrolling: "touch"
         }}>
