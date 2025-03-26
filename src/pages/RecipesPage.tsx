@@ -103,7 +103,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({
   };
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-[9999] w-full min-h-[100dvh] max-h-[100dvh]">
+    <div className="fixed inset-0 bg-[url('/background.jpg')] bg-cover bg-center z-[9999] w-full min-h-dvh max-h-dvh overflow-hidden">
       <div className="flex flex-col h-dvh relative overflow-y-auto">
         {/* Conditionally render a loading spinner or the recipes */}
         {isLoading ? (
