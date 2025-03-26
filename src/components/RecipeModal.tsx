@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Recipe, Meal } from "../types";
 import { useAuth } from "../Auth/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -55,6 +55,7 @@ const RecipeModal: React.FC<ModalProps> = ({
   const mealTypes = ["Breakfast", "Lunch", "Dinner"];
   const [message, setMessage] = useState<string>("");
   const [isButtonDisabled, setButtonDisabled] = useState(false);
+  const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 
   const { user, session, setUser } = useAuth();
   const navigate = useNavigate();
@@ -356,6 +357,26 @@ const RecipeModal: React.FC<ModalProps> = ({
     }, 3000);
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenHeight(window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const getHeightStyle = () => {
+    if (screenHeight <= 800) return "15vh";
+    if (screenHeight <= 900) return "13vh";
+  };
+
+  const getPaddingStyle = () => {
+    if (screenHeight <= 800) return "0.75rem";
+    if (screenHeight <= 900) return "1rem";
+    return "1.25rem"; 
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -540,8 +561,8 @@ const RecipeModal: React.FC<ModalProps> = ({
             !user ? "bg-amber-50 border-amber-50" : " border-gray-400"
           }`}
           style={{
-            padding: window.innerHeight <= 800 ? "0.75rem" : window.innerHeight <= 900 ? "1rem" : "1.25rem",
-            height: window.innerHeight <= 800 ? "15vh" : "13vh",
+            padding: getPaddingStyle(),
+            height: getHeightStyle()
           }}
         >
           {user && selectedMeal ? (
