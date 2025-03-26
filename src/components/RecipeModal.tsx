@@ -386,7 +386,7 @@ const RecipeModal: React.FC<ModalProps> = ({
 
   return (
     <div 
-    className="fixed inset-0 bg-black bg-opacity-50 z-50 w-full min-h-[100vh] max-h-[100vh] overflow-hidden lg:flex lg:justify-center lg:items-center"
+    className="fixed inset-0 bg-black bg-opacity-50 z-50 w-full h-[100dvh] overflow-hidden lg:flex lg:justify-center lg:items-center"
       style={{
         // iOS-specific fixes
         position: "-webkit-sticky",
@@ -573,7 +573,7 @@ const RecipeModal: React.FC<ModalProps> = ({
         {/* Add meal plan functionality */}
         <div
           className={`fixed z-60 bottom-0 left-0 w-full flex gap-2 border-t-2 lg:h-1/4 lg:justify-center lg:items-center ${
-            !user ? "bg-amber-50 border-amber-50" : " border-gray-400"
+            !user ? "bg-amber-50 border-amber-50" : " border-gray-400 bg-[url('/paper-box.jpg')]"
           }`}
           style={{
             padding: getPaddingStyle(),
