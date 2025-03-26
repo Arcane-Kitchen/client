@@ -21,12 +21,15 @@ const Layout = () => {
   };
 
   return (
-    <div className="bg-[url('/background.jpg')] bg-cover bg-center min-h-screen max-h-screen flex flex-col">
+    <div className="bg-[url('/background.jpg')] bg-cover bg-center min-h-screen max-h-screen flex flex-col overflow-hidden">
       <Navbar />
       <div 
         className="flex-1 overflow-y-auto lg:pt-24 flex flex-col"
         style={{
           paddingTop: getPaddingTop(),
+          height: `calc(100vh - ${getPaddingTop()})`,
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch"
         }}>
         <Outlet />
       </div>
