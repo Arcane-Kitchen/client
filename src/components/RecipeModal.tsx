@@ -386,7 +386,7 @@ const RecipeModal: React.FC<ModalProps> = ({
 
   return (
     <div 
-    className="fixed inset-0 bg-black bg-opacity-50 z-50 w-full min-h-screen h-[100svh] overflow-hidden lg:flex lg:justify-center lg:items-center"
+    className="fixed inset-0 bg-black bg-opacity-50 z-50 w-full min-h-[100vh] max-h-[100vh] overflow-hidden lg:flex lg:justify-center lg:items-center"
       style={{
         // iOS-specific fixes
         position: "-webkit-sticky",
@@ -412,10 +412,9 @@ const RecipeModal: React.FC<ModalProps> = ({
         </button>
 
         <div 
-          className="overflow-auto lg:flex lg:flex-col lg:h-3/4 lg:w-auto"
+          className="overflow-auto relative z-10 lg:flex lg:flex-col lg:h-3/4 lg:w-auto"
           style={{
             height: getMiddleSectionHeightStyle(),
-            overflowY: "auto",
             WebkitOverflowScrolling: "touch"
           }}
         >
@@ -579,6 +578,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           style={{
             padding: getPaddingStyle(),
             height: getBottomSectionHeightStyle(),
+            position: "sticky"
           }}
         >
           {user && selectedMeal ? (
