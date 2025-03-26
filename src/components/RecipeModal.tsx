@@ -386,7 +386,7 @@ const RecipeModal: React.FC<ModalProps> = ({
 
   return (
     <div 
-    className="fixed inset-0 bg-black bg-opacity-50 z-50 w-full min-h-[100dvh] max-h-[100dvh] overflow-hidden lg:flex lg:justify-center lg:items-center"
+    className="fixed inset-0 bg-black bg-opacity-50 z-[9999] w-full min-h-[100dvh] max-h-[100dvh] overflow-hidden lg:flex lg:justify-center lg:items-center"
       style={{
         // iOS-specific fixes
         position: "-webkit-sticky",
