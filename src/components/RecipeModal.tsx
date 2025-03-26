@@ -398,7 +398,7 @@ const RecipeModal: React.FC<ModalProps> = ({
       >
         {/* Close button */}
         <button
-          className="absolute top-2 left-2 hover:cursor-pointer lg:left-auto lg:right-2"
+          className="fixed z-60 top-2 left-2 hover:cursor-pointer lg:left-auto lg:right-2"
           onClick={onClose}
         >
           <IoChevronBackCircle
