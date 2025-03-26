@@ -380,7 +380,7 @@ const RecipeModal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 w-full h-screen lg:flex lg:justify-center lg:items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 w-full min-h-screen h-[100svh] lg:flex lg:justify-center lg:items-center">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center h-full w-full relative lg:rounded-lg lg:h-2/3 lg:w-1/2 lg:p-5 ">
         {/* Close button */}
         <button
