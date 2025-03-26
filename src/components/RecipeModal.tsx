@@ -17,6 +17,8 @@ import { updateUserPetStat } from "../api/userApi";
 import { addUserActivity } from "../api/activityApi";
 import { handlePointCalc, handleRatioCalc } from "../util/statCalc";
 import { dietColors } from "../util/constants";
+import ReactDOM from "react-dom";
+
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -384,7 +386,7 @@ const RecipeModal: React.FC<ModalProps> = ({
 
   if (!isOpen) return null;
 
-  return (
+  return ReactDOM.createPortal(
     <div 
     className="fixed inset-0 bg-black bg-opacity-50 z-[9999] w-full min-h-[100dvh] max-h-[100dvh] overflow-hidden lg:flex lg:justify-center lg:items-center"
       style={{
@@ -703,7 +705,8 @@ const RecipeModal: React.FC<ModalProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
