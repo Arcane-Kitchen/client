@@ -31,7 +31,9 @@ const Layout = () => {
           overflowY: "auto",
           WebkitOverflowScrolling: "touch"
         }}>
-        <Outlet />
+          <div className="flex-grow">
+            <Outlet />
+          </div>
       </div>
     </div>
   );
