@@ -157,7 +157,7 @@ const QuestPage: React.FC = () => {
                   : `Fight a ${enemies[defeatedEnemies]}!`
                 }
               </h1>
-              <div className="w-1/2 h-30 flex items-center">
+              <div className="w-2/3 aspect-square flex items-center">
                 {enemies.map((enemy, index) => (
                   <img 
                     key={enemy} 
@@ -254,7 +254,7 @@ const QuestPage: React.FC = () => {
                   >
                     <p className="text-30 text-white">Lvl Up</p>
                   </button>
-                  <div className="w-3/4 aspect">
+                  <div className="w-3/4 aspect-square">
                     <img className="w-full h-full" src={sadPet} alt="happy pet" />
                   </div>
                   <div className="flex text-2xl mb-4 m-1">
@@ -297,7 +297,7 @@ const QuestPage: React.FC = () => {
                   >
                     <p className="text-white">Next</p>
                   </button>
-                  <div className="w-3/4 aspect">
+                  <div className="w-3/4 aspect-square">
                     <img
                       className="w-full h-full"
                       src={happyPet}
