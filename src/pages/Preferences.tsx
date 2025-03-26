@@ -149,7 +149,7 @@ const Preferences = () => {
 
     return (
         <div 
-            className="flex flex-col items-center px-5 pb-10 relative"
+            className="flex flex-col items-center px-5 pb-10 relative pt-8"
             style={{
                 height: window.innerHeight <= 800 ? "auto" : "100vh",
                 paddingTop: window.innerHeight <= 800 ? "" : "15px",

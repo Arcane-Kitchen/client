@@ -127,7 +127,7 @@ const QuestPage: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col items-center justify-center pb-16">
+    <div className="h-full flex flex-col items-center justify-center pb-16 pt-8">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-4">
         {user && !user.pet_name ? (
           <div className="flex-1 flex flex-col items-center gap-2 p-2">
