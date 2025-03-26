@@ -39,7 +39,7 @@ const FilterModal: React.FC<FilterProps> = ({ onClose, filters, setFilters, reci
     }
 
     return (
-        <div className="fixed inset-0 bg-[rgba(255,255,255,0.5)] z-50 w-vh h-vh lg:flex lg:justify-center lg:items-center">
+        <div className="fixed inset-0 bg-[rgba(255,255,255,0.5)] z-50 w-vh min-h-dvh max-h-dvh lg:flex lg:justify-center lg:items-center">
             <div className="bg-white p-6 rounded-md shadow-2xl mt-17 ml-10 h-[92vh] flex flex-col gap-5 justify-between relative overflow-y-auto lg:mt-0 lg:ml-0 lg:w-1/2 lg:h-fit lg:items-center lg:gap-10">
                 <div className="flex gap-5 flex-col lg:w-4/5">
                     {/* Header of the filter modal */}

@@ -570,6 +570,11 @@ const RecipeModal: React.FC<ModalProps> = ({
               ))}
             </ol>
           </div>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
         </div>
 
         {/* Add meal plan functionality */}
