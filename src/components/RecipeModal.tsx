@@ -368,13 +368,12 @@ const RecipeModal: React.FC<ModalProps> = ({
 
   const getBottomSectionHeightStyle = () => {
     if (screenHeight <= 800) return "15vh";
-    if (screenHeight <= 900) return "13vh";
-    return "10vh";
+    return "13vh";
   }; 
 
   const getMiddleSectionHeightStyle = () => {
-    if (screenHeight <= 800) return "calc(100vh - 200px)";
-    return "auto";
+    if (screenHeight <= 800) return "85vh";
+    return "87vh";
   }
 
   const getPaddingStyle = () => {
@@ -395,11 +394,7 @@ const RecipeModal: React.FC<ModalProps> = ({
       }}
     >
       <div 
-        className="bg-[url('/paper-box.jpg')] bg-cover bg-center h-full w-full relative lg:rounded-lg lg:h-2/3 lg:w-1/2 lg:p-5 overflow-auto"
-        style={{
-          maxHeight: "100%",
-          overscrollBehavior: "contain"
-        }}
+        className="bg-[url('/paper-box.jpg')] bg-cover bg-center h-full w-full relative lg:rounded-lg lg:h-2/3 lg:w-1/2 lg:p-5"
       >
         {/* Close button */}
         <button
@@ -420,7 +415,6 @@ const RecipeModal: React.FC<ModalProps> = ({
           className="overflow-auto lg:flex lg:flex-col lg:h-3/4 lg:w-auto"
           style={{
             height: getMiddleSectionHeightStyle(),
-            maxHeight: "calc(100vh - 200px)",
             overflowY: "auto",
             WebkitOverflowScrolling: "touch"
           }}
@@ -585,8 +579,6 @@ const RecipeModal: React.FC<ModalProps> = ({
           style={{
             padding: getPaddingStyle(),
             height: getBottomSectionHeightStyle(),
-            position: "sticky",
-            bottom: 0,
           }}
         >
           {user && selectedMeal ? (
