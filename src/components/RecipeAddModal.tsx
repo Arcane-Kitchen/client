@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { addRecipeFromRawText } from '../api/recipeParser';
 import { useAuth } from '../Auth/AuthContext';
 import { Recipe, Filter } from "../types";
@@ -17,6 +17,7 @@ const RecipeAddModal: React.FC<RecipeAddModalProps> = ({ isOpen, onClose, recipe
   const [rawText, setRawText] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [isAdding, setIsAdding] = useState<boolean>(false);
+  const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 
   const { user } = useAuth();
 
@@ -44,6 +45,25 @@ const RecipeAddModal: React.FC<RecipeAddModalProps> = ({ isOpen, onClose, recipe
     }
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenHeight(window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const getHeightStyle = () => {
+    if (screenHeight <= 800) return "72vh";
+    return "60vh";
+  }; 
+
+  const getPaddingStyle = () => {
+    if (screenHeight <= 800) return "0.5rem";
+    return "1rem"; 
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -51,8 +71,8 @@ const RecipeAddModal: React.FC<RecipeAddModalProps> = ({ isOpen, onClose, recipe
       <div 
         className="flex items-center justify-center bg-[url('/input_field.png')] bg-cover bg-center w-full md:bg-[url('/sign-up-box.svg')] md:bg-cover lg:bg-cover lg:w-3/5"
         style={{
-          height: window.innerHeight <= 800 ? "75vh" : "60vh",
-          padding: window.innerHeight <= 800 ? "0.5rem" : "1rem",
+          height: getHeightStyle(),
+          padding: getPaddingStyle(),
         }}
       >
         <div className="w-4/5 h-full flex flex-col items-center px-6 py-10 gap-4 lg:w-1/2">
