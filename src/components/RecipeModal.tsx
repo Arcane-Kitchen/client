@@ -366,10 +366,15 @@ const RecipeModal: React.FC<ModalProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const getHeightStyle = () => {
+  const getBottomSectionHeightStyle = () => {
     if (screenHeight <= 800) return "15vh";
     if (screenHeight <= 900) return "13vh";
   };
+
+  const getMiddleSectionHeightStyle = () => {
+    if (screenHeight <= 800) return "85vh";
+    return "87vh";
+  }
 
   const getPaddingStyle = () => {
     if (screenHeight <= 800) return "0.75rem";
@@ -400,7 +405,7 @@ const RecipeModal: React.FC<ModalProps> = ({
         <div 
           className="overflow-auto lg:flex lg:flex-col lg:h-3/4 lg:w-auto"
           style={{
-            height: window.innerHeight <= 800 ? "85vh" : "87vh",
+            height: getMiddleSectionHeightStyle(),
           }}
         >
           <div className="lg:p-5 lg:flex-1 lg:flex">
@@ -562,7 +567,7 @@ const RecipeModal: React.FC<ModalProps> = ({
           }`}
           style={{
             padding: getPaddingStyle(),
-            height: getHeightStyle()
+            height: getBottomSectionHeightStyle()
           }}
         >
           {user && selectedMeal ? (
@@ -654,7 +659,7 @@ const RecipeModal: React.FC<ModalProps> = ({
             <div 
               className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full"
               style={{
-                height: window.innerHeight <= 800 ? "15vh" : "13vh",
+                height: getBottomSectionHeightStyle(),
               }}
             >
               <div className="flex-1 flex flex-col gap-2 lg:items-center lg:w-full">
