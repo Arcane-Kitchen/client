@@ -53,7 +53,7 @@ const AchievementsPage: React.FC = () => {
   }, [user]);
 
   return (
-    <div className="h-full flex flex-col items-center justify-center pb-16 pt-8">
+    <div className="flex flex-col items-center justify-center pb-16 pt-8">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center min-h-[80vh] max-h-fit w-11/12 md:w-5/6 h-fit flex flex-col items-center justify-around p-4 pt-2">
         {isLoading ? (
           // Show loading spinner while data is being fetched

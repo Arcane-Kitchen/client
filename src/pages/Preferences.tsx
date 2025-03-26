@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { UserProfile, DailyCaloriesAndMacros, Pet } from "../types";
 import { calculateDailyCaloriesAndMacrosIntake } from "../util/caloriesAndMacrosCalculator";
 import NutritionChart from "../components/NutritionChart";
@@ -38,6 +38,7 @@ const Preferences = () => {
         }
     });
     const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 
     const { user, session, setUser } = useAuth();
     const navigate = useNavigate();
@@ -147,21 +148,45 @@ const Preferences = () => {
         setPet(newPet);
     }
 
+    useEffect(() => {
+        const handleResize = () => {
+          setScreenHeight(window.innerHeight);
+        };
+    
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+      }, []);
+    
+      const getHeightStyle = () => {
+        if (screenHeight <= 800) return "auto";
+        return "100vh";
+      }; 
+    
+      const getPaddingStyle = () => {
+        if (screenHeight <= 800) return "";
+        return "15px"; 
+      };
+
+      const getMarginStyle = () => {
+        if (screenHeight <= 800) return "400px";
+        return "460px"; 
+      };
+
     return (
         <div 
             className="flex flex-col items-center px-5 pb-10 relative pt-8"
             style={{
-                height: window.innerHeight <= 800 ? "auto" : "100vh",
-                paddingTop: window.innerHeight <= 800 ? "" : "15px",
+                height: getHeightStyle(),
+                paddingTop: getPaddingStyle(),
             }}
         >
             <div className="bg-[url('/wizard.jpg')] bg-cover bg-[center_left_0.5rem] rounded-full w-2/5 aspect-square lg:p-15"></div>
             
-            <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/3 p-4 flex items-center justify-center bg-[url('/input_field.png')] bg-cover bg-center aspect-3/4 w-9/10 md:bg-[url('/sign-up-box.svg')] md:bg-cover lg:bg-cover lg:w-3/5">
+            <div className="absolute top-2/5 left-1/2 transform -translate-x-1/2 -translate-y-2/5 flex items-center justify-center bg-[url('/input_field.png')] bg-cover bg-center aspect-3/4 w-9/10 md:bg-[url('/sign-up-box.svg')] md:bg-cover lg:bg-cover lg:w-3/5">
                 <div className=" w-4/5 h-full flex flex-col items-center justify-center md:w-3/5 lg:w-3/5">
                     {user && user.pet_name && !isEditing && (
                         <div className="w-full pb-5">
-                            <h1 className="text-white text-center text-2xl mb-3">Your goals to prepare for the challenges ahead</h1>
+                            <h1 className="text-white text-center text-2xl mb-3 p-4">Your goals to prepare for the challenges ahead</h1>
                             <div className="flex flex-col w-full items-center gap-3">
                                 {/* Macros Chart */}
                                 <div className="w-full relative">
@@ -277,7 +302,7 @@ const Preferences = () => {
             <div 
                 className="flex items-center justify-center gap-5"
                 style={{
-                    marginTop: window.innerHeight <= 800 ? "400px" : "460px",
+                    marginTop: getMarginStyle(),
                 }}
             >
                 <button className={`bg-[url('/button-box.svg')] bg-cover bg-center h-20 w-30 cursor-pointer ${page === 1 ? "hidden" : "block"}`} onClick={handleBackClick}>

@@ -105,7 +105,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ recipes, filteredRecipes, s
   }, [user])
 
   return (
-    !isAdding ? (<div className="h-full flex flex-col items-center justify-center pb-16 pt-8 ">
+    !isAdding ? (<div className="flex flex-col items-center justify-center pb-16 pt-8">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-5 lg:p-15">
         {isLoading ? (
           // Show loading spinner while data is being fetched

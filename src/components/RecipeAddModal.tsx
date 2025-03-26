@@ -55,7 +55,7 @@ const RecipeAddModal: React.FC<RecipeAddModalProps> = ({ isOpen, onClose, recipe
   }, []);
 
   const getHeightStyle = () => {
-    if (screenHeight <= 800) return "72vh";
+    if (screenHeight <= 800) return "68vh";
     return "60vh";
   }; 
 

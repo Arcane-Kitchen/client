@@ -127,7 +127,7 @@ const QuestPage: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col items-center justify-center pb-16 pt-8">
+    <div className="flex flex-col items-center justify-center pb-16 pt-8">
       <div className="bg-[url('/paper-box.jpg')] bg-cover bg-center w-5/6 min-h-[80vh] max-h-fit flex items-center justify-around p-4">
         {user && !user.pet_name ? (
           <div className="flex-1 flex flex-col items-center gap-2 p-2">
@@ -148,8 +148,8 @@ const QuestPage: React.FC = () => {
         ) : (
           user && enemy && (
             <div className="w-full flex flex-col items-center">
-              <h1 className="font-bold text-4xl m-1 p-1">Battle</h1>
-              <h1 className="text-4xl m-1 p-1">
+              <h1 className="font-bold text-4xl">Battle</h1>
+              <h1 className="text-4xl mb-1">
                 {fightResult === "lose" 
                   ? "You lost!" 
                   : fightResult === "win" 
@@ -157,7 +157,7 @@ const QuestPage: React.FC = () => {
                   : `Fight a ${enemies[defeatedEnemies]}!`
                 }
               </h1>
-              <div className="w-2/3 aspect-square flex items-center">
+              <div className="h-[25dvh] aspect-square flex items-center">
                 {enemies.map((enemy, index) => (
                   <img 
                     key={enemy} 
@@ -205,14 +205,14 @@ const QuestPage: React.FC = () => {
                   >
                     <p className="text-white text-2xl">Fight</p>
                   </button>
-                  <div className="w-3/4 aspect-square">
+                  <div className="h-[30dvh] aspect-square">
                     <img
                       className="w-full h-full"
                       src={normalPet}
                       alt="normal pet"
                     />
                   </div>
-                  <div className="flex text-2xl mb-4 m-1">
+                  <div className="flex text-2xl mb-4">
                     <h1 className={petStrColor}>
                       <PiSwordFill className="m-1" />
                       {calcLevel(user.pet_protein_exp)}
