@@ -13,3 +13,7 @@ The features included in Arcane Kitchen:
  - A mentor saucerer AI chatbot that can suggest alternative ingredients to be used in recipes
  - A combat system for your pet to use its stats to battle with enemies.
  - Achievements unlocked as you plan, eat, and battle
+
+# Architecure Diagram
+![image](https://github.com/user-attachments/assets/2b496e33-a195-4447-ac05-fc58ae01fb82)
+
